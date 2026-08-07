@@ -26,7 +26,28 @@ export const SITE = {
     city: "Chevilly-Larue",
     country: "France",
   },
+  /**
+   * Adresse de contact PUBLIQUE : mentions legales, pied de page, accuse de
+   * reception client. Elle porte le nom de domaine de l'entreprise, ce qui est
+   * ce qu'un client doit voir.
+   */
   email: "adam@beloucif.com",
+
+  /**
+   * Adresse qui recoit reellement les notifications de commande.
+   *
+   * Elle est volontairement DIFFERENTE de l'adresse publique. adam@beloucif.com
+   * n'est pas une boite, c'est une redirection OVH vers cette adresse Gmail, et
+   * une redirection est un maillon fragile : le serveur qui relaie change l'IP
+   * d'expedition sans changer l'enveloppe, donc la verification SPF echoue a
+   * l'arrivee et Gmail classe le message en indesirable, voire le refuse en
+   * silence. C'est ce qui faisait disparaitre les demandes de projet.
+   *
+   * En livrant la notification directement a la boite finale, le relais
+   * disparait et l'authentification du message reste intacte de bout en bout.
+   * L'adresse publique, elle, ne change pas.
+   */
+  notificationEmail: "adambeloucif@gmail.com",
   domain: "beloucif.com",
   url: "https://beloucif.com",
   // Franchise en base : aucune TVA facturee, mention obligatoire sur les devis

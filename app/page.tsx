@@ -4,6 +4,7 @@ import { Header } from "@/components/layout/Header";
 import { CtaBand } from "@/components/marketing/CtaBand";
 import { Hero } from "@/components/marketing/Hero";
 import { ReferencesSection } from "@/components/marketing/ReferencesSection";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { OFFRES } from "@/content/offres";
 
 /**
@@ -17,6 +18,7 @@ import { OFFRES } from "@/content/offres";
 export default function Home() {
   return (
     <>
+      <JsonLd />
       <Header />
 
       <main>

@@ -109,9 +109,13 @@ export async function sendOrderEmails(order: OrderInput): Promise<boolean> {
 
   try {
     // Notification interne. `replyTo` permet de repondre au client d'un clic.
+    //
+    // Destinataire : la boite finale, pas l'adresse publique. Passer par la
+    // redirection adam@beloucif.com faisait echouer SPF a l'arrivee chez Gmail
+    // et les demandes finissaient en indesirable. Voir SITE.notificationEmail.
     const notify = await resend.emails.send({
       from: FROM,
-      to: SITE.email,
+      to: SITE.notificationEmail,
       replyTo: order.email,
       subject: `Nouvelle demande : ${PROJECT_TYPE_LABELS[order.projectType] ?? order.projectType} - ${order.name}`,
       html: shell("Nouvelle demande de projet", table + message),
