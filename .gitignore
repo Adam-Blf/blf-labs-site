@@ -30,8 +30,10 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files - jamais commites, aucune exception
+.env
+.env.*
+*.env
 
 # vercel
 .vercel
@@ -39,3 +41,38 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# --- Defense en profondeur sur les secrets ---
+# Un secret pousse une fois reste dans l'historique meme apres suppression.
+# Ces motifs attrapent les fichiers et les artefacts qui en portent d'habitude.
+*secret*
+*.token
+*.pem
+*.key
+*.p12
+*.keystore
+*.jks
+credentials.json
+service-account*.json
+# Prefixes de jetons des services utilises ici
+ghp_*
+github_pat_*
+sbp_*
+sb_secret_*
+re_*
+sk_live_*
+rk_live_*
+# Scripts jetables qui portent souvent un jeton en dur
+scripts/*.local.mjs
+scripts/*.local.py
+scripts/*.local.sh
+
+# Sorties de travail
+/playwright-report/
+/test-results/
+/screenshots/
+*.local
+
+# Outils d'agents
+.claude/
+.aider*

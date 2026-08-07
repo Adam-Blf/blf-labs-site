@@ -1,26 +1,138 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+  Direction artistique : neobrutalisme.
+  Traits epais, ombres dures decalees, aplats francs, typo massive.
+
+  Trois palettes candidates cohabitent le temps du choix (route /design-preview).
+  Chacune se pose en classe (.pal-navy, .pal-klein, .pal-acid) et fonctionne en
+  clair comme en sombre. Une fois le choix fait, les deux perdantes sont
+  supprimees de ce fichier : pas de code mort.
+
+  Regle de contraste apprise sur Bacchana : l'encre principale s'inverse avec le
+  theme, mais les aplats colores restent CLAIRS dans les deux themes. Poser
+  var(--ink) sur un aplat donne donc du quasi-blanc sur jaune en mode sombre.
+  D'ou --accent-ink et --support-ink, INVARIANTS par theme, a utiliser pour tout
+  texte pose sur un aplat. Verifie par scripts/check_contrast.mjs.
+*/
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-support: var(--support);
+  --color-support-ink: var(--support-ink);
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ---- Palette A : navy + laiton (identite existante des badges Adam-Blf) ---- */
+.pal-navy {
+  --paper: #f4f1ea;
+  --ink: #001329;
+  --muted: #4a5763;
+  --surface: #fffdf7;
+  --line: #001329;
+  --accent: #d4a437;
+  --accent-ink: #1a1200;
+  --support: #b93a27;
+  --support-ink: #fff3ef;
+}
+.dark .pal-navy,
+.pal-navy.dark {
+  --paper: #06101c;
+  --ink: #f2efe6;
+  --muted: #a3b3c2;
+  --surface: #0c1c2c;
+  --line: #f2efe6;
+  --accent: #d4a437;
+  --accent-ink: #1a1200;
+  --support: #e4573f;
+  --support-ink: #1a0600;
+}
+
+/* ---- Palette B : blanc + bleu Klein + corail ---- */
+.pal-klein {
+  --paper: #fafaf8;
+  --ink: #0b0b0b;
+  --muted: #55555a;
+  --surface: #ffffff;
+  --line: #0b0b0b;
+  --accent: #2a2af5;
+  --accent-ink: #ffffff;
+  --support: #ff5a3c;
+  --support-ink: #1a0500;
+}
+.dark .pal-klein,
+.pal-klein.dark {
+  --paper: #0b0b0f;
+  --ink: #f5f5f2;
+  --muted: #a2a2ad;
+  --surface: #15151c;
+  --line: #f5f5f2;
+  --accent: #4747ff;
+  --accent-ink: #ffffff;
+  --support: #ff7454;
+  --support-ink: #1a0500;
+}
+
+/* ---- Palette C : neobrutalisme acide ---- */
+.pal-acid {
+  --paper: #f2f2ec;
+  --ink: #101014;
+  --muted: #55565c;
+  --surface: #ffffff;
+  --line: #101014;
+  --accent: #b8ea34;
+  --accent-ink: #0e1400;
+  --support: #c9107a;
+  --support-ink: #ffffff;
+}
+.dark .pal-acid,
+.pal-acid.dark {
+  --paper: #0e0e10;
+  --ink: #f5f5f0;
+  --muted: #a4a4ac;
+  --surface: #17171a;
+  --line: #f5f5f0;
+  --accent: #c6f94d;
+  --accent-ink: #0e1400;
+  --support: #ff3fa4;
+  --support-ink: #1a0010;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Les chiffres (SIRET, tarifs, dates) ne doivent pas danser d'une ligne a l'autre. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Anneau de focus visible sur toutes les palettes, exigence a11y. */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 3px solid var(--support);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
