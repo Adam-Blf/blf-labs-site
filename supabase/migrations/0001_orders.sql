@@ -33,6 +33,34 @@ create table if not exists public.orders (
   phone text,
   company text,
 
+  -- Facturation. Renseigne uniquement pour un client professionnel : une
+  -- facture entre professionnels doit porter l'identite complete de l'acheteur,
+  -- et le format de facture electronique impose son numero SIREN. Collecter ces
+  -- champs a la commande evite de les reclamer au moment d'encaisser.
+  customer_type text not null default 'particulier',
+  company_name text,
+  siren text,
+  vat_number text,
+  billing_street text,
+  billing_postal_code text,
+  billing_city text,
+  billing_country text,
+
+  -- Garde-fou en base, et pas seulement dans le formulaire : une commande
+  -- professionnelle sans raison sociale ni SIREN est refusee a l'ecriture,
+  -- quelle que soit la voie utilisee.
+  constraint orders_pro_billing_complete check (
+    customer_type <> 'entreprise'
+    or (
+      company_name is not null
+      and siren is not null
+      and billing_street is not null
+      and billing_postal_code is not null
+      and billing_city is not null
+      and billing_country is not null
+    )
+  ),
+
   -- Preuve du consentement, exigee par le RGPD en cas de controle.
   consent_at timestamptz not null,
 

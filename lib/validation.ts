@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { OFFRES } from "@/content/offres";
+import { isSirenOrSiret, isVatNumber } from "@/lib/siren";
 
 /**
  * Schema unique de la demande de commande, partage par le formulaire et par la
@@ -52,7 +53,39 @@ export const PROJECT_TYPE_LABELS: Record<string, string> = {
   autre: "Autre besoin",
 };
 
+export const CUSTOMER_TYPES = ["particulier", "entreprise"] as const;
+
+export const CUSTOMER_TYPE_LABELS: Record<
+  (typeof CUSTOMER_TYPES)[number],
+  string
+> = {
+  particulier: "Un particulier",
+  entreprise: "Une entreprise ou une association",
+};
+
+/**
+ * Champs de facturation exiges d'un client professionnel.
+ *
+ * Ils ne sont pas du confort : une facture entre professionnels doit porter
+ * l'identite complete de l'acheteur, et le format de facture electronique
+ * impose son numero SIREN. Les demander au moment de la commande evite de
+ * courir apres au moment d'encaisser.
+ */
+const billingFields = {
+  companyName: z.string().trim().max(200).optional(),
+  siren: z.string().trim().max(20).optional(),
+  vatNumber: z.string().trim().max(20).optional(),
+  billingStreet: z.string().trim().max(200).optional(),
+  billingPostalCode: z.string().trim().max(20).optional(),
+  billingCity: z.string().trim().max(120).optional(),
+  billingCountry: z.string().trim().max(80).optional(),
+};
+
 export const orderSchema = z.object({
+  customerType: z.enum(CUSTOMER_TYPES, {
+    message: "Precisez si vous commandez a titre personnel ou professionnel.",
+  }),
+  ...billingFields,
   projectType: z.enum(PROJECT_TYPES, {
     message: "Choisissez un type de projet.",
   }),
@@ -100,11 +133,74 @@ export const orderSchema = z.object({
   website: z.string().max(0).optional().or(z.literal("")),
 });
 
+/**
+ * Les exigences de facturation ne s'appliquent qu'aux professionnels : imposer
+ * un SIREN a un particulier serait absurde, et l'omettre pour une entreprise
+ * rendrait la facture non conforme. D'ou une validation conditionnelle plutot
+ * que deux schemas separes, qui divergeraient a la premiere retouche.
+ */
+export const orderSchemaChecked = orderSchema.superRefine((data, ctx) => {
+  if (data.customerType !== "entreprise") return;
+
+  const required: [keyof typeof data, string][] = [
+    ["companyName", "Indiquez la raison sociale."],
+    ["billingStreet", "Indiquez l'adresse de facturation."],
+    ["billingPostalCode", "Indiquez le code postal."],
+    ["billingCity", "Indiquez la ville."],
+    ["billingCountry", "Indiquez le pays."],
+  ];
+
+  for (const [field, message] of required) {
+    if (!data[field]) {
+      ctx.addIssue({ code: "custom", path: [field], message });
+    }
+  }
+
+  if (!data.siren) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["siren"],
+      message: "Le SIREN ou le SIRET est obligatoire pour facturer une entreprise.",
+    });
+  } else if (!isSirenOrSiret(data.siren)) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["siren"],
+      message:
+        "Ce numero est invalide : un SIREN compte 9 chiffres, un SIRET 14, et la cle de controle doit tomber juste.",
+    });
+  }
+
+  // La TVA reste facultative : une association non assujettie ou une
+  // micro-entreprise en franchise n'en a pas.
+  if (data.vatNumber && !isVatNumber(data.vatNumber)) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["vatNumber"],
+      message: "Numero de TVA intracommunautaire invalide (format attendu : FR12345678901).",
+    });
+  }
+});
+
 export type OrderInput = z.infer<typeof orderSchema>;
 
 /** Champs de l'etape courante, pour valider au fil de l'eau. */
 export const STEP_FIELDS = [
   ["projectType", "budget", "deadline"],
   ["message"],
-  ["name", "email", "phone", "company", "consent"],
+  [
+    "customerType",
+    "name",
+    "email",
+    "phone",
+    "company",
+    "companyName",
+    "siren",
+    "vatNumber",
+    "billingStreet",
+    "billingPostalCode",
+    "billingCity",
+    "billingCountry",
+    "consent",
+  ],
 ] as const;

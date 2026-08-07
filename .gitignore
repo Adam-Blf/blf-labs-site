@@ -71,6 +71,8 @@ scripts/*.local.sh
 /playwright-report/
 /test-results/
 /screenshots/
+# Journaux et instantanes laisses par le pilotage de navigateur
+.playwright-mcp/
 *.local
 
 # Outils d'agents
@@ -81,3 +83,4 @@ scripts/*.local.sh
 .mcp.json
 mcp.json
 21st_sk_*
+.env*

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { sendOrderEmails } from "@/lib/mail";
 import { clientIp, hashIp, isRateLimited } from "@/lib/rate-limit";
 import { serviceClient } from "@/lib/supabase";
-import { orderSchema } from "@/lib/validation";
+import { orderSchemaChecked } from "@/lib/validation";
 
 /**
  * Enregistrement d'une demande de commande.
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Requete illisible." }, { status: 400 });
   }
 
-  const parsed = orderSchema.safeParse(payload);
+  const parsed = orderSchemaChecked.safeParse(payload);
 
   if (!parsed.success) {
     // On renvoie les messages par champ pour que le formulaire puisse les
@@ -85,6 +85,15 @@ export async function POST(request: Request) {
       email: order.email,
       phone: order.phone ?? null,
       company: order.company ?? null,
+      // Facturation : renseigne uniquement pour un client professionnel.
+      customer_type: order.customerType,
+      company_name: order.companyName ?? null,
+      siren: order.siren?.replace(/\s/g, "") ?? null,
+      vat_number: order.vatNumber?.replace(/\s/g, "").toUpperCase() ?? null,
+      billing_street: order.billingStreet ?? null,
+      billing_postal_code: order.billingPostalCode ?? null,
+      billing_city: order.billingCity ?? null,
+      billing_country: order.billingCountry ?? null,
       consent_at: new Date().toISOString(),
       ip_hash: ipHash,
       user_agent: request.headers.get("user-agent")?.slice(0, 400) ?? null,
