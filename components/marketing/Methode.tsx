@@ -29,7 +29,7 @@ export function Methode() {
     <section id="methode" className="relative">
       <span
         aria-hidden="true"
-        className="halo left-1/2 top-1/3 h-[32rem] w-[32rem] -translate-x-1/2 bg-[#ff6b4a]/5"
+        className="halo left-1/2 top-1/3 h-[32rem] w-[32rem] -translate-x-1/2 "
       />
 
       <div className="section relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -47,7 +47,7 @@ export function Methode() {
                   recourir a un chiffre. */}
               <span
                 aria-hidden="true"
-                className="h-px w-10 bg-gradient-to-r from-[#f5a524] to-[#ff6b4a]"
+                className="h-px w-10 bg-gradient-to-r from-white/40 to-transparent"
               />
               <h3 className="title text-xl sm:text-2xl">{etape.title}</h3>
               <p className="text-sm font-light leading-relaxed text-muted">

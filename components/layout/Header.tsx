@@ -95,7 +95,7 @@ export function Header() {
           <div className="flex items-center gap-2">
             <Link
               href="/commander"
-              className="btn-pill hidden bg-white px-5 py-2.5 text-sm font-semibold text-[#0c1128] sm:block"
+              className="btn-pill hidden bg-accent px-5 py-2.5 text-sm font-semibold text-accent-ink sm:block"
             >
               Demarrer un projet
             </Link>
@@ -143,7 +143,7 @@ export function Header() {
               <Link
                 href="/commander"
                 onClick={() => setOpen(false)}
-                className="btn-pill mt-2 block bg-white px-5 py-3 text-center text-sm font-semibold text-[#0c1128]"
+                className="btn-pill mt-2 block bg-accent px-5 py-3 text-center text-sm font-semibold text-accent-ink"
               >
                 Demarrer un projet
               </Link>

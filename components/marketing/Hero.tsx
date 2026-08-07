@@ -13,11 +13,11 @@ export function Hero() {
     <section className="relative flex min-h-screen items-center overflow-hidden">
       <span
         aria-hidden="true"
-        className="halo left-[-10rem] top-[-6rem] h-[36rem] w-[36rem] bg-[#f5a524]/10"
+        className="halo left-[-10rem] top-[-6rem] h-[36rem] w-[36rem] bg-white/25/10"
       />
       <span
         aria-hidden="true"
-        className="halo bottom-[-12rem] right-[-8rem] h-[40rem] w-[40rem] bg-[#ff6b4a]/10"
+        className="halo bottom-[-12rem] right-[-8rem] h-[40rem] w-[40rem] bg-white/5"
       />
 
       <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-32 sm:px-6 lg:px-8">
@@ -34,9 +34,11 @@ export function Hero() {
         </p>
 
         <div className="mt-12 flex flex-wrap items-center gap-4">
+          {/* Seul element colore de la page : l'action principale. La couleur
+              vient du logo et ne sert qu'ici. */}
           <Link
             href="/commander"
-            className="btn-pill bg-white px-8 py-4 font-semibold text-[#0c1128]"
+            className="btn-pill bg-accent px-8 py-4 font-semibold text-accent-ink"
           >
             Demarrer un projet
           </Link>

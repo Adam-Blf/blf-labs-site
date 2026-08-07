@@ -9,11 +9,11 @@ export function CtaBand() {
     <section className="relative overflow-hidden">
       <span
         aria-hidden="true"
-        className="halo left-1/4 top-0 h-[30rem] w-[30rem] bg-[#f5a524]/10"
+        className="halo left-1/4 top-0 h-[30rem] w-[30rem] bg-white/25/10"
       />
       <span
         aria-hidden="true"
-        className="halo bottom-0 right-1/4 h-[30rem] w-[30rem] bg-[#ff6b4a]/10"
+        className="halo bottom-0 right-1/4 h-[30rem] w-[30rem] bg-white/5"
       />
 
       <div className="section relative z-10 mx-auto max-w-6xl px-4 text-center sm:px-6 lg:px-8">
@@ -30,7 +30,7 @@ export function CtaBand() {
         <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/commander"
-            className="btn-pill bg-white px-8 py-4 font-semibold text-[#0c1128]"
+            className="btn-pill bg-accent px-8 py-4 font-semibold text-accent-ink"
           >
             Demarrer un projet
           </Link>

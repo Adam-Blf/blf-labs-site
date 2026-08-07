@@ -50,7 +50,7 @@ export function ReferencesSection({ compact = false }: { compact?: boolean }) {
                       quand on la designe. */}
                   <span
                     aria-hidden="true"
-                    className="absolute inset-0 bg-gradient-to-t from-[#0c1128] via-[#0c1128]/30 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-40"
+                    className="absolute inset-0 bg-gradient-to-t from-[#0b0b0c] via-[#0b0b0c]/30 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-40"
                   />
                 </div>
 
@@ -59,7 +59,7 @@ export function ReferencesSection({ compact = false }: { compact?: boolean }) {
                     <h3 className="title text-2xl sm:text-3xl">
                       {reference.title}
                     </h3>
-                    <span className="text-sm text-[#f5a524] transition-transform duration-300 group-hover:translate-x-1">
+                    <span className="text-sm text-muted-strong transition-transform duration-300 group-hover:translate-x-1">
                       Voir le site &rarr;
                     </span>
                   </div>
@@ -83,7 +83,7 @@ export function ReferencesSection({ compact = false }: { compact?: boolean }) {
                     >
                       <span
                         aria-hidden="true"
-                        className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-[#f5a524]"
+                        className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-white/25"
                       />
                       <span>{fact}</span>
                     </li>

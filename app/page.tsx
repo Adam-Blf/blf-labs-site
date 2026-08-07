@@ -59,7 +59,7 @@ export default function Home() {
                     <p className="font-light text-muted">{card.body}</p>
                     <span
                       aria-hidden="true"
-                      className="mt-6 inline-block text-xl text-[#f5a524] transition-transform duration-300 group-hover:translate-x-1"
+                      className="mt-6 inline-block text-xl text-muted-strong transition-transform duration-300 group-hover:translate-x-1"
                     >
                       &rarr;
                     </span>

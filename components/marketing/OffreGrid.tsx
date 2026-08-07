@@ -47,7 +47,7 @@ export function OffreGrid() {
                 {/* Quart de disque colore, dans l'angle de la carte. */}
                 <span
                   aria-hidden="true"
-                  className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-gradient-to-br from-[#f5a524]/20 to-[#ff6b4a]/20 blur-2xl transition-opacity duration-500 group-hover:opacity-80"
+                  className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-gradient-to-br from-white/10 to-transparent blur-2xl transition-opacity duration-500 group-hover:opacity-80"
                 />
 
                 <div className="relative z-10">

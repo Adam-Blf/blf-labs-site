@@ -1,64 +1,59 @@
 /*
-  Direction artistique : agence numerique premium, fond nuit et accents neon.
+  Direction artistique : monochrome, une seule couleur de mise en avant.
 
-  Reprend la specification fournie par Adam le 2026-08-07 : fond bleu nuit
-  profond, texte blanc, gris de Tailwind pour les niveaux secondaires, deux
-  accents neon (bleu et violet) utilises surtout en degrade, et des surfaces de
-  verre translucide bordees de blanc a faible opacite.
+  Etablie le 2026-08-07 a partir du logo, et non inventee. Le logo BLF Lab's est
+  un pave noir NEUTRE (aucune trace de bleu) dont le seul element colore est la
+  fiole turquoise. Le site applique exactement la meme economie :
 
-  Le site est nativement sombre : il n'y a donc qu'un seul jeu de valeurs, et la
-  bascule de theme a ete retiree de l'en-tete.
+    - toute l'interface est en noir, blanc et gris ;
+    - une seule couleur existe, le turquoise du logo ;
+    - elle ne sert QUE pour l'action et le focus. Jamais pour une puce, une
+      fleche, un filet, un halo ou un degrade decoratif.
 
-  Contrastes verifies sur fond #0c1128 : blanc 17,8:1, gris 300 11,4:1,
-  gris 400 7,3:1. Le gris 600 (#4b5563) tombe a 2,6:1 : il est donc reserve aux
-  elements decoratifs et aux separateurs, jamais a du texte a lire.
+  C'est ce dernier point qui compte : la version precedente employait le
+  turquoise partout, ce qui le rendait envahissant. Une couleur unique n'a de
+  force que si elle est rare.
+
+  Contrastes sur fond #0b0b0c : blanc casse 18,1:1, gris clair 12,4:1,
+  gris 8,9:1, turquoise 11,2:1. Tous largement au-dessus du seuil AA.
 */
 
 .dir-labs {
-  --paper: #0c1128;
-  --ink: #ffffff;
-  /* Gris 400 de Tailwind : le plus fonce encore lisible en corps de texte. */
-  --muted: #9ca3af;
-  --muted-strong: #d1d5db;
-  /* Decoratif seulement, contraste insuffisant pour du texte. */
-  --faint: #4b5563;
+  /* Noir neutre, tire du pave du logo. Pas #000000 : le noir pur supprime toute
+     profondeur entre les surfaces et bave sur les dalles OLED. */
+  --paper: #0b0b0c;
+  --ink: #f4f4f5;
+  --muted: #9b9ba3;
+  --muted-strong: #d2d2d8;
+  --faint: #4a4a52;
 
-  /*
-    Accents chauds, et non le duo bleu neon / violet neon de la specification
-    d'origine. Motif : ce degrade bleu vers violet est devenu la signature
-    visuelle des produits d'intelligence artificielle, au point qu'un site qui
-    l'emploie se lit immediatement comme un gabarit. L'ambre et le corail
-    tiennent le meme role de contraste sur fond nuit sans porter cette
-    connotation.
-    Les noms de variables restent inchanges pour ne pas casser les composants.
-  */
-  --neon-blue: #f5a524;
-  --neon-purple: #ff6b4a;
+  /* L'unique couleur du site, reprise de la fiole du logo. */
+  --accent: #3ce68f;
+  --accent-ink: #04140b;
 
-  /* Surfaces de verre : un blanc tres faiblement opaque sur le fond nuit. */
-  --surface: rgba(255, 255, 255, 0.05);
-  --surface-strong: rgba(255, 255, 255, 0.08);
-  --line: rgba(255, 255, 255, 0.1);
-  --line-strong: rgba(255, 255, 255, 0.2);
+  /* Aucune seconde couleur : ce qui demandait un "appui" colore passe au blanc
+     ou au gris. Conserve pour ne pas casser les composants existants. */
+  --support: #f4f4f5;
+  --support-ink: #0b0b0c;
 
-  --accent: var(--neon-blue);
-  --accent-ink: #04121a;
-  --support: var(--neon-purple);
-  --support-ink: #ffffff;
+  --surface: rgba(255, 255, 255, 0.035);
+  --surface-strong: rgba(255, 255, 255, 0.07);
+  --line: rgba(255, 255, 255, 0.09);
+  --line-strong: rgba(255, 255, 255, 0.18);
 
-  --radius: 24px;
-  --radius-sm: 16px;
+  --radius: 18px;
+  --radius-sm: 12px;
   --radius-pill: 999px;
   --border-w: 1px;
   --shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.9);
   --shadow-sm: 0 12px 30px -18px rgba(0, 0, 0, 0.9);
-  --glow: 0 0 20px rgba(255, 255, 255, 0.2);
+  --glow: 0 0 0 1px rgba(255, 255, 255, 0.12);
 
   --font-title: var(--font-outfit);
   --font-text: var(--font-outfit);
   --title-transform: none;
-  --title-weight: 900;
-  --title-tracking: -0.045em;
-  --title-leading: 1.1;
-  --section-py: 8rem;
+  --title-weight: 800;
+  --title-tracking: -0.04em;
+  --title-leading: 1.08;
+  --section-py: 7rem;
 }
