@@ -7,8 +7,7 @@ import { useEffect, useState } from "react";
  *
  * Les pictogrammes sont dessines ici en SVG inline plutot qu'importes d'une
  * banque d'icones : un PNG servi par un CDN violerait la regle d'assets locaux
- * et ne suivrait pas la couleur du theme. Deux formes geometriques suffisent et
- * collent aux traits epais de la direction artistique.
+ * et ne suivrait pas la couleur du theme.
  */
 export function ThemeToggle() {
   const [dark, setDark] = useState(false);
@@ -37,7 +36,7 @@ export function ThemeToggle() {
       onClick={toggle}
       aria-label={dark ? "Passer en theme clair" : "Passer en theme sombre"}
       aria-pressed={mounted ? dark : undefined}
-      className="flex h-11 w-11 items-center justify-center border-[3px] border-line bg-surface text-ink transition-transform hover:translate-x-[2px] hover:translate-y-[2px]"
+      className="blk-sm flex h-11 w-11 items-center justify-center bg-surface text-ink transition-transform hover:-translate-y-[2px]"
     >
       <svg
         viewBox="0 0 24 24"

@@ -3,13 +3,13 @@ import { SITE, SIRET_PRETTY } from "@/lib/site";
 
 export function Hero() {
   return (
-    <section className="border-b-[3px] border-line">
-      <div className="mx-auto max-w-6xl px-5 py-16 md:py-24">
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
+    <section className="rule-b">
+      <div className="section mx-auto max-w-6xl px-5">
+        <p className="mono text-xs uppercase tracking-[0.2em] text-muted">
           Studio de developpement - Ile-de-France
         </p>
 
-        <h1 className="mt-6 font-display text-5xl font-extrabold uppercase leading-[0.95] tracking-tight md:text-7xl lg:text-8xl">
+        <h1 className="title mt-6 text-5xl md:text-7xl lg:text-8xl">
           On transforme
           <br />
           votre besoin
@@ -33,7 +33,7 @@ export function Hero() {
           </ButtonLink>
         </div>
 
-        <dl className="tabular mt-14 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-4 border-t-[3px] border-line pt-6 font-mono text-xs sm:grid-cols-4">
+        <dl className="tabular rule-t mono mt-14 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-4 pt-6 text-xs sm:grid-cols-4">
           <div>
             <dt className="text-muted">SIRET</dt>
             <dd className="mt-1 font-bold">{SIRET_PRETTY}</dd>

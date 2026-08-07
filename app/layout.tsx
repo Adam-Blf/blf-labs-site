@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { display, mono, sans } from "./fonts";
+import { display, mono, poster, sans, serif } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -26,15 +26,27 @@ try {
 } catch (e) {}
 `;
 
+// Direction artistique active. Tant que le choix n'est pas fait, le site tourne
+// sur "brut" ; les huit candidates sont comparables sur /design-preview.
+const DIRECTION = "dir-brut";
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const fonts = [
+    display.variable,
+    sans.variable,
+    mono.variable,
+    serif.variable,
+    poster.variable,
+  ].join(" ");
+
   return (
     <html
       lang="fr"
-      className={`${display.variable} ${sans.variable} ${mono.variable} pal-navy h-full antialiased`}
+      className={`${fonts} ${DIRECTION} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

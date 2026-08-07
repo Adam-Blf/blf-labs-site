@@ -1,8 +1,11 @@
 import type { ReactNode } from "react";
 
 /**
- * Bloc neobrutaliste : trait epais, ombre dure decalee, aucun degrade.
- * `tone` change le fond, jamais l'epaisseur du trait : c'est le trait qui fait
+ * Bloc de contenu. Trait, rayon et ombre viennent de la direction artistique
+ * active : la meme carte devient un pave brutaliste, une carte bento arrondie ou
+ * un simple filet editorial sans changer une ligne ici.
+ *
+ * `tone` change le fond, jamais la structure : c'est la structure qui fait
  * l'unite visuelle du site.
  */
 export function Card({
@@ -21,11 +24,5 @@ export function Card({
     support: "bg-support text-support-ink",
   } as const;
 
-  return (
-    <div
-      className={`border-[3px] border-line shadow-[6px_6px_0_0_var(--line)] ${tones[tone]} ${className}`}
-    >
-      {children}
-    </div>
-  );
+  return <div className={`blk ${tones[tone]} ${className}`}>{children}</div>;
 }

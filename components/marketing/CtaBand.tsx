@@ -4,10 +4,8 @@ import { SITE } from "@/lib/site";
 export function CtaBand() {
   return (
     <section className="bg-accent text-accent-ink">
-      <div className="mx-auto max-w-6xl px-5 py-16 md:py-20">
-        <h2 className="font-display text-3xl font-extrabold uppercase leading-tight tracking-tight md:text-5xl">
-          Un projet en tete ?
-        </h2>
+      <div className="section mx-auto max-w-6xl px-5">
+        <h2 className="title text-3xl md:text-5xl">Un projet en tete ?</h2>
         <p className="mt-4 max-w-xl text-lg">
           Decrivez-le en cinq minutes. Vous recevez une reponse avec une
           estimation de budget et de delai, ou une orientation ailleurs si ce
@@ -20,7 +18,7 @@ export function CtaBand() {
           </ButtonLink>
           <a
             href={`mailto:${SITE.email}`}
-            className="font-mono text-sm underline underline-offset-4"
+            className="mono text-sm underline underline-offset-4"
           >
             ou ecrire a {SITE.email}
           </a>

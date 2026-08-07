@@ -23,21 +23,17 @@ const ETAPES = [
 
 export function Methode() {
   return (
-    <section id="methode" className="border-b-[3px] border-line bg-surface">
-      <div className="mx-auto max-w-6xl px-5 py-16 md:py-20">
-        <h2 className="font-display text-3xl font-extrabold uppercase tracking-tight md:text-5xl">
-          Comment ca se passe
-        </h2>
+    <section id="methode" className="rule-b bg-surface">
+      <div className="section mx-auto max-w-6xl px-5">
+        <h2 className="title text-3xl md:text-5xl">Comment ca se passe</h2>
 
-        <ol className="mt-10 grid gap-px border-[3px] border-line bg-line md:grid-cols-4">
+        <ol className="mt-10 grid gap-6 md:grid-cols-4">
           {ETAPES.map((etape) => (
-            <li key={etape.index} className="bg-paper p-6">
-              <span className="tabular font-mono text-sm font-bold text-support">
+            <li key={etape.index} className="blk bg-paper p-6">
+              <span className="tabular mono text-sm font-bold text-support">
                 {etape.index}
               </span>
-              <h3 className="mt-3 font-display text-xl font-extrabold uppercase tracking-tight">
-                {etape.title}
-              </h3>
+              <h3 className="title mt-3 text-xl">{etape.title}</h3>
               <p className="mt-3 text-sm leading-relaxed text-muted">
                 {etape.body}
               </p>

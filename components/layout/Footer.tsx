@@ -10,7 +10,7 @@ const LEGAL = [
 
 export function Footer() {
   return (
-    <footer className="mt-auto border-t-[3px] border-line bg-surface">
+    <footer className="rule-t mt-auto bg-surface">
       <div className="mx-auto grid max-w-6xl gap-8 px-5 py-12 md:grid-cols-3">
         <div>
           <Wordmark />
@@ -21,12 +21,12 @@ export function Footer() {
         </div>
 
         <div>
-          <h2 className="font-mono text-xs uppercase tracking-widest text-muted">
+          <h2 className="mono text-xs uppercase tracking-widest text-muted">
             Contact
           </h2>
           <a
             href={`mailto:${SITE.email}`}
-            className="mt-3 inline-block font-display text-lg font-bold underline-offset-4 hover:underline"
+            className="title mt-3 inline-block text-lg underline-offset-4 hover:underline"
           >
             {SITE.email}
           </a>
@@ -36,7 +36,7 @@ export function Footer() {
         </div>
 
         <div>
-          <h2 className="font-mono text-xs uppercase tracking-widest text-muted">
+          <h2 className="mono text-xs uppercase tracking-widest text-muted">
             Informations
           </h2>
           <ul className="mt-3 space-y-1">
@@ -54,8 +54,8 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="border-t-[3px] border-line px-5 py-4">
-        <p className="tabular mx-auto max-w-6xl font-mono text-xs text-muted">
+      <div className="rule-t px-5 py-4">
+        <p className="tabular mono mx-auto max-w-6xl text-xs text-muted">
           {SITE.legalMention} - SIRET {SIRET_PRETTY} - APE {SITE.ape}
         </p>
       </div>

@@ -9,9 +9,15 @@ const NAV = [
   { href: "/#methode", label: "Methode" },
 ];
 
-export function Header() {
+/**
+ * `sticky` est desactive dans le comparateur de directions : deux barres
+ * collees en haut de page se superposeraient.
+ */
+export function Header({ sticky = true }: { sticky?: boolean }) {
   return (
-    <header className="sticky top-0 z-50 border-b-[3px] border-line bg-paper">
+    <header
+      className={`${sticky ? "sticky top-0 z-50" : ""} rule-b bg-paper`}
+    >
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4">
         <Link href="/" className="shrink-0">
           <Wordmark />
@@ -23,7 +29,7 @@ export function Header() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="font-mono text-sm uppercase tracking-wide underline-offset-8 hover:underline"
+                  className="mono text-sm uppercase tracking-wide underline-offset-8 hover:underline"
                 >
                   {item.label}
                 </Link>

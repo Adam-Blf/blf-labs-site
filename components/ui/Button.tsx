@@ -3,10 +3,17 @@ import type { ComponentProps, ReactNode } from "react";
 
 type Variant = "accent" | "support" | "ghost";
 
+/**
+ * Le style du bouton (trait, rayon, ombre) vient entierement de la direction
+ * artistique active via `blk-sm`. Seule la couleur de fond est choisie ici.
+ *
+ * Le leger soulevement au survol est volontairement neutre : un effet
+ * "d'enfoncement" ne fonctionne qu'avec une ombre dure et paraitrait casse sur
+ * les directions sans ombre.
+ */
 const BASE =
-  "inline-flex items-center justify-center gap-2 border-[3px] border-line px-6 py-3 font-display text-base font-bold uppercase tracking-wide transition-transform duration-150 min-h-[44px] " +
-  // Ombre dure decalee, elle se resorbe au survol : le bouton "s'enfonce".
-  "shadow-[5px_5px_0_0_var(--line)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0_0_var(--line)] active:translate-x-[5px] active:translate-y-[5px] active:shadow-none";
+  "blk-sm title inline-flex min-h-[44px] items-center justify-center gap-2 px-6 py-3 text-base " +
+  "transition-transform duration-150 hover:-translate-y-[2px] active:translate-y-0";
 
 // Le texte pose sur un aplat utilise TOUJOURS l'encre invariante de cet aplat,
 // jamais var(--ink) : c'est ce qui evite le quasi-blanc sur jaune en sombre.

@@ -5,11 +5,16 @@ import localFont from "next/font/local";
  * Aucun appel a un CDN : le site doit s'afficher a l'identique sur un poste
  * sans acces internet sortant.
  *
- * Choix typographique : aucune police "par defaut" (pas d'Inter, Roboto, Arial),
- * et ni Anton (deja la signature de Bacchana) ni IBM Plex / JetBrains Mono.
+ * Cinq familles sont chargees le temps de la comparaison des directions
+ * artistiques. Une fois la direction choisie, celles qui ne servent plus sont
+ * retirees d'ici ET de scripts/fetch_fonts.py : garder cinq polices en
+ * production couterait environ 150 Ko pour rien.
+ *
+ * Aucune police "par defaut" (ni Inter, ni Roboto, ni Arial), ni Anton (deja la
+ * signature de Bacchana), ni IBM Plex / JetBrains Mono.
  */
 
-// Titres : grotesque a fort caractere, axe de poids variable 400 -> 800.
+// Grotesque a fort caractere, axe de poids variable 400 -> 800.
 export const display = localFont({
   src: [
     {
@@ -18,7 +23,7 @@ export const display = localFont({
       style: "normal",
     },
   ],
-  variable: "--font-display",
+  variable: "--font-bricolage",
   display: "swap",
   fallback: ["Segoe UI", "system-ui", "sans-serif"],
 });
@@ -32,7 +37,7 @@ export const sans = localFont({
       style: "normal",
     },
   ],
-  variable: "--font-sans",
+  variable: "--font-grotesk",
   display: "swap",
   fallback: ["Segoe UI", "system-ui", "sans-serif"],
 });
@@ -54,4 +59,32 @@ export const mono = localFont({
   variable: "--font-mono",
   display: "swap",
   fallback: ["Consolas", "monospace"],
+});
+
+// Serif d'affichage pour les directions editoriales.
+export const serif = localFont({
+  src: [
+    {
+      path: "../public/fonts/instrument-serif-400-latin.woff2",
+      weight: "400",
+      style: "normal",
+    },
+  ],
+  variable: "--font-serif",
+  display: "swap",
+  fallback: ["Georgia", "serif"],
+});
+
+// Grotesque affichiste, tres grasse et tres large.
+export const poster = localFont({
+  src: [
+    {
+      path: "../public/fonts/archivo-black-400-latin.woff2",
+      weight: "400",
+      style: "normal",
+    },
+  ],
+  variable: "--font-poster",
+  display: "swap",
+  fallback: ["Impact", "sans-serif"],
 });

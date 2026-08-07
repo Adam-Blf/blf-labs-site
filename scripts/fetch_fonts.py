@@ -38,6 +38,18 @@ FONTS: dict[str, str] = {
         "https://fonts.googleapis.com/css2"
         "?family=Space+Mono:wght@400;700&display=swap"
     ),
+    # Serif d'affichage, pour les directions editoriales et haut de gamme.
+    # Uniquement le romain : en demandant aussi l'italique, les deux coupes
+    # portent le meme poids 400 et le nom de fichier ne les distingue plus.
+    "instrument-serif": (
+        "https://fonts.googleapis.com/css2"
+        "?family=Instrument+Serif&display=swap"
+    ),
+    # Grotesque tres large et tres grasse, pour les directions affichiste.
+    "archivo-black": (
+        "https://fonts.googleapis.com/css2"
+        "?family=Archivo+Black&display=swap"
+    ),
 }
 
 OUT_DIR = Path(__file__).resolve().parent.parent / "public" / "fonts"
