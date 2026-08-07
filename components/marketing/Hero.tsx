@@ -34,7 +34,7 @@ export function Hero() {
 
         <p className="mt-10 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl">
           Sites, applications web et mobiles, outils data et IA. Un seul
-          interlocuteur du cadrage a la mise en ligne, et le code, le nom de
+          interlocuteur du cadrage à la mise en ligne, et le code, le nom de
           domaine et les accès livrés à votre nom.
         </p>
 
