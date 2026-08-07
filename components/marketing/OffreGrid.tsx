@@ -8,17 +8,11 @@ import {
 import { OFFRES, type OffreSlug } from "@/content/offres";
 
 /**
- * Les quatre familles de prestation.
+ * Services, en grille de quatre cartes de verre.
  *
- * Reecrit apres audit : la version precedente etait une grille de quatre cartes
- * identiques, deux par deux, chacune avec son icone, son titre et sa phrase.
- * C'est le motif "feature cards" le plus reconnaissable du web, celui qui fait
- * qu'une page se lit comme un gabarit.
- *
- * Ici, chaque offre occupe une ligne entiere, avec son numero pose dans la
- * marge comme sur un plan technique. Les largeurs de colonnes sont volontairement
- * inegales et le trait ne separe que les lignes, jamais les colonnes : l'oeil
- * descend au lieu de balayer une grille.
+ * Le pictogramme est pose dans un quart de disque flou, en angle de carte,
+ * conformement a la specification. Le halo est purement decoratif, donc masque
+ * aux lecteurs d'ecran.
  */
 const ICONS: Record<OffreSlug, (props: { className?: string }) => React.ReactNode> = {
   "sites-web": IconSitesWeb,
@@ -29,57 +23,65 @@ const ICONS: Record<OffreSlug, (props: { className?: string }) => React.ReactNod
 
 export function OffreGrid() {
   return (
-    <section id="offre" className="rule-b">
-      <div className="section mx-auto max-w-6xl px-5">
-        <div className="flex items-baseline gap-6">
-          <span className="marginalia text-sm">01</span>
-          <h2 className="title text-3xl md:text-5xl">Ce qu&rsquo;on fabrique</h2>
-        </div>
+    <section id="offre" className="relative">
+      <div className="section mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <h2 className="title max-w-3xl text-4xl sm:text-5xl lg:text-6xl">
+          Des services concus pour{" "}
+          <span className="grad-text">votre activite</span>
+        </h2>
+        <p className="mt-6 max-w-2xl text-lg font-light text-muted">
+          Quatre familles de projets. Si le votre tient dans plusieurs cases, ou
+          dans aucune, c&rsquo;est une conversation, pas un probleme.
+        </p>
 
-        <ul className="mt-16">
-          {OFFRES.map((offre, index) => {
+        <div className="mt-16 grid gap-6 md:grid-cols-2">
+          {OFFRES.map((offre) => {
             const Icon = ICONS[offre.slug];
 
             return (
-                <li key={offre.slug} className="rule-t">
-                  <Link
-                    href={`/offre/${offre.slug}`}
-                    className="group grid gap-x-8 gap-y-4 py-10 md:grid-cols-[4rem_1fr] lg:grid-cols-[4rem_minmax(0,22rem)_1fr]"
-                  >
-                    {/* Marge : numero et pictogramme, hors du flux de lecture. */}
-                    <div className="flex items-start gap-4 md:flex-col md:gap-6">
-                      <span className="marginalia tabular text-sm">
-                        {offre.index}
-                      </span>
-                      <Icon className="h-7 w-7 text-muted transition-colors group-hover:text-accent" />
-                    </div>
+              <Link
+                key={offre.slug}
+                href={`/offre/${offre.slug}`}
+                className="glass group relative overflow-hidden p-8 transition-transform duration-300 hover:scale-[1.02] sm:p-10"
+              >
+                {/* Quart de disque colore, dans l'angle de la carte. */}
+                <span
+                  aria-hidden="true"
+                  className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-gradient-to-br from-[#f5a524]/20 to-[#ff6b4a]/20 blur-2xl transition-opacity duration-500 group-hover:opacity-80"
+                />
 
-                    <h3 className="title text-3xl md:text-4xl lg:text-[2.75rem]">
-                      {offre.title}
-                    </h3>
+                <div className="relative z-10">
+                  <span className="glass-sm inline-flex h-14 w-14 items-center justify-center">
+                    <Icon className="h-7 w-7 text-ink" />
+                  </span>
 
-                    <div className="lg:pt-2">
-                      <p className="max-w-xl text-lg leading-relaxed text-muted">
-                        {offre.pitch}
-                      </p>
+                  <h3 className="title mt-8 text-2xl sm:text-3xl">
+                    {offre.title}
+                  </h3>
 
-                      <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2">
-                        {offre.stack.map((tool) => (
-                          <li key={tool} className="mono text-xs text-muted">
-                            {tool}
-                          </li>
-                        ))}
-                      </ul>
+                  <p className="mt-4 font-light leading-relaxed text-muted">
+                    {offre.pitch}
+                  </p>
 
-                      <span className="mono mt-6 inline-block border-b border-current pb-1 text-xs uppercase transition-colors group-hover:text-accent">
-                        Voir le detail
-                      </span>
-                    </div>
-                  </Link>
-                </li>
+                  <ul className="mt-8 flex flex-wrap gap-2">
+                    {offre.stack.map((tool) => (
+                      <li
+                        key={tool}
+                        className="rounded-full border border-line px-3 py-1 text-xs font-medium text-muted"
+                      >
+                        {tool}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <span className="mono mt-8 inline-block text-xs text-muted transition-colors group-hover:text-ink">
+                    En savoir plus
+                  </span>
+                </div>
+              </Link>
             );
           })}
-        </ul>
+        </div>
       </div>
     </section>
   );

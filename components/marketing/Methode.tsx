@@ -1,15 +1,3 @@
-/**
- * Deroulement d'un projet.
- *
- * Reecrit apres audit : quatre cartes alignees et numerotees cote a cote, c'est
- * le motif "process steps" que porte toute page d'agence. Remplace par une
- * chronologie verticale, ou le filet continu materialise le fil du projet et ou
- * les blocs sont volontairement decales.
- *
- * Le texte a ete resserre au passage : les formules de brochure ("vous ne
- * decouvrez jamais le resultat a la fin") ont ete remplacees par ce qui se
- * passe reellement.
- */
 const ETAPES = [
   {
     index: "01",
@@ -33,40 +21,41 @@ const ETAPES = [
   },
 ];
 
+/**
+ * Deroulement d'un projet, en quatre cartes de verre.
+ * Le grand numero en filigrane sert de repere visuel et n'est pas lu par les
+ * lecteurs d'ecran, la liste ordonnee portant deja l'information de rang.
+ */
 export function Methode() {
   return (
-    <section id="methode" className="rule-b bg-surface">
-      <div className="section mx-auto max-w-6xl px-5">
-        <div className="flex items-baseline gap-6">
-          <span className="marginalia text-sm">02</span>
-          <h2 className="title text-3xl md:text-5xl">Comment ca se passe</h2>
-        </div>
+    <section id="methode" className="relative">
+      <span
+        aria-hidden="true"
+        className="halo left-1/2 top-1/3 h-[32rem] w-[32rem] -translate-x-1/2 bg-[#ff6b4a]/5"
+      />
 
-        {/* Le filet vertical est purement decoratif, il est donc masque aux
-            lecteurs d'ecran, qui recoivent deja une liste ordonnee. */}
-        <ol className="relative mt-16 max-w-3xl md:ml-16">
-          <span
-            aria-hidden="true"
-            className="absolute left-[7px] top-2 bottom-2 w-px bg-line md:left-[-2.5rem]"
-          />
+      <div className="section relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <h2 className="title max-w-3xl text-4xl sm:text-5xl lg:text-6xl">
+          Comment <span className="grad-text">ca se passe</span>
+        </h2>
 
+        <ol className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {ETAPES.map((etape) => (
-              <li key={etape.index} className="relative pb-14 pl-10 last:pb-0 md:pl-0">
-                <span
-                  aria-hidden="true"
-                  className="absolute left-0 top-[10px] block h-[15px] w-[15px] rounded-full border border-line bg-paper md:left-[-3rem]"
-                />
-                <span
-                  aria-hidden="true"
-                  className="absolute left-[4px] top-[14px] block h-[7px] w-[7px] rounded-full bg-accent md:left-[-2.75rem]"
-                />
+            <li key={etape.index} className="glass relative overflow-hidden p-8">
+              <span
+                aria-hidden="true"
+                className="tabular absolute -right-2 -top-6 text-8xl font-black text-white/5"
+              >
+                {etape.index}
+              </span>
 
-                <span className="marginalia tabular text-xs">{etape.index}</span>
-                <h3 className="title mt-2 text-2xl md:text-3xl">{etape.title}</h3>
-                <p className="mt-3 max-w-xl leading-relaxed text-muted">
+              <div className="relative z-10">
+                <h3 className="title text-xl sm:text-2xl">{etape.title}</h3>
+                <p className="mt-4 text-sm font-light leading-relaxed text-muted">
                   {etape.body}
                 </p>
-              </li>
+              </div>
+            </li>
           ))}
         </ol>
       </div>

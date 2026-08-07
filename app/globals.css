@@ -2,85 +2,73 @@
 @import "./themes.css";
 
 /*
-  Les composants ne codent en dur ni epaisseur de trait, ni rayon, ni casse de
-  titre : ils utilisent les classes ci-dessous, qui lisent les jetons de la
-  direction artistique (voir themes.css).
+  Utilitaires de la direction "agence premium".
+  Les composants n'ecrivent jamais une couleur ou un flou en dur : ils composent
+  ces classes, qui lisent les jetons de themes.css.
 */
-
-@custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
   --color-paper: var(--paper);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
+  --color-muted-strong: var(--muted-strong);
+  --color-faint: var(--faint);
   --color-surface: var(--surface);
   --color-line: var(--line);
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-support: var(--support);
   --color-support-ink: var(--support-ink);
+  --color-neon-blue: var(--neon-blue);
+  --color-neon-purple: var(--neon-purple);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-text), system-ui, sans-serif;
-  position: relative;
+  /* Une seule barre de defilement : les halos debordent volontairement. */
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(245, 165, 36, 0.3);
 }
 
 /*
-  Grain de papier.
-
-  Genere par un filtre SVG en ligne, sans aucun fichier image : rien a
-  telecharger, rien qui parte vers un serveur tiers, et le rendu s'adapte a
-  n'importe quelle taille d'ecran. C'est ce qui empeche la page d'avoir la
-  surface parfaitement lisse et morte des gabarits.
-
-  `pointer-events: none` est indispensable : sans lui, cette couche fixe
-  couvrirait toute la page et intercepterait les clics.
+  Verre depoli. `backdrop-filter` est ce qui coute le plus cher a l'affichage :
+  il est reserve aux surfaces reellement superposees a du contenu (barre de
+  navigation, cartes), jamais applique a une section entiere.
 */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  opacity: var(--grain-opacity);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* Le contenu passe au-dessus du grain. */
-body > * {
-  position: relative;
-  z-index: 2;
-}
-
-/* Bloc : carte, encadre, champ. */
-.blk {
-  border-width: var(--border-w);
-  border-style: solid;
-  border-color: var(--line);
+.glass {
+  background: var(--surface);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: var(--border-w) solid var(--line);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
 }
 
-.blk-sm {
-  border-width: var(--border-w);
-  border-style: solid;
-  border-color: var(--line);
+.glass-sm {
+  background: var(--surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: var(--border-w) solid var(--line);
   border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-sm);
 }
 
+/* Conserve pour les composants qui n'ont pas besoin de flou. */
+.blk,
+.blk-sm,
 .blk-flat {
-  border-width: var(--border-w);
-  border-style: solid;
-  border-color: var(--line);
+  background: var(--surface);
+  border: var(--border-w) solid var(--line);
   border-radius: var(--radius-sm);
 }
 
-/* Titres : police, casse, graisse, chasse et interlignage viennent tous de la
-   direction active. */
 .title {
   font-family: var(--font-title), system-ui, sans-serif;
   text-transform: var(--title-transform);
@@ -90,27 +78,29 @@ body > * {
 }
 
 /*
-  Etiquettes techniques : petites capitales espacees.
-  Il n'y a volontairement aucune police monospace dans le projet - celle
-  utilisee au depart portait un zero pointe, signature trop reconnaissable.
+  Texte en degrade bleu vers violet.
+  `background-clip: text` sur du texte transparent. Le repli en couleur pleine
+  est indispensable : sans lui, un navigateur qui ne gere pas la propriete
+  afficherait du texte invisible.
 */
-.mono {
-  font-family: var(--font-text), system-ui, sans-serif;
-  letter-spacing: 0.1em;
-  font-weight: 600;
+.grad-text {
+  color: var(--neon-blue);
 }
 
-/*
-  Numero de section, pose dans la marge comme sur un plan technique.
-  C'est l'element signature de la direction : on le retrouve sur chaque
-  section, chaque offre et chaque etape de la methode.
-*/
-.marginalia {
-  font-family: var(--font-text), system-ui, sans-serif;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.14em;
-  font-weight: 600;
-  color: var(--accent);
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .grad-text {
+    background-image: linear-gradient(100deg, #f5a524, #ff6b4a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+/* Etiquettes : petites capitales tres espacees. */
+.mono {
+  letter-spacing: 0.18em;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .section {
@@ -119,35 +109,85 @@ body > * {
 }
 
 .rule-b {
-  border-bottom-width: var(--border-w);
-  border-bottom-style: solid;
-  border-bottom-color: var(--line);
+  border-bottom: var(--border-w) solid var(--line);
 }
 
 .rule-t {
-  border-top-width: var(--border-w);
-  border-top-style: solid;
-  border-top-color: var(--line);
+  border-top: var(--border-w) solid var(--line);
 }
 
-/* Les chiffres ne doivent pas danser d'une ligne a l'autre. */
 .tabular {
   font-variant-numeric: tabular-nums;
 }
 
-/* Anneau de focus visible, exigence a11y. */
+/* Bouton principal : pastille blanche, halo diffus, reaction au clic. */
+.btn-pill {
+  border-radius: var(--radius-pill);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.btn-pill:hover {
+  transform: scale(1.05);
+  box-shadow: var(--glow);
+}
+
+.btn-pill:active {
+  transform: scale(0.95);
+}
+
+/* Halo colore de fond, pose derriere une section. */
+.halo {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(120px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/*
+  Lien de navigation : le trait se deploie de la gauche vers la droite.
+  Anime sur `transform` et non sur `width`, pour rester fluide.
+*/
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
 :where(a, button, input, textarea, select, [tabindex]):focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--neon-blue);
   outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }

@@ -3,14 +3,14 @@
   <!--
     Logo BLF Lab's, version pour fond sombre.
 
-    Identique a logo.svg, mais l'encre passe en ivoire et le turquoise en
-    turquoise clair, faute de quoi le liquide de la fiole et l'apostrophe
+    Identique a logo.svg, mais l'encre passe en ivoire et le vermillon en
+    vermillon clair, faute de quoi le liquide de la fiole et l'apostrophe
     disparaissent sur un fond noir.
 
     Le pave etant evide, "BLF" laisse voir le fond sombre : c'est voulu.
   -->
 
-  <path fill-rule="evenodd" fill="#eceef2" d="
+  <path fill-rule="evenodd" fill="#f2ece1" d="
     M12 0H188A12 12 0 0 1 200 12V80A12 12 0 0 1 188 92H12A12 12 0 0 1 0 80V12A12 12 0 0 1 12 0Z
     M44 24H53V68H44Z
     M53 24H77V33H53Z
@@ -25,18 +25,18 @@
     M134 42H149V51H134Z
   "/>
 
-  <path fill="#eceef2" d="M48 108H54V138H48ZM54 132H64V138H54Z"/>
+  <path fill="#f2ece1" d="M48 108H54V138H48ZM54 132H64V138H54Z"/>
 
-  <path fill-rule="evenodd" fill="#eceef2" d="
+  <path fill-rule="evenodd" fill="#f2ece1" d="
     M80 108H86V113H80Z
     M83 111L94 138H72Z
     M83 122L88.5 133H77.5Z
   "/>
-  <path fill="#2dd4bf" d="M76.5 128H89.5L91.6 133H74.4Z"/>
+  <path fill="#e8552f" d="M76.5 128H89.5L91.6 133H74.4Z"/>
 
-  <path fill="#eceef2" d="M102 108H108V138H102ZM108 108H120V114H108ZM108 120H118V126H108ZM108 132H120V138H108ZM114 114H120V120H114ZM114 126H120V132H114Z"/>
+  <path fill="#f2ece1" d="M102 108H108V138H102ZM108 108H120V114H108ZM108 120H118V126H108ZM108 132H120V138H108ZM114 114H120V120H114ZM114 126H120V132H114Z"/>
 
-  <path fill="#2dd4bf" d="M124 108H130V121H124Z"/>
+  <path fill="#e8552f" d="M124 108H130V121H124Z"/>
 
-  <path fill="#eceef2" d="M134 108H152V114H134ZM134 114H140V120H134ZM134 120H152V126H134ZM146 126H152V132H146ZM134 132H152V138H134Z"/>
+  <path fill="#f2ece1" d="M134 108H152V114H134ZM134 114H140V120H134ZM134 120H152V126H134ZM146 126H152V132H146ZM134 132H152V138H134Z"/>
 </svg>

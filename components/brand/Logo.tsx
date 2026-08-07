@@ -72,7 +72,7 @@ export function Logo({
           />
           {/* Niveau de liquide : il fait la barre du A. Couleur d'appui, seul
               element colore du logo. */}
-          <path fill="var(--support)" d="M76.5 128H89.5L91.6 133H74.4Z" />
+          <path fill="var(--accent)" d="M76.5 128H89.5L91.6 133H74.4Z" />
 
           {/* B */}
           <path
@@ -81,7 +81,7 @@ export function Logo({
           />
 
           {/* Apostrophe */}
-          <path fill="var(--support)" d="M124 108H130V121H124Z" />
+          <path fill="var(--accent)" d="M124 108H130V121H124Z" />
 
           {/* S */}
           <path

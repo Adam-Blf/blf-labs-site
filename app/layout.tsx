@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { display, sans } from "./fonts";
+import { sans } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,34 +19,17 @@ export const metadata: Metadata = {
 };
 
 /**
- * Applique le theme avant le premier rendu pour eviter le flash de theme clair
- * chez un visiteur en sombre. Reste inline volontairement : un fichier separe
- * serait charge trop tard.
+ * Le site est nativement sombre : il n'y a plus qu'un seul jeu de couleurs, donc
+ * plus de script anti-flash ni de bascule de theme. C'est aussi un script de
+ * moins execute avant le premier rendu.
  */
-const themeBootstrap = `
-try {
-  var stored = localStorage.getItem('blf-theme');
-  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  if (stored === 'dark' || (!stored && prefersDark)) {
-    document.documentElement.classList.add('dark');
-  }
-} catch (e) {}
-`;
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="fr"
-      className={`${display.variable} ${sans.variable} dir-labs h-full antialiased`}
-      suppressHydrationWarning
-    >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
-      </head>
+    <html lang="fr" className={`${sans.variable} dir-labs h-full antialiased`}>
       <body className="flex min-h-full flex-col bg-paper text-ink">
         {children}
       </body>

@@ -30,18 +30,12 @@ UA = (
 # ordinaire sur les chiffres, mais plus caracterisee sur les lettres.
 #
 FONTS: dict[str, str] = {
-    # Titres : Bricolage Grotesque, variable. Dessin contraste et un peu
-    # irregulier, qui donne du caractere sans tomber dans la police d'affichage
-    # decorative.
-    "bricolage-grotesque": (
+    # Outfit, variable 300 -> 900. Police unique du site, titres et texte.
+    # Rapatriee en local : la specification l'appelait depuis Google Fonts, ce
+    # qui ferait partir une requete vers un tiers a chaque chargement de page.
+    "outfit": (
         "https://fonts.googleapis.com/css2"
-        "?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap"
-    ),
-    # Texte courant : Hanken Grotesk, variable. Tres lisible en petit corps,
-    # chiffres sans fioriture.
-    "hanken-grotesk": (
-        "https://fonts.googleapis.com/css2"
-        "?family=Hanken+Grotesk:wght@400..700&display=swap"
+        "?family=Outfit:wght@300..900&display=swap"
     ),
 }
 

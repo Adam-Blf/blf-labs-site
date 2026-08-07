@@ -2,46 +2,45 @@ import Link from "next/link";
 import { SITE } from "@/lib/site";
 
 /**
- * Bloc de fin.
- *
- * Reecrit apres audit : un bandeau de couleur pleine largeur avec titre centre
- * et bouton contrastant est le motif de cloture le plus courant du web. Ici,
- * pas d'aplat : l'adresse email est posee en tres grand et devient elle-meme
- * l'element graphique. C'est la signature de fin de page.
+ * Appel a l'action de fin de page : titre monumental et halos colores.
  */
 export function CtaBand() {
   return (
-    <section className="rule-b">
-      <div className="section mx-auto max-w-6xl px-5">
-        <div className="flex items-baseline gap-6">
-          <span className="marginalia text-sm">05</span>
-          <h2 className="title text-3xl md:text-5xl">Un projet en tete</h2>
-        </div>
+    <section className="relative overflow-hidden">
+      <span
+        aria-hidden="true"
+        className="halo left-1/4 top-0 h-[30rem] w-[30rem] bg-[#f5a524]/10"
+      />
+      <span
+        aria-hidden="true"
+        className="halo bottom-0 right-1/4 h-[30rem] w-[30rem] bg-[#ff6b4a]/10"
+      />
 
-        <p className="mt-8 max-w-xl text-lg leading-relaxed text-muted">
-          Decrivez-le, meme grossierement. Vous recevez une reponse avec une
-          estimation de budget et de delai, ou une orientation ailleurs si ce
-          n&rsquo;est pas pour nous.
+      <div className="section relative z-10 mx-auto max-w-6xl px-4 text-center sm:px-6 lg:px-8">
+        <h2 className="title mx-auto max-w-4xl text-5xl sm:text-6xl lg:text-7xl">
+          Construisons quelque chose{" "}
+          <span className="grad-text">qui vous appartient</span>
+        </h2>
+
+        <p className="mx-auto mt-8 max-w-xl text-lg font-light text-muted">
+          Decrivez votre projet, meme grossierement. Vous recevez une reponse
+          avec une estimation de budget et de delai.
         </p>
 
-        <div className="mt-14">
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/commander"
-            className="title inline-block text-4xl text-accent underline decoration-2 underline-offset-8 transition-colors hover:text-ink sm:text-6xl lg:text-7xl"
+            className="btn-pill bg-white px-8 py-4 font-semibold text-[#0c1128]"
           >
-            Passer commande
+            Demarrer un projet
           </Link>
-        </div>
-
-        <p className="mt-10 text-muted">
-          ou par email :{" "}
           <a
             href={`mailto:${SITE.email}`}
-            className="border-b border-current pb-1 transition-colors hover:text-accent"
+            className="btn-pill glass-sm px-8 py-4 font-medium"
           >
             {SITE.email}
           </a>
-        </p>
+        </div>
       </div>
     </section>
   );

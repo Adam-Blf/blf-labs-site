@@ -11,7 +11,7 @@
     Les lettres sont pleines et non decoupees : un evidement laisserait passer le
     fond de l'onglet du navigateur, qui varie et peut annuler le contraste.
   -->
-  <rect width="100" height="100" rx="22" fill="#5b5bd6"/>
+  <rect width="100" height="100" rx="22" fill="#d6401f"/>
   <g fill="#ffffff" transform="translate(-14.3 20.4) scale(0.643)">
     <path d="M44 24H53V68H44Z"/>
     <path d="M53 24H77V33H53Z"/>

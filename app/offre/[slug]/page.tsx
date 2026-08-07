@@ -47,10 +47,10 @@ export default async function OffrePage({ params }: PageProps) {
         <section className="rule-b">
           <div className="section mx-auto max-w-4xl px-5">
             <Link
-              href="/#offre"
+              href="/services"
               className="mono text-sm text-muted underline-offset-4 hover:underline"
             >
-              Retour a l&rsquo;offre
+              Retour aux services
             </Link>
 
             <p className="tabular mono mt-8 text-sm font-bold text-support">
