@@ -39,12 +39,12 @@ export default function Home() {
                 },
                 {
                   href: "/methode",
-                  title: "La methode",
-                  body: "Comment un projet se deroule, du cadrage a la remise des cles.",
+                  title: "La méthode",
+                  body: "Comment un projet se déroule, du cadrage a la remise des cles.",
                 },
                 {
                   href: "/references",
-                  title: "Les realisations",
+                  title: "Les réalisations",
                   body: "Des projets livres, en ligne, que vous pouvez consulter.",
                 },
               ].map((card) => (

@@ -19,17 +19,34 @@ export const metadata: Metadata = {
 };
 
 /**
- * Le site est nativement sombre : il n'y a plus qu'un seul jeu de couleurs, donc
- * plus de script anti-flash ni de bascule de theme. C'est aussi un script de
- * moins execute avant le premier rendu.
+ * Applique le theme avant le premier rendu, pour eviter le flash de theme clair
+ * chez un visiteur qui a choisi le sombre. Reste inline volontairement : un
+ * fichier separe serait charge trop tard.
  */
+const themeBootstrap = `
+try {
+  var stored = localStorage.getItem('blf-theme');
+  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (stored === 'dark' || (!stored && prefersDark)) {
+    document.documentElement.classList.add('dark');
+  }
+} catch (e) {}
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${sans.variable} dir-labs h-full antialiased`}>
+    <html
+      lang="fr"
+      className={`${sans.variable} dir-labs h-full antialiased`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
+      </head>
       <body className="flex min-h-full flex-col bg-paper text-ink">
         {children}
       </body>

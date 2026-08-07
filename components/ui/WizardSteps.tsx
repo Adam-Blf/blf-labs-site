@@ -99,7 +99,7 @@ export function WizardSteps({
 
       <ol
         ref={listRef}
-        aria-label="Etapes de la commande"
+        aria-label="Étapes de la commande"
         className="flex list-none items-center gap-2 p-0"
       >
         {steps.map((item, i) => {
@@ -136,7 +136,7 @@ export function WizardSteps({
                   type="button"
                   tabIndex={here ? 0 : -1}
                   aria-current={here ? "step" : undefined}
-                  aria-label={`Etape ${i + 1} sur ${total} : ${item.label}`}
+                  aria-label={`Étape ${i + 1} sur ${total} : ${item.label}`}
                   onKeyDown={onRailKeyDown}
                   onClick={() => goTo(i)}
                   className="rounded-full"

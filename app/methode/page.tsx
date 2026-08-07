@@ -5,7 +5,7 @@ import { CtaBand } from "@/components/marketing/CtaBand";
 import { Methode } from "@/components/marketing/Methode";
 
 export const metadata: Metadata = {
-  title: "Methode",
+  title: "Méthode",
   description:
     "Cadrage, maquette, developpement, remise des cles : comment se deroule un projet confie a BLF Lab's.",
   alternates: { canonical: "/methode" },

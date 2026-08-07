@@ -5,7 +5,7 @@ import { CtaBand } from "@/components/marketing/CtaBand";
 import { ReferencesSection } from "@/components/marketing/ReferencesSection";
 
 export const metadata: Metadata = {
-  title: "Realisations",
+  title: "Réalisations",
   description:
     "Les projets livres par BLF Lab's : Bacchana, application de jeu publiee sur le web, iOS et Android, et Ohynozen, site vitrine livre pour un cabinet de therapie.",
   alternates: { canonical: "/references" },

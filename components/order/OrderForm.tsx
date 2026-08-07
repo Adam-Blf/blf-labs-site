@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Checkbox, RadioCards, TextArea, TextField } from "./fields";
+import { Checkbox, CheckboxCards, RadioCards, TextArea, TextField } from "./fields";
+import { OPTIONS, OPTION_GROUPS } from "@/content/options";
 import { WizardSteps, type WizardStep } from "@/components/ui/WizardSteps";
 import {
   BUDGET_LABELS,
@@ -21,6 +22,7 @@ type Values = {
   projectType: string;
   budget: string;
   deadline: string;
+  options: string[];
   message: string;
   customerType: string;
   name: string;
@@ -42,6 +44,7 @@ const EMPTY: Values = {
   projectType: "",
   budget: "",
   deadline: "",
+  options: [],
   message: "",
   customerType: "",
   name: "",
@@ -128,7 +131,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
       if (!response.ok) {
         if (body.fieldErrors) setErrors(body.fieldErrors);
         setGlobalError(
-          body.error ?? "L'envoi a echoue. Reessayez dans un instant.",
+          body.error ?? "L'envoi a echoue. Réessayez dans un instant.",
         );
         return;
       }
@@ -147,7 +150,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
   if (sent) {
     return (
       <div className="blk bg-surface p-8 text-center">
-        <h2 className="title text-2xl">Demande envoyee</h2>
+        <h2 className="title text-2xl">Demande envoyée</h2>
         <p className="mt-4 leading-relaxed text-muted">
           Un accuse de reception vient de partir vers {values.email}. Vous
           recevrez une reponse avec une estimation de budget et de delai.
@@ -203,6 +206,43 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
               label: DEADLINE_LABELS[deadline],
             }))}
           />
+
+          {/* Prestations complementaires. Les faire cocher ici evite de les
+              decouvrir au moment du devis, quand le budget est deja fixe dans
+              la tete du client. */}
+          <div>
+            <p className="text-sm font-medium">
+              Avez-vous besoin de ces prestations ?
+            </p>
+            <p className="mt-1 text-sm font-light text-muted">
+              Facultatif. Elles sont chiffrées séparément dans la réponse.
+            </p>
+
+            <div className="mt-6 space-y-8">
+              {OPTION_GROUPS.map((group) => (
+                <CheckboxCards
+                  key={group}
+                  legend={group}
+                  values={values.options}
+                  onToggle={(value, checked) =>
+                    set(
+                      "options",
+                      checked
+                        ? [...values.options, value]
+                        : values.options.filter((item) => item !== value),
+                    )
+                  }
+                  options={OPTIONS.filter((option) => option.group === group).map(
+                    (option) => ({
+                      value: option.slug,
+                      label: option.label,
+                      hint: option.detail,
+                    }),
+                  )}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       ),
     },
@@ -213,7 +253,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
         <TextArea
           id="message"
           label="Decrivez ce que vous voulez obtenir"
-          hint="Le contexte, le probleme a resoudre, et ce a quoi vous verrez que c'est reussi. Pas besoin de vocabulaire technique."
+          hint="Le contexte, le problème a resoudre, et ce a quoi vous verrez que c'est reussi. Pas besoin de vocabulaire technique."
           value={values.message}
           onChange={(value) => set("message", value)}
           error={errors.message}
@@ -382,11 +422,11 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
             onChange={(checked) => set("consent", checked)}
             error={errors.consent}
           >
-            J&rsquo;accepte que ces informations soient utilisees pour repondre a
+            J&rsquo;accepte que ces informations soient utilisees pour répondre a
             ma demande. Elles ne sont ni revendues ni utilisees pour de la
             prospection. Voir la{" "}
             <Link href="/legal/confidentialite" className="underline">
-              politique de confidentialite
+              politique de confidentialité
             </Link>
             .
           </Checkbox>

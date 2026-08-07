@@ -1,19 +1,19 @@
 const ETAPES = [
   {
     title: "Cadrage",
-    body: "Un echange pour comprendre le metier avant la technique. On en sort avec un perimetre ecrit, un prix et une date.",
+    body: "Un échange pour comprendre le metier avant la technique. On en sort avec un périmètre écrit, un prix et une date.",
   },
   {
     title: "Maquette",
-    body: "Les ecrans sont valides avant d'etre codes. C'est la que les allers-retours coutent le moins cher.",
+    body: "Les écrans sont valides avant d'être codes. C'est la que les allers-retours coutent le moins cher.",
   },
   {
-    title: "Developpement",
+    title: "Développement",
     body: "Chaque bloc termine est teste et mis en ligne sur une adresse privee. Vous suivez l'avancement sans rien installer.",
   },
   {
     title: "Remise des cles",
-    body: "Depot de code, nom de domaine et acces d'hebergement transferes a votre nom. Rien ne reste chez le prestataire.",
+    body: "Depot de code, nom de domaine et accès d'hébergement transferes a votre nom. Rien ne reste chez le prestataire.",
   },
 ];
 
@@ -26,18 +26,14 @@ const ETAPES = [
  */
 export function Methode() {
   return (
-    <section id="methode" className="relative">
-      <span
-        aria-hidden="true"
-        className="halo left-1/2 top-1/3 h-[32rem] w-[32rem] -translate-x-1/2 "
-      />
+    <section id="méthode" className="relative">
 
       <div className="section relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <h2 className="title max-w-3xl text-4xl sm:text-5xl lg:text-6xl">
-          Comment <span className="grad-text">ca se passe</span>
+          Comment <span className="grad-text">ça se passe</span>
         </h2>
         <p className="mt-6 max-w-2xl text-lg font-light text-muted">
-          Quatre temps, toujours les memes, quelle que soit la taille du projet.
+          Quatre temps, toujours les mêmes, quelle que soit la taille du projet.
         </p>
 
         <ol className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -47,7 +43,7 @@ export function Methode() {
                   recourir a un chiffre. */}
               <span
                 aria-hidden="true"
-                className="h-px w-10 bg-gradient-to-r from-white/40 to-transparent"
+                className="h-px w-10 bg-gradient-to-r from-orange to-rose"
               />
               <h3 className="title text-xl sm:text-2xl">{etape.title}</h3>
               <p className="text-sm font-light leading-relaxed text-muted">

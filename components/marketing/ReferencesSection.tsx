@@ -14,11 +14,11 @@ import { REFERENCES } from "@/content/references";
  */
 export function ReferencesSection({ compact = false }: { compact?: boolean }) {
   return (
-    <section id="realisations" className="relative">
+    <section id="réalisations" className="relative">
       <div className="section mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <h2 className="title max-w-2xl text-4xl sm:text-5xl lg:text-6xl">
-            Deja <span className="grad-text">en ligne</span>
+            Déjà <span className="grad-text">en ligne</span>
           </h2>
           <p className="max-w-sm font-light text-muted">
             Des projets livres et consultables, pas des maquettes.
@@ -83,7 +83,7 @@ export function ReferencesSection({ compact = false }: { compact?: boolean }) {
                     >
                       <span
                         aria-hidden="true"
-                        className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-white/25"
+                        className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
                       />
                       <span>{fact}</span>
                     </li>

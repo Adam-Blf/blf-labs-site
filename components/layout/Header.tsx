@@ -11,17 +11,17 @@ import { Wordmark } from "./Wordmark";
  */
 const NAV = [
   { href: "/services", label: "Services" },
-  { href: "/methode", label: "Methode" },
-  { href: "/references", label: "Realisations" },
+  { href: "/methode", label: "Méthode" },
+  { href: "/references", label: "Réalisations" },
   { href: "/questions", label: "Questions" },
 ];
 
 /**
- * Barre de navigation flottante en pastille de verre.
+ * Barre de navigation flottante, a fond net.
  *
- * Le flou et l'opacite du fond augmentent avec le defilement : transparente en
- * haut de page, franchement depolie des que du contenu passe dessous. Les
- * valeurs sont interpolees sur les 50 premiers pixels.
+ * Le fond se densifie avec le defilement : legerement translucide en haut de
+ * page, franchement opaque des que du contenu passe dessous, sinon le texte de
+ * la barre devient illisible par-dessus.
  *
  * L'ecouteur de defilement est passif et ne fait qu'ecrire un booleen : le
  * navigateur n'est pas sollicite a chaque pixel.
@@ -63,16 +63,24 @@ export function Header() {
         isHidden ? "-translate-y-[150%]" : "translate-y-0"
       }`}
     >
+      {/*
+        Barre nette, sans verre depoli. Le flou d'arriere-plan etait pose sur un
+        blanc ecrit en dur (rgba(255,255,255,...)), donc en mode clair la barre
+        peignait du blanc sur du blanc et sa limite disparaissait. Elle lit
+        maintenant les jetons de theme, et son fond devient opaque des que la
+        page defile : au-dessus d'un contenu qui glisse dessous, une barre
+        translucide rend le texte illisible.
+
+        Coins droits plutot que pilule : le seul arrondi du site est celui du
+        bloc de logo, ce qui le garde distinctif.
+      */}
       <nav
         aria-label="Navigation principale"
-        className={`mx-auto max-w-5xl border border-line transition-all duration-300 ${
-          open ? "rounded-3xl" : "rounded-full"
+        className={`mx-auto max-w-5xl border transition-colors duration-300 ${
+          scrolled
+            ? "border-line-strong bg-surface shadow-sm"
+            : "border-line bg-surface/80"
         }`}
-        style={{
-          backgroundColor: `rgba(255, 255, 255, ${scrolled ? 0.08 : 0.02})`,
-          backdropFilter: `blur(${scrolled ? 24 : 8}px)`,
-          WebkitBackdropFilter: `blur(${scrolled ? 24 : 8}px)`,
-        }}
       >
         <div className="flex items-center justify-between gap-6 px-5 py-3">
           <Link href="/" className="shrink-0">
@@ -97,7 +105,7 @@ export function Header() {
               href="/commander"
               className="btn-pill hidden bg-accent px-5 py-2.5 text-sm font-semibold text-accent-ink sm:block"
             >
-              Demarrer un projet
+              Démarrer un projet
             </Link>
 
             <button
@@ -145,7 +153,7 @@ export function Header() {
                 onClick={() => setOpen(false)}
                 className="btn-pill mt-2 block bg-accent px-5 py-3 text-center text-sm font-semibold text-accent-ink"
               >
-                Demarrer un projet
+                Démarrer un projet
               </Link>
             </li>
           </ul>

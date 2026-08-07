@@ -2,9 +2,17 @@
 @import "./themes.css";
 
 /*
-  Utilitaires de la direction "agence premium".
-  Les composants n'ecrivent jamais une couleur ou un flou en dur : ils composent
-  ces classes, qui lisent les jetons de themes.css.
+  Le mode sombre est pilote par la classe `.dark` posee sur <html> par le script
+  d'amorcage du layout, pas par `prefers-color-scheme`. Sans cette declaration,
+  Tailwind 4 ferait suivre `dark:` a la preference systeme, et la bascule
+  manuelle du site n'aurait aucun effet sur les regles `dark:`.
+*/
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  Utilitaires de la direction "laboratoire".
+  Les composants n'ecrivent jamais une couleur en dur : ils composent ces
+  classes, qui lisent les jetons de themes.css.
 */
 
 @theme inline {
@@ -14,13 +22,17 @@
   --color-muted-strong: var(--muted-strong);
   --color-faint: var(--faint);
   --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
   --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-support: var(--support);
   --color-support-ink: var(--support-ink);
-  --color-neon-blue: var(--mint);
-  --color-neon-purple: var(--teal);
+  --color-nuit: var(--nuit);
+  --color-neige: var(--neige);
+  --color-violet: var(--violet);
+  --color-citron: var(--citron);
 }
 
 html {
@@ -31,69 +43,52 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-text), system-ui, sans-serif;
-  /* Une seule barre de defilement : les halos debordent volontairement. */
   overflow-x: hidden;
 }
 
 ::selection {
-  background: rgba(60, 230, 143, 0.25);
+  background: var(--violet);
+  color: var(--accent-ink);
 }
 
 /*
-  Verre depoli. `backdrop-filter` est ce qui coute le plus cher a l'affichage :
-  il est reserve aux surfaces reellement superposees a du contenu (barre de
-  navigation, cartes), jamais applique a une section entiere.
+  Titre. La largeur variable d'Archivo (axe wdth) est la signature du site :
+  les titres sont larges et compacts, ce qu'aucune police a chasse fixe ne
+  sait faire. C'est ce reglage, et non un effet graphique, qui rend les pages
+  reconnaissables.
 */
-.glass {
-  background: var(--surface);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: var(--border-w) solid var(--line);
-  border-radius: var(--radius);
-}
-
-.glass-sm {
-  background: var(--surface);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: var(--border-w) solid var(--line);
-  border-radius: var(--radius-sm);
-}
-
-/* Conserve pour les composants qui n'ont pas besoin de flou. */
-.blk,
-.blk-sm,
-.blk-flat {
-  background: var(--surface);
-  border: var(--border-w) solid var(--line);
-  border-radius: var(--radius-sm);
-}
-
 .title {
   font-family: var(--font-title), system-ui, sans-serif;
   text-transform: var(--title-transform);
   font-weight: var(--title-weight);
   letter-spacing: var(--title-tracking);
   line-height: var(--title-leading);
+  font-variation-settings: "wdth" var(--title-width);
+}
+
+/* Titre etroit, pour les colonnes serrees ou un titre large deborderait. */
+.title-serre {
+  --title-width: 88;
 }
 
 /*
-  Mise en valeur dans un titre.
-
-  Il n'y a plus de degrade : deux teintes qui se fondent dans un titre etaient
-  precisement le tic visuel a supprimer. Le mot mis en avant passe simplement en
-  gris clair, ce qui cree une hierarchie a l'interieur de la phrase sans
-  introduire de couleur.
+  Mot mis en avant dans un titre : il passe en violet plein.
+  Pas de degrade - deux teintes qui se fondent dans un titre etaient
+  precisement le tic visuel a supprimer.
 */
 .grad-text {
-  color: var(--muted-strong);
+  color: var(--violet);
 }
 
-/* Etiquettes : petites capitales tres espacees. */
+/*
+  Etiquette : petites capitales tres espacees, dans la meme Archivo que le
+  reste. Il n'y a pas de monospace sur ce site (voir app/fonts.ts).
+*/
 .mono {
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   font-weight: 700;
   text-transform: uppercase;
+  font-variation-settings: "wdth" 88;
 }
 
 .section {
@@ -113,31 +108,60 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Bouton principal : pastille blanche, halo diffus, reaction au clic. */
+/*
+  Surfaces. Un cadre net, pas de flou : le verre depoli est le decor par defaut
+  des maquettes generees, et il coute cher a l'affichage.
+*/
+.blk,
+.blk-sm,
+.blk-flat,
+.glass,
+.glass-sm {
+  background: var(--surface);
+  border: var(--border-w) solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+/*
+  Grille de laboratoire, posee en fond de section. Elle rappelle le papier
+  millimetre d'un carnet de paillasse et donne de la matiere aux grands aplats
+  sans ajouter ni image ni couleur. Purement decorative, donc masquee aux
+  lecteurs d'ecran par aria-hidden cote composant.
+*/
+.grille {
+  background-image:
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+/*
+  Bloc signature : l'aplat sombre a coins arrondis du logo, decline en
+  interface. C'est le seul arrondi du site, tout le reste est a angle droit,
+  ce qui le garde distinctif.
+*/
+.bloc-marque {
+  background: var(--nuit);
+  color: var(--neige);
+  border-radius: 22px;
+}
+
+/* Bouton principal. */
 .btn-pill {
   border-radius: var(--radius-pill);
   transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    background-color 0.2s ease;
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background-color 0.18s ease;
 }
 
 .btn-pill:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px);
   box-shadow: var(--glow);
 }
 
 .btn-pill:active {
-  transform: scale(0.95);
-}
-
-/* Halo colore de fond, pose derriere une section. */
-.halo {
-  position: absolute;
-  border-radius: 999px;
-  filter: blur(120px);
-  pointer-events: none;
-  z-index: 0;
+  transform: translateY(0);
 }
 
 /*
@@ -153,9 +177,9 @@ body {
   position: absolute;
   left: 0;
   bottom: -6px;
-  height: 1px;
+  height: 2px;
   width: 100%;
-  background: currentColor;
+  background: var(--violet);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.3s ease;
@@ -167,7 +191,7 @@ body {
 }
 
 :where(a, button, input, textarea, select, [tabindex]):focus-visible {
-  outline: 2px solid var(--mint);
+  outline: 2px solid var(--violet);
   outline-offset: 3px;
 }
 

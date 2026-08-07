@@ -88,7 +88,7 @@ export default async function OffrePage({ params }: PageProps) {
             <div className="mt-12 grid gap-6 sm:grid-cols-2">
               <Card className="p-6">
                 <h3 className="mono text-xs uppercase tracking-widest text-muted">
-                  Delai indicatif
+                  Délai indicatif
                 </h3>
                 <p className="mt-3 leading-relaxed">{offre.timeline}</p>
               </Card>

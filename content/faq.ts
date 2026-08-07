@@ -14,38 +14,38 @@ export type FaqItem = { question: string; answer: string };
 
 export const FAQ: FaqItem[] = [
   {
-    question: "Combien coute un projet ?",
+    question: "Combien coûte un projet ?",
     answer:
-      "Le devis est etabli apres le premier echange, puis fixe et signe avant que le developpement commence : pas de facture surprise a la fin. Decrivez votre besoin dans le formulaire de commande, vous recevez une fourchette de budget en reponse.",
+      "Le devis est établi après le premier échange, puis fixe et signe avant que le développement commence : pas de facture surprise à la fin. Decrivez votre besoin dans le formulaire de commande, vous recevez une fourchette de budget en réponse.",
   },
   {
     question: "En combien de temps c'est livre ?",
     answer:
-      "Deux a cinq semaines pour un site, un a trois mois pour une application, selon le perimetre convenu au cadrage. Vous recevez une version consultable en ligne des les premiers jours, puis a chaque bloc termine : vous ne decouvrez jamais le resultat a la fin.",
+      "Deux à cinq semaines pour un site, un à trois mois pour une application, selon le périmètre convenu au cadrage. Vous recevez une version consultable en ligne dès les premiers jours, puis à chaque bloc termine : vous ne découvrez jamais le résultat à la fin.",
   },
   {
     question: "A qui appartient le code une fois livre ?",
     answer:
-      "A vous. Le depot de code, le nom de domaine et les acces d'hebergement sont mis a votre nom. Vous pouvez confier la suite a n'importe quel autre developpeur sans rien demander a personne.",
+      "A vous. Le dépôt de code, le nom de domaine et les accès d'hebergement sont mis à votre nom. Vous pouvez confier la suite à n'importe quel autre développeur sans rien demander à personne.",
   },
   {
     question: "Qui va travailler sur mon projet ?",
     answer:
-      "Adam Beloucif, du premier echange a la mise en ligne. Aucune sous-traitance, aucun intermediaire commercial : vous parlez toujours a la personne qui ecrit le code.",
+      "Adam Beloucif, du premier échange à la mise en ligne. Aucune sous-traitance, aucun intermédiaire commercial : vous parlez toujours à la personne qui écrit le code.",
   },
   {
-    question: "Que se passe-t-il apres la mise en ligne ?",
+    question: "Que se passe-t-il après la mise en ligne ?",
     answer:
-      "Ce qui ne fonctionne pas comme convenu au devis est repris sans supplement. Au dela, la maintenance et les evolutions se font a la demande, sans engagement de duree impose.",
+      "Ce qui ne fonctionne pas comme convenu au devis est repris sans supplément. Au dela, la maintenance et les évolutions se font à la demande, sans engagement de durée impose.",
   },
   {
     question: "Facturez-vous la TVA ?",
     answer:
-      "Non. L'entreprise beneficie de la franchise en base, article 293 B du Code general des impots : le prix annonce est le prix paye, il n'y a pas de TVA a ajouter.",
+      "Non. L'entreprise bénéficie de la franchise en base, article 293 B du Code général des impôts : le prix annonce est le prix paye, il n'y a pas de TVA à ajouter.",
   },
   {
     question: "Travaillez-vous en dehors de l'Ile-de-France ?",
     answer:
-      "Oui. Le suivi se fait en visio et par ecrit, ce qui n'impose aucune contrainte geographique. Les rendez-vous sur place restent possibles en Ile-de-France.",
+      "Oui. Le suivi se fait en visio et par écrit, ce qui n'impose aucune contrainte géographique. Les rendez-vous sur place restent possibles en Ile-de-France.",
   },
 ];

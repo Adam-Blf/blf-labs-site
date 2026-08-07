@@ -32,14 +32,14 @@ export const REFERENCES: Reference[] = [
   {
     slug: "bacchana",
     title: "Bacchana",
-    role: "Produit du studio, de la conception a la publication",
+    role: "Produit du studio, de la conception à la publication",
     summary:
-      "Jeu de soiree concu, developpe et edite par le studio. Application web installable, plus une version iOS et une version Android construites a parite.",
+      "Jeu de soiree concu, developpe et edite par le studio. Application web installable, plus une version iOS et une version Android construites à parite.",
     url: "https://bacchana.beloucif.com",
     shot: "/shots/bacchana.webp",
     facts: [
       "Trois plateformes maintenues en parallele",
-      "Achats integres et mesure d'audience avec consentement",
+      "Achats intégrés et mesure d'audience avec consentement",
       "Suivi des erreurs et tableau de bord produit en place",
     ],
     tags: ["Produit", "Web", "iOS", "Android"],
@@ -49,12 +49,12 @@ export const REFERENCES: Reference[] = [
     title: "Ohynozen",
     role: "Site vitrine livre pour un cabinet de therapie",
     summary:
-      "Site de presentation d'un cabinet : prestations, prise de contact, contenus modifiables par la praticienne sans passer par un developpeur.",
+      "Site de presentation d'un cabinet : prestations, prise de contact, contenus modifiables par la praticienne sans passer par un développeur.",
     url: "https://ohynozen.com",
     shot: "/shots/ohynozen.webp",
     facts: [
-      "Interface d'edition reservee a la proprietaire du site",
-      "Pages legales et RGPD en place des la mise en ligne",
+      "Interface d'edition reservee à la proprietaire du site",
+      "Pages légales et RGPD en place des la mise en ligne",
       "Nom de domaine et hebergement au nom du cabinet",
     ],
     tags: ["Site vitrine", "Next.js", "Edition de contenu"],

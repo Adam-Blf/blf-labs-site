@@ -26,12 +26,12 @@ export function OffreGrid() {
     <section id="offre" className="relative">
       <div className="section mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <h2 className="title max-w-3xl text-4xl sm:text-5xl lg:text-6xl">
-          Des services concus pour{" "}
+          Des services conçus pour{" "}
           <span className="grad-text">votre activite</span>
         </h2>
         <p className="mt-6 max-w-2xl text-lg font-light text-muted">
           Quatre familles de projets. Si le votre tient dans plusieurs cases, ou
-          dans aucune, c&rsquo;est une conversation, pas un probleme.
+          dans aucune, c&rsquo;est une conversation, pas un problème.
         </p>
 
         <div className="mt-16 grid gap-6 md:grid-cols-2">
@@ -47,7 +47,7 @@ export function OffreGrid() {
                 {/* Quart de disque colore, dans l'angle de la carte. */}
                 <span
                   aria-hidden="true"
-                  className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-gradient-to-br from-white/10 to-transparent blur-2xl transition-opacity duration-500 group-hover:opacity-80"
+                  className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-gradient-to-br from-orange/25 to-transparent blur-2xl transition-opacity duration-500 group-hover:opacity-80"
                 />
 
                 <div className="relative z-10">

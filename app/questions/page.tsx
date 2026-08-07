@@ -7,7 +7,7 @@ import { Faq } from "@/components/marketing/Faq";
 export const metadata: Metadata = {
   title: "Questions frequentes",
   description:
-    "Prix, delais, propriete du code, suivi apres la mise en ligne, TVA : les questions posees avant de commander un projet.",
+    "Prix, délais, propriété du code, suivi après la mise en ligne, TVA : les questions posees avant de commander un projet.",
   alternates: { canonical: "/questions" },
 };
 

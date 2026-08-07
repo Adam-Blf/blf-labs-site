@@ -31,10 +31,10 @@ export const SITE = {
   url: "https://beloucif.com",
   // Franchise en base : aucune TVA facturee, mention obligatoire sur les devis
   // et factures.
-  vat: "TVA non applicable, article 293 B du Code general des impots",
+  vat: "TVA non applicable, article 293 B du Code général des impots",
   mediator: {
     name: "CM2C",
-    fullName: "Centre de la mediation de la consommation de conciliateurs de justice",
+    fullName: "Centre de la médiation de la consommation de conciliateurs de justice",
     url: "https://www.cm2c.net",
     address: "14 rue Saint Jean, 75017 Paris",
     validUntil: "2029-08-05",

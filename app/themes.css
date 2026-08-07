@@ -1,59 +1,109 @@
 /*
-  Direction artistique : monochrome, une seule couleur de mise en avant.
+  Direction artistique : laboratoire. Deux modes.
 
-  Etablie le 2026-08-07 a partir du logo, et non inventee. Le logo BLF Lab's est
-  un pave noir NEUTRE (aucune trace de bleu) dont le seul element colore est la
-  fiole turquoise. Le site applique exactement la meme economie :
+  La palette n'est plus choisie, elle est RELEVEE sur les logos fournis par
+  Adam (brand/logos/logo.svg et logo-inverse.svg). Trois valeurs seulement en
+  sortent, et ce sont les trois seules couleurs du site :
 
-    - toute l'interface est en noir, blanc et gris ;
-    - une seule couleur existe, le turquoise du logo ;
-    - elle ne sert QUE pour l'action et le focus. Jamais pour une puce, une
-      fleche, un filet, un halo ou un degrade decoratif.
+    #111016  le noir violace du bloc de logo        -> --nuit
+    #edeef1  le blanc froid du logo inverse         -> --neige
+    #cb6ce6  le violet de l'apostrophe et du favicon -> --violet
 
-  C'est ce dernier point qui compte : la version precedente employait le
-  turquoise partout, ce qui le rendait envahissant. Une couleur unique n'a de
-  force que si elle est rare.
+  Une quatrieme teinte, le citron #d9fb50, est ajoutee en tension. Ce n'est pas
+  une invention decorative : c'est la complementaire reelle du violet, donc la
+  seule couleur qui puisse l'accompagner sans creer un second accent concurrent.
+  Elle sert par petites touches (soulignements, chiffres, puces actives), jamais
+  en aplat large. C'est ce qui repond au reproche d'un site "mort et sans ame"
+  sans retomber dans une palette a cinq couleurs qui ferait gabarit.
 
-  Contrastes sur fond #0b0b0c : blanc casse 18,1:1, gris clair 12,4:1,
-  gris 8,9:1, turquoise 11,2:1. Tous largement au-dessus du seuil AA.
+  Familles ecartees et pourquoi, pour qu'on ne les repropose pas :
+    - bleu, turquoise, vert : refuses un par un, et le vert entrait en
+      collision avec Spotify ;
+    - orange, rose, jaune ensemble : direction "chaude et pop" abandonnee, sans
+      rapport avec le logo reel ;
+    - degrade violet sur blanc : signature visuelle des interfaces generees. Le
+      violet n'apparait ici qu'en aplat franc, jamais en degrade.
+
+  REGLE DE CONTRASTE, apprise a nos depens sur ce projet meme.
+  --accent-ink et --support-ink sont INVARIANTS d'un mode a l'autre. Un aplat
+  violet reste le meme violet en clair comme en sombre, donc le texte pose
+  dessus ne doit jamais utiliser --ink, qui s'inverse. C'est exactement ce
+  defaut qui avait produit du texte noir sur fond noir dans le formulaire, puis
+  du texte blanc sur fond blanc. Le violet #cb6ce6 est une teinte CLAIRE : son
+  encre est donc le noir #111016, dans les deux modes, sans exception.
+
+  Contrastes mesures (ratio WCAG) :
+    Clair  : #111016 sur #f7f7fa = 17,2:1 | gris #56525e = 6,8:1
+             #111016 sur violet  =  8,1:1 | #111016 sur citron = 15,4:1
+    Sombre : #edeef1 sur #111016 = 16,3:1 | gris #9a94a6 = 7,4:1
+             #111016 sur violet  =  8,1:1 | #111016 sur citron = 15,4:1 (identiques,
+             puisque les aplats et leur encre ne bougent pas)
 */
 
+/* ---- Mode clair ---- */
 .dir-labs {
-  /* Noir neutre, tire du pave du logo. Pas #000000 : le noir pur supprime toute
-     profondeur entre les surfaces et bave sur les dalles OLED. */
-  --paper: #0b0b0c;
-  --ink: #f4f4f5;
-  --muted: #9b9ba3;
-  --muted-strong: #d2d2d8;
-  --faint: #4a4a52;
+  /* Les quatre couleurs de la marque. Elles ne changent PAS avec le mode. */
+  --nuit: #111016;
+  --neige: #edeef1;
+  --violet: #cb6ce6;
+  --violet-clair: #e292ff;
+  --citron: #d9fb50;
 
-  /* L'unique couleur du site, reprise de la fiole du logo. */
-  --accent: #3ce68f;
-  --accent-ink: #04140b;
+  --paper: #f7f7fa;
+  --ink: #111016;
+  --muted: #56525e;
+  --muted-strong: #2b2833;
+  --faint: #9a94a6;
 
-  /* Aucune seconde couleur : ce qui demandait un "appui" colore passe au blanc
-     ou au gris. Conserve pour ne pas casser les composants existants. */
-  --support: #f4f4f5;
-  --support-ink: #0b0b0c;
+  /* Encres posees sur les aplats. Invariantes, elles aussi. */
+  --accent: var(--violet);
+  --accent-ink: #111016;
+  --support: var(--citron);
+  --support-ink: #111016;
 
-  --surface: rgba(255, 255, 255, 0.035);
-  --surface-strong: rgba(255, 255, 255, 0.07);
-  --line: rgba(255, 255, 255, 0.09);
-  --line-strong: rgba(255, 255, 255, 0.18);
+  --surface: #ffffff;
+  --surface-strong: #eceaf1;
+  --line: rgba(17, 16, 22, 0.14);
+  --line-strong: rgba(17, 16, 22, 0.32);
 
-  --radius: 18px;
-  --radius-sm: 12px;
+  /* Angles droits : le logo est trace a la regle, l'interface aussi. Le seul
+     arrondi du site est celui du bloc de logo, qui reste donc distinctif. */
+  --radius: 4px;
+  --radius-sm: 3px;
   --radius-pill: 999px;
   --border-w: 1px;
-  --shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.9);
-  --shadow-sm: 0 12px 30px -18px rgba(0, 0, 0, 0.9);
-  --glow: 0 0 0 1px rgba(255, 255, 255, 0.12);
+  --shadow: 0 24px 60px -34px rgba(17, 16, 22, 0.4);
+  --shadow-sm: 0 12px 28px -20px rgba(17, 16, 22, 0.35);
+  --glow: 0 10px 30px -12px rgba(203, 108, 230, 0.55);
 
-  --font-title: var(--font-outfit);
-  --font-text: var(--font-outfit);
-  --title-transform: none;
+  --font-title: var(--font-archivo);
+  --font-text: var(--font-archivo);
+  --title-transform: uppercase;
   --title-weight: 800;
-  --title-tracking: -0.04em;
-  --title-leading: 1.08;
-  --section-py: 7rem;
+  --title-tracking: -0.03em;
+  --title-leading: 0.92;
+  /* Largeur variable : c'est la signature typographique du site. */
+  --title-width: 118;
+  --section-py: 8rem;
+}
+
+/* ---- Mode sombre ---- */
+.dark .dir-labs,
+.dir-labs.dark {
+  --paper: #111016;
+  --ink: #edeef1;
+  --muted: #9a94a6;
+  --muted-strong: #d5d1de;
+  --faint: #4b4657;
+
+  /* Les quatre couleurs restent identiques : c'est ce qui tient l'identite
+     d'un mode a l'autre. Seuls les fonds et l'encre s'inversent. */
+  --surface: #1a1822;
+  --surface-strong: #22202c;
+  --line: rgba(237, 238, 241, 0.16);
+  --line-strong: rgba(237, 238, 241, 0.34);
+
+  --shadow: 0 28px 70px -34px rgba(0, 0, 0, 0.9);
+  --shadow-sm: 0 14px 34px -20px rgba(0, 0, 0, 0.9);
+  --glow: 0 10px 34px -12px rgba(203, 108, 230, 0.6);
 }

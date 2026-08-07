@@ -2,19 +2,11 @@ import Link from "next/link";
 import { SITE } from "@/lib/site";
 
 /**
- * Appel a l'action de fin de page : titre monumental et halos colores.
+ * Appel a l'action de fin de page : titre monumental sur grille millimetree.
  */
 export function CtaBand() {
   return (
     <section className="relative overflow-hidden">
-      <span
-        aria-hidden="true"
-        className="halo left-1/4 top-0 h-[30rem] w-[30rem] bg-white/25/10"
-      />
-      <span
-        aria-hidden="true"
-        className="halo bottom-0 right-1/4 h-[30rem] w-[30rem] bg-white/5"
-      />
 
       <div className="section relative z-10 mx-auto max-w-6xl px-4 text-center sm:px-6 lg:px-8">
         <h2 className="title mx-auto max-w-4xl text-5xl sm:text-6xl lg:text-7xl">
@@ -23,8 +15,8 @@ export function CtaBand() {
         </h2>
 
         <p className="mx-auto mt-8 max-w-xl text-lg font-light text-muted">
-          Decrivez votre projet, meme grossierement. Vous recevez une reponse
-          avec une estimation de budget et de delai.
+          Décrivez votre projet, même grossierement. Vous recevez une réponse
+          avec une estimation de budget et de délai.
         </p>
 
         <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
