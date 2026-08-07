@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!--
+    Favicon. Next.js sert automatiquement app/icon.svg comme icone du site.
+
+    Deux differences assumees avec components/brand/Logo.tsx :
+      - les couleurs sont fixes, pas heritees : une icone d'onglet ne connait ni
+        le theme du site ni currentColor ;
+      - seul le monogramme est repris, sans le mot LAB'S ni la fiole. A 16 px,
+        un mot de cinq lettres devient une bouillie grise.
+
+    Les lettres sont pleines et non decoupees : un evidement laisserait passer le
+    fond de l'onglet du navigateur, qui varie et peut annuler le contraste.
+  -->
+  <rect width="100" height="100" rx="22" fill="#5b5bd6"/>
+  <g fill="#ffffff" transform="translate(-14.3 20.4) scale(0.643)">
+    <path d="M44 24H53V68H44Z"/>
+    <path d="M53 24H77V33H53Z"/>
+    <path d="M53 42H73V51H53Z"/>
+    <path d="M53 59H77V68H53Z"/>
+    <path d="M68 33H77V42H68Z"/>
+    <path d="M68 51H77V59H68Z"/>
+    <path d="M88 24H97V68H88Z"/>
+    <path d="M97 59H114V68H97Z"/>
+    <path d="M125 24H134V68H125Z"/>
+    <path d="M134 24H156V33H134Z"/>
+    <path d="M134 42H149V51H134Z"/>
+  </g>
+</svg>

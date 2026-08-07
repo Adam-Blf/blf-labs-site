@@ -40,8 +40,30 @@ function summaryRows(order: OrderInput): string {
     ["Nom", order.name],
     ["Email", order.email],
     ["Telephone", order.phone ?? "non renseigne"],
-    ["Organisation", order.company ?? "non renseignee"],
   ];
+
+  // Les informations de facturation figurent dans la notification : elles
+  // permettent d'etablir le devis sans avoir a les redemander au client.
+  if (order.customerType === "entreprise") {
+    rows.push(
+      ["Client", "Entreprise ou association"],
+      ["Raison sociale", order.companyName ?? ""],
+      ["SIREN / SIRET", order.siren ?? ""],
+      ["TVA intracommunautaire", order.vatNumber ?? "non assujetti"],
+      [
+        "Adresse de facturation",
+        [
+          order.billingStreet,
+          `${order.billingPostalCode ?? ""} ${order.billingCity ?? ""}`.trim(),
+          order.billingCountry,
+        ]
+          .filter(Boolean)
+          .join(", "),
+      ],
+    );
+  } else {
+    rows.push(["Client", "Particulier"], ["Organisation", order.company ?? "non renseignee"]);
+  }
 
   return rows
     .map(

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { mono, sans } from "./fonts";
+import { display, sans } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -41,7 +41,7 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${sans.variable} ${mono.variable} dir-labs h-full antialiased`}
+      className={`${display.variable} ${sans.variable} dir-labs h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

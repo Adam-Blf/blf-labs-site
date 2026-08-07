@@ -7,12 +7,14 @@ import { WizardSteps, type WizardStep } from "@/components/ui/WizardSteps";
 import {
   BUDGET_LABELS,
   BUDGET_RANGES,
+  CUSTOMER_TYPES,
+  CUSTOMER_TYPE_LABELS,
   DEADLINES,
   DEADLINE_LABELS,
   PROJECT_TYPES,
   PROJECT_TYPE_LABELS,
   STEP_FIELDS,
-  orderSchema,
+  orderSchemaChecked,
 } from "@/lib/validation";
 
 type Values = {
@@ -20,10 +22,18 @@ type Values = {
   budget: string;
   deadline: string;
   message: string;
+  customerType: string;
   name: string;
   email: string;
   phone: string;
   company: string;
+  companyName: string;
+  siren: string;
+  vatNumber: string;
+  billingStreet: string;
+  billingPostalCode: string;
+  billingCity: string;
+  billingCountry: string;
   consent: boolean;
   website: string;
 };
@@ -33,10 +43,20 @@ const EMPTY: Values = {
   budget: "",
   deadline: "",
   message: "",
+  customerType: "",
   name: "",
   email: "",
   phone: "",
   company: "",
+  companyName: "",
+  siren: "",
+  vatNumber: "",
+  billingStreet: "",
+  billingPostalCode: "",
+  billingCity: "",
+  // Pre-rempli parce que la quasi-totalite des clients sont francais : c'est
+  // un gain de saisie, pas une contrainte, le champ reste modifiable.
+  billingCountry: "France",
   consent: false,
   website: "",
 };
@@ -73,7 +93,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
 
   /** Valide les champs d'une etape. Rend vrai si l'etape est complete. */
   function validateStep(stepIndex: number): boolean {
-    const parsed = orderSchema.safeParse(values);
+    const parsed = orderSchemaChecked.safeParse(values);
     if (parsed.success) return true;
 
     const fields = STEP_FIELDS[stepIndex] ?? [];
@@ -204,7 +224,23 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
       id: "contact",
       label: "Vous joindre",
       content: (
-        <div className="space-y-6">
+        <div className="space-y-8">
+          <RadioCards
+            name="customerType"
+            legend="Vous commandez en tant que"
+            value={values.customerType as never}
+            onChange={(value) => set("customerType", value)}
+            error={errors.customerType}
+            options={CUSTOMER_TYPES.map((type) => ({
+              value: type,
+              label: CUSTOMER_TYPE_LABELS[type],
+              hint:
+                type === "entreprise"
+                  ? "Quelques informations de facturation en plus, exigees sur une facture professionnelle."
+                  : undefined,
+            }))}
+          />
+
           <div className="grid gap-6 sm:grid-cols-2">
             <TextField
               id="name"
@@ -243,6 +279,89 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
               autoComplete="organization"
             />
           </div>
+
+          {/* Bloc de facturation, affiche uniquement pour un professionnel.
+              Ces champs sont ceux qu'une facture entre professionnels doit
+              porter, et que le format de facture electronique exige : sans eux,
+              la facture ne peut pas etre emise correctement. */}
+          {values.customerType === "entreprise" && (
+            <fieldset className="blk-flat bg-surface p-6">
+              <legend className="title px-2 text-lg">
+                Informations de facturation
+              </legend>
+              <p className="mt-2 text-sm text-muted">
+                Obligatoires sur une facture professionnelle. Elles ne servent
+                qu&rsquo;a etablir le devis puis la facture.
+              </p>
+
+              <div className="mt-6 space-y-6">
+                <TextField
+                  id="companyName"
+                  label="Raison sociale"
+                  value={values.companyName}
+                  onChange={(value) => set("companyName", value)}
+                  error={errors.companyName}
+                  autoComplete="organization"
+                />
+
+                <div className="grid gap-6 sm:grid-cols-2">
+                  <TextField
+                    id="siren"
+                    label="SIREN ou SIRET"
+                    placeholder="123 456 789"
+                    value={values.siren}
+                    onChange={(value) => set("siren", value)}
+                    error={errors.siren}
+                  />
+                  <TextField
+                    id="vatNumber"
+                    label="TVA intracommunautaire"
+                    placeholder="FR12345678901"
+                    optional
+                    value={values.vatNumber}
+                    onChange={(value) => set("vatNumber", value)}
+                    error={errors.vatNumber}
+                  />
+                </div>
+
+                <TextField
+                  id="billingStreet"
+                  label="Adresse de facturation"
+                  value={values.billingStreet}
+                  onChange={(value) => set("billingStreet", value)}
+                  error={errors.billingStreet}
+                  autoComplete="street-address"
+                />
+
+                <div className="grid gap-6 sm:grid-cols-3">
+                  <TextField
+                    id="billingPostalCode"
+                    label="Code postal"
+                    value={values.billingPostalCode}
+                    onChange={(value) => set("billingPostalCode", value)}
+                    error={errors.billingPostalCode}
+                    autoComplete="postal-code"
+                  />
+                  <TextField
+                    id="billingCity"
+                    label="Ville"
+                    value={values.billingCity}
+                    onChange={(value) => set("billingCity", value)}
+                    error={errors.billingCity}
+                    autoComplete="address-level2"
+                  />
+                  <TextField
+                    id="billingCountry"
+                    label="Pays"
+                    value={values.billingCountry}
+                    onChange={(value) => set("billingCountry", value)}
+                    error={errors.billingCountry}
+                    autoComplete="country-name"
+                  />
+                </div>
+              </div>
+            </fieldset>
+          )}
 
           {/* Piege a robots : hors flux, masque aux lecteurs d'ecran et exclu
               de la tabulation. Un humain ne peut pas le remplir. */}

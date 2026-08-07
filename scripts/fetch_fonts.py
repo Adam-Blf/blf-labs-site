@@ -22,33 +22,26 @@ UA = (
     "(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
 )
 
+#
+# Choix typographique (revise le 2026-08-07) :
+# Space Grotesk et Space Mono ont ete abandonnees. Leur chiffre zero porte un
+# point central, detail qui les rend immediatement reconnaissables et donne au
+# site l'air d'un gabarit genere. Remplacees par une paire au dessin plus
+# ordinaire sur les chiffres, mais plus caracterisee sur les lettres.
+#
 FONTS: dict[str, str] = {
-    # Display : Bricolage Grotesque, variable, avec du caractere (regle polices).
+    # Titres : Bricolage Grotesque, variable. Dessin contraste et un peu
+    # irregulier, qui donne du caractere sans tomber dans la police d'affichage
+    # decorative.
     "bricolage-grotesque": (
         "https://fonts.googleapis.com/css2"
         "?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap"
     ),
-    # Texte courant : Space Grotesk, variable.
-    "space-grotesk": (
+    # Texte courant : Hanken Grotesk, variable. Tres lisible en petit corps,
+    # chiffres sans fioriture.
+    "hanken-grotesk": (
         "https://fonts.googleapis.com/css2"
-        "?family=Space+Grotesk:wght@400..700&display=swap"
-    ),
-    # Donnees et etiquettes : Space Mono (mono a caractere, jamais IBM/JetBrains).
-    "space-mono": (
-        "https://fonts.googleapis.com/css2"
-        "?family=Space+Mono:wght@400;700&display=swap"
-    ),
-    # Serif d'affichage, pour les directions editoriales et haut de gamme.
-    # Uniquement le romain : en demandant aussi l'italique, les deux coupes
-    # portent le meme poids 400 et le nom de fichier ne les distingue plus.
-    "instrument-serif": (
-        "https://fonts.googleapis.com/css2"
-        "?family=Instrument+Serif&display=swap"
-    ),
-    # Grotesque tres large et tres grasse, pour les directions affichiste.
-    "archivo-black": (
-        "https://fonts.googleapis.com/css2"
-        "?family=Archivo+Black&display=swap"
+        "?family=Hanken+Grotesk:wght@400..700&display=swap"
     ),
 }
 

@@ -25,7 +25,7 @@
 body {
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--font-body), system-ui, sans-serif;
+  font-family: var(--font-text), system-ui, sans-serif;
 }
 
 /* Bloc : carte, bouton, encadre. Toute la personnalite de la direction passe
@@ -64,9 +64,17 @@ body {
   line-height: var(--title-leading);
 }
 
-/* Etiquettes techniques : toujours en monospace, quelle que soit la direction. */
+/*
+  Etiquettes techniques.
+  Il n'y a plus de police monospace : celle utilisee jusqu'ici portait un zero
+  pointe, trop reconnaissable. Le role est desormais tenu par la police de texte
+  en petites capitales espacees, ce qui distingue l'etiquette du contenu sans
+  charger une famille supplementaire.
+*/
 .mono {
-  font-family: var(--font-mono), Consolas, monospace;
+  font-family: var(--font-text), system-ui, sans-serif;
+  letter-spacing: 0.06em;
+  font-weight: 600;
 }
 
 /* Rythme vertical des sections, lui aussi porte par la direction. */

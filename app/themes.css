@@ -35,8 +35,8 @@
   --border-w: 1px;
   --shadow: 0 14px 36px -18px rgba(13, 17, 23, 0.26);
   --shadow-sm: 0 6px 18px -10px rgba(13, 17, 23, 0.28);
-  --font-title: var(--font-grotesk);
-  --font-body: var(--font-grotesk);
+  --font-title: var(--font-display);
+  --font-text: var(--font-body);
   --title-transform: none;
   --title-weight: 700;
   --title-tracking: -0.035em;

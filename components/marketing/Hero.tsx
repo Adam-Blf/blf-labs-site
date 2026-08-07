@@ -1,56 +1,47 @@
 import { ButtonLink } from "@/components/ui/Button";
-import { SITE, SIRET_PRETTY } from "@/lib/site";
 
+/**
+ * Hero de la page d'accueil.
+ *
+ * Reecrit le 2026-08-07. La version precedente cumulait trois tics de page
+ * generee : un mot surligne en couleur au milieu du titre, une promesse vague
+ * ("on transforme votre besoin"), et une rangee de chiffres administratifs
+ * (SIRET, code APE, date d'immatriculation) presentee comme un argument de
+ * vente. Un numero de SIRET ne vend rien : sa place est dans le pied de page et
+ * les mentions legales, ou la loi l'exige.
+ *
+ * La promesse retenue est celle qui distingue reellement le studio d'une agence :
+ * le client repart proprietaire de son code et de ses acces.
+ */
 export function Hero() {
   return (
     <section className="rule-b">
       <div className="section mx-auto max-w-6xl px-5">
-        <p className="mono text-xs uppercase tracking-[0.2em] text-muted">
-          Studio de developpement - Ile-de-France
-        </p>
+        <div className="max-w-3xl">
+          <p className="mono text-xs uppercase text-muted">
+            Studio de developpement, Ile-de-France
+          </p>
 
-        <h1 className="title mt-6 text-5xl md:text-7xl lg:text-8xl">
-          On transforme
-          <br />
-          votre besoin
-          <br />
-          {/* L'aplat porte son encre invariante, jamais var(--ink). */}
-          <span className="inline-block bg-accent px-3 text-accent-ink">
-            en logiciel
-          </span>{" "}
-          qui tourne.
-        </h1>
+          {/* text-wrap: balance repartit les lignes de facon egale. Des retours
+              forcés donnaient une ligne pleine suivie d'un mot orphelin, et
+              cassaient a chaque changement de largeur d'ecran. */}
+          <h1 className="title mt-6 text-balance text-[2.75rem] leading-[1.05] sm:text-6xl lg:text-7xl">
+            On construit votre outil. Vous en gardez les cles.
+          </h1>
 
-        <p className="mt-8 max-w-xl text-lg leading-relaxed text-muted">
-          Sites, applications web et mobiles, outils data et IA. Du cadrage a la
-          mise en ligne, avec le code et les acces qui restent chez vous.
-        </p>
+          <p className="mt-8 max-w-xl text-lg leading-relaxed text-muted">
+            Sites, applications web et mobiles, outils data. Un seul
+            interlocuteur du cadrage a la mise en ligne, et le code, le domaine
+            et les acces a votre nom.
+          </p>
 
-        <div className="mt-10 flex flex-wrap gap-4">
-          <ButtonLink href="/commander">Commander un projet</ButtonLink>
-          <ButtonLink href="/#offre" variant="ghost">
-            Voir l&rsquo;offre
-          </ButtonLink>
+          <div className="mt-10 flex flex-wrap gap-4">
+            <ButtonLink href="/commander">Commander un projet</ButtonLink>
+            <ButtonLink href="/#offre" variant="ghost">
+              Voir l&rsquo;offre
+            </ButtonLink>
+          </div>
         </div>
-
-        <dl className="tabular rule-t mono mt-14 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-4 pt-6 text-xs sm:grid-cols-4">
-          <div>
-            <dt className="text-muted">SIRET</dt>
-            <dd className="mt-1 font-bold">{SIRET_PRETTY}</dd>
-          </div>
-          <div>
-            <dt className="text-muted">Code APE</dt>
-            <dd className="mt-1 font-bold">{SITE.ape}</dd>
-          </div>
-          <div>
-            <dt className="text-muted">Immatricule</dt>
-            <dd className="mt-1 font-bold">04.08.2026</dd>
-          </div>
-          <div>
-            <dt className="text-muted">Base a</dt>
-            <dd className="mt-1 font-bold">{SITE.address.city}</dd>
-          </div>
-        </dl>
       </div>
     </section>
   );
