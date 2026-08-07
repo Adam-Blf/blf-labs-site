@@ -1,0 +1,60 @@
+/*
+  Direction artistique retenue : "Bento tech".
+
+  Choisie par Adam le 2026-08-07 parmi huit candidates comparees sur la vraie
+  page d'accueil. Synthese de ses deux preferences : la STRUCTURE de la direction
+  Bento (grands rayons, cartes souples, boutons pilule, casse normale, aucun
+  trait epais) et la PALETTE de la direction Tech (fonds profonds, accent violet,
+  appui turquoise). Registre vise : produit logiciel contemporain, rassurant pour
+  un client qui achete du developpement, sans le folklore brutaliste de Bacchana.
+
+  Un trait de 1 px est conserve la ou Bento n'en avait aucun : sans lui, les
+  cartes ne se detachent plus du fond en mode sombre, et les zones cliquables
+  deviennent difficiles a percevoir.
+
+  Regle de contraste (apprise sur Bacchana) : --accent-ink et --support-ink sont
+  INVARIANTS par theme. Tout texte pose sur un aplat les utilise, jamais --ink,
+  sans quoi le texte s'inverse avec le theme alors que l'aplat, lui, ne bouge
+  pas. Verifie par scripts/check_contrast.mjs.
+*/
+
+.dir-labs {
+  --paper: #f7f8fa;
+  --ink: #0d1117;
+  --muted: #5b6472;
+  --surface: #ffffff;
+  --line: #e2e5ea;
+  --accent: #5b5bd6;
+  --accent-ink: #ffffff;
+  --support: #0d7d72;
+  --support-ink: #ffffff;
+
+  --radius: 22px;
+  --radius-sm: 14px;
+  --radius-pill: 999px;
+  --border-w: 1px;
+  --shadow: 0 14px 36px -18px rgba(13, 17, 23, 0.26);
+  --shadow-sm: 0 6px 18px -10px rgba(13, 17, 23, 0.28);
+  --font-title: var(--font-grotesk);
+  --font-body: var(--font-grotesk);
+  --title-transform: none;
+  --title-weight: 700;
+  --title-tracking: -0.035em;
+  --title-leading: 1.04;
+  --section-py: 5rem;
+}
+
+.dark .dir-labs,
+.dir-labs.dark {
+  --paper: #0a0c10;
+  --ink: #eceef2;
+  --muted: #9aa3b2;
+  --surface: #13161d;
+  --line: #262b35;
+  --accent: #7c7cf0;
+  --accent-ink: #0a0026;
+  --support: #2dd4bf;
+  --support-ink: #00201c;
+  --shadow: 0 14px 36px -18px rgba(0, 0, 0, 0.8);
+  --shadow-sm: 0 6px 18px -10px rgba(0, 0, 0, 0.8);
+}

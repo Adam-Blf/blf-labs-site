@@ -1,26 +1,113 @@
 @import "tailwindcss";
+@import "./themes.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+  Les composants ne codent en dur ni epaisseur de trait, ni rayon, ni ombre, ni
+  casse de titre : ils utilisent les classes ci-dessous, qui lisent les tokens de
+  la direction artistique active (voir themes.css). C'est ce qui permet de
+  changer completement de style sans toucher a une seule ligne de composant.
+*/
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-support: var(--support);
+  --color-support-ink: var(--support-ink);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+/* Bloc : carte, bouton, encadre. Toute la personnalite de la direction passe
+   par ces quatre proprietes. */
+.blk {
+  border-width: var(--border-w);
+  border-style: solid;
+  border-color: var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.blk-sm {
+  border-width: var(--border-w);
+  border-style: solid;
+  border-color: var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Bloc sans relief : etiquettes, filets, separations internes. */
+.blk-flat {
+  border-width: var(--border-w);
+  border-style: solid;
+  border-color: var(--line);
+  border-radius: var(--radius);
+}
+
+/* Titres : police, casse, graisse, chasse et interlignage viennent tous de la
+   direction active. */
+.title {
+  font-family: var(--font-title), system-ui, sans-serif;
+  text-transform: var(--title-transform);
+  font-weight: var(--title-weight);
+  letter-spacing: var(--title-tracking);
+  line-height: var(--title-leading);
+}
+
+/* Etiquettes techniques : toujours en monospace, quelle que soit la direction. */
+.mono {
+  font-family: var(--font-mono), Consolas, monospace;
+}
+
+/* Rythme vertical des sections, lui aussi porte par la direction. */
+.section {
+  padding-top: var(--section-py);
+  padding-bottom: var(--section-py);
+}
+
+/* Trait de separation entre sections : invisible quand la direction ne veut pas
+   de traits (affichiste, bento), sans qu'aucun composant n'ait a le savoir. */
+.rule-b {
+  border-bottom-width: var(--border-w);
+  border-bottom-style: solid;
+  border-bottom-color: var(--line);
+}
+
+.rule-t {
+  border-top-width: var(--border-w);
+  border-top-style: solid;
+  border-top-color: var(--line);
+}
+
+/* Les chiffres (SIRET, tarifs, dates) ne doivent pas danser d'une ligne a
+   l'autre. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Anneau de focus visible sur toutes les directions, exigence a11y. */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 3px solid var(--support);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
