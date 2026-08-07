@@ -1,9 +1,13 @@
 /**
  * Realisations affichees publiquement.
  *
- * Regle : uniquement des projets en ligne, verifies accessibles, et dont
- * l'URL a ete controlee (ohynozen.fr s'ecrit sans "p", contrairement au nom du
- * projet d'hebergement - une URL inventee aurait donne un lien mort).
+ * Regle : uniquement des projets en ligne, verifies accessibles, et dont l'URL
+ * a ete controlee au moment de l'ecriture.
+ *
+ * Deux pieges deja rencontres sur cette seule fiche : le nom s'ecrit "ohynozen"
+ * sans "p", contrairement au nom du projet d'hebergement, et l'extension est
+ * ".com" - le ".fr" ne repond pas. Verifie par requete, pas de memoire.
+ *
  * Aucun projet hospitalier ici : donnees de sante, hors ligne par nature.
  */
 
@@ -39,7 +43,7 @@ export const REFERENCES: Reference[] = [
     role: "Site vitrine livre pour un cabinet de therapie",
     summary:
       "Site de presentation d'un cabinet : prestations, prise de contact, contenus modifiables par la praticienne sans passer par un developpeur.",
-    url: "https://ohynozen.fr",
+    url: "https://ohynozen.com",
     facts: [
       "Interface d'edition reservee a la proprietaire du site",
       "Pages legales et RGPD en place des la mise en ligne",

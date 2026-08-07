@@ -2,10 +2,9 @@
 @import "./themes.css";
 
 /*
-  Les composants ne codent en dur ni epaisseur de trait, ni rayon, ni ombre, ni
-  casse de titre : ils utilisent les classes ci-dessous, qui lisent les tokens de
-  la direction artistique active (voir themes.css). C'est ce qui permet de
-  changer completement de style sans toucher a une seule ligne de composant.
+  Les composants ne codent en dur ni epaisseur de trait, ni rayon, ni casse de
+  titre : ils utilisent les classes ci-dessous, qui lisent les jetons de la
+  direction artistique (voir themes.css).
 */
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -26,10 +25,37 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-text), system-ui, sans-serif;
+  position: relative;
 }
 
-/* Bloc : carte, bouton, encadre. Toute la personnalite de la direction passe
-   par ces quatre proprietes. */
+/*
+  Grain de papier.
+
+  Genere par un filtre SVG en ligne, sans aucun fichier image : rien a
+  telecharger, rien qui parte vers un serveur tiers, et le rendu s'adapte a
+  n'importe quelle taille d'ecran. C'est ce qui empeche la page d'avoir la
+  surface parfaitement lisse et morte des gabarits.
+
+  `pointer-events: none` est indispensable : sans lui, cette couche fixe
+  couvrirait toute la page et intercepterait les clics.
+*/
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Le contenu passe au-dessus du grain. */
+body > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Bloc : carte, encadre, champ. */
 .blk {
   border-width: var(--border-w);
   border-style: solid;
@@ -42,16 +68,15 @@ body {
   border-width: var(--border-w);
   border-style: solid;
   border-color: var(--line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   box-shadow: var(--shadow-sm);
 }
 
-/* Bloc sans relief : etiquettes, filets, separations internes. */
 .blk-flat {
   border-width: var(--border-w);
   border-style: solid;
   border-color: var(--line);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
 }
 
 /* Titres : police, casse, graisse, chasse et interlignage viennent tous de la
@@ -65,26 +90,34 @@ body {
 }
 
 /*
-  Etiquettes techniques.
-  Il n'y a plus de police monospace : celle utilisee jusqu'ici portait un zero
-  pointe, trop reconnaissable. Le role est desormais tenu par la police de texte
-  en petites capitales espacees, ce qui distingue l'etiquette du contenu sans
-  charger une famille supplementaire.
+  Etiquettes techniques : petites capitales espacees.
+  Il n'y a volontairement aucune police monospace dans le projet - celle
+  utilisee au depart portait un zero pointe, signature trop reconnaissable.
 */
 .mono {
   font-family: var(--font-text), system-ui, sans-serif;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.1em;
   font-weight: 600;
 }
 
-/* Rythme vertical des sections, lui aussi porte par la direction. */
+/*
+  Numero de section, pose dans la marge comme sur un plan technique.
+  C'est l'element signature de la direction : on le retrouve sur chaque
+  section, chaque offre et chaque etape de la methode.
+*/
+.marginalia {
+  font-family: var(--font-text), system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.14em;
+  font-weight: 600;
+  color: var(--accent);
+}
+
 .section {
   padding-top: var(--section-py);
   padding-bottom: var(--section-py);
 }
 
-/* Trait de separation entre sections : invisible quand la direction ne veut pas
-   de traits (affichiste, bento), sans qu'aucun composant n'ait a le savoir. */
 .rule-b {
   border-bottom-width: var(--border-w);
   border-bottom-style: solid;
@@ -97,15 +130,14 @@ body {
   border-top-color: var(--line);
 }
 
-/* Les chiffres (SIRET, tarifs, dates) ne doivent pas danser d'une ligne a
-   l'autre. */
+/* Les chiffres ne doivent pas danser d'une ligne a l'autre. */
 .tabular {
   font-variant-numeric: tabular-nums;
 }
 
-/* Anneau de focus visible sur toutes les directions, exigence a11y. */
+/* Anneau de focus visible, exigence a11y. */
 :where(a, button, input, textarea, select, [tabindex]):focus-visible {
-  outline: 3px solid var(--support);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 

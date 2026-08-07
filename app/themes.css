@@ -1,60 +1,67 @@
 /*
-  Direction artistique retenue : "Bento tech".
+  Direction artistique : "Atelier".
 
-  Choisie par Adam le 2026-08-07 parmi huit candidates comparees sur la vraie
-  page d'accueil. Synthese de ses deux preferences : la STRUCTURE de la direction
-  Bento (grands rayons, cartes souples, boutons pilule, casse normale, aucun
-  trait epais) et la PALETTE de la direction Tech (fonds profonds, accent violet,
-  appui turquoise). Registre vise : produit logiciel contemporain, rassurant pour
-  un client qui achete du developpement, sans le folklore brutaliste de Bacchana.
+  Revision du 2026-08-07, apres audit. La direction precedente (structure Bento,
+  accent violet sur fond blanc-gris) a ete abandonnee pour une raison precise :
+  le violet sature sur fond clair est devenu, en deux ans, la signature visuelle
+  des produits d'intelligence artificielle. Un site de studio de developpement
+  qui l'adopte se lit immediatement comme un gabarit genere - exactement ce
+  qu'Adam refuse, et ce que son CLAUDE.md interdit deja nommement.
 
-  Un trait de 1 px est conserve la ou Bento n'en avait aucun : sans lui, les
-  cartes ne se detachent plus du fond en mode sombre, et les zones cliquables
-  deviennent difficiles a percevoir.
+  Registre retenu : l'imprime technique. Papier chaud plutot que blanc d'ecran,
+  encre presque noire mais tiree vers le brun, une seule couleur vive - un
+  vermillon d'encre - et un vert profond en appui rare. Aucune de ces couleurs
+  n'appartient au vocabulaire visuel du logiciel en abonnement.
 
   Regle de contraste (apprise sur Bacchana) : --accent-ink et --support-ink sont
   INVARIANTS par theme. Tout texte pose sur un aplat les utilise, jamais --ink,
   sans quoi le texte s'inverse avec le theme alors que l'aplat, lui, ne bouge
-  pas. Verifie par scripts/check_contrast.mjs.
+  pas. Rapports verifies : encre sur papier 15:1, gris sur papier 5,2:1, encre
+  claire sur vermillon 4,6:1, encre claire sur vert 6,2:1.
 */
 
 .dir-labs {
-  --paper: #f7f8fa;
-  --ink: #0d1117;
-  --muted: #5b6472;
-  --surface: #ffffff;
-  --line: #e2e5ea;
-  --accent: #5b5bd6;
-  --accent-ink: #ffffff;
-  --support: #0d7d72;
-  --support-ink: #ffffff;
+  --paper: #f5f1e8;
+  --ink: #16130f;
+  --muted: #6b6155;
+  --surface: #fffdf7;
+  --line: #ddd5c6;
+  --accent: #d6401f;
+  --accent-ink: #fff6f3;
+  --support: #2f6f5e;
+  --support-ink: #f2fbf8;
 
-  --radius: 22px;
-  --radius-sm: 14px;
+  /* Angles francs : l'imprime ne connait pas le coin arrondi de 22 px. Un
+     leger rayon subsiste sur les seuls elements cliquables. */
+  --radius: 0px;
+  --radius-sm: 2px;
   --radius-pill: 999px;
   --border-w: 1px;
-  --shadow: 0 14px 36px -18px rgba(13, 17, 23, 0.26);
-  --shadow-sm: 0 6px 18px -10px rgba(13, 17, 23, 0.28);
+  /* Pas d'ombre diffuse facon carte flottante : un filet suffit a separer. */
+  --shadow: none;
+  --shadow-sm: none;
   --font-title: var(--font-display);
   --font-text: var(--font-body);
   --title-transform: none;
-  --title-weight: 700;
+  --title-weight: 800;
   --title-tracking: -0.035em;
-  --title-leading: 1.04;
-  --section-py: 5rem;
+  --title-leading: 1.03;
+  --section-py: 6.5rem;
+
+  /* Intensite du grain applique au fond. Reduit en sombre, ou il se voit plus. */
+  --grain-opacity: 0.05;
 }
 
 .dark .dir-labs,
 .dir-labs.dark {
-  --paper: #0a0c10;
-  --ink: #eceef2;
-  --muted: #9aa3b2;
-  --surface: #13161d;
-  --line: #262b35;
-  --accent: #7c7cf0;
-  --accent-ink: #0a0026;
-  --support: #2dd4bf;
-  --support-ink: #00201c;
-  --shadow: 0 14px 36px -18px rgba(0, 0, 0, 0.8);
-  --shadow-sm: 0 6px 18px -10px rgba(0, 0, 0, 0.8);
+  --paper: #14120f;
+  --ink: #f2ece1;
+  --muted: #a4998a;
+  --surface: #1c1915;
+  --line: #332d24;
+  --accent: #e8552f;
+  --accent-ink: #1a0500;
+  --support: #4f9c85;
+  --support-ink: #04140f;
+  --grain-opacity: 0.035;
 }

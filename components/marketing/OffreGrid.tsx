@@ -5,14 +5,20 @@ import {
   IconDataIa,
   IconSitesWeb,
 } from "@/components/icons/OffreIcons";
-import { Card } from "@/components/ui/Card";
-import { Reveal } from "@/components/ui/Reveal";
 import { OFFRES, type OffreSlug } from "@/content/offres";
 
 /**
- * Le pictogramme est associe ici, pas dans `content/offres.ts` : le contenu
- * editorial reste du texte pur, sans dependance a un composant React, ce qui
- * permet de le reutiliser cote serveur (emails, exports) sans embarquer de JSX.
+ * Les quatre familles de prestation.
+ *
+ * Reecrit apres audit : la version precedente etait une grille de quatre cartes
+ * identiques, deux par deux, chacune avec son icone, son titre et sa phrase.
+ * C'est le motif "feature cards" le plus reconnaissable du web, celui qui fait
+ * qu'une page se lit comme un gabarit.
+ *
+ * Ici, chaque offre occupe une ligne entiere, avec son numero pose dans la
+ * marge comme sur un plan technique. Les largeurs de colonnes sont volontairement
+ * inegales et le trait ne separe que les lignes, jamais les colonnes : l'oeil
+ * descend au lieu de balayer une grille.
  */
 const ICONS: Record<OffreSlug, (props: { className?: string }) => React.ReactNode> = {
   "sites-web": IconSitesWeb,
@@ -25,55 +31,55 @@ export function OffreGrid() {
   return (
     <section id="offre" className="rule-b">
       <div className="section mx-auto max-w-6xl px-5">
-        <Reveal>
+        <div className="flex items-baseline gap-6">
+          <span className="marginalia text-sm">01</span>
           <h2 className="title text-3xl md:text-5xl">Ce qu&rsquo;on fabrique</h2>
-          <p className="mt-4 max-w-2xl text-muted">
-            Quatre familles de projets. Si le votre tient dans plusieurs cases,
-            ou dans aucune, c&rsquo;est une conversation, pas un probleme.
-          </p>
-        </Reveal>
+        </div>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
+        <ul className="mt-16">
           {OFFRES.map((offre, index) => {
             const Icon = ICONS[offre.slug];
 
             return (
-              <Reveal key={offre.slug} delay={index * 0.06}>
-                <Card className="h-full transition-transform duration-200 hover:-translate-y-1">
+                <li key={offre.slug} className="rule-t">
                   <Link
                     href={`/offre/${offre.slug}`}
-                    className="group flex h-full flex-col p-7"
+                    className="group grid gap-x-8 gap-y-4 py-10 md:grid-cols-[4rem_1fr] lg:grid-cols-[4rem_minmax(0,22rem)_1fr]"
                   >
-                    <div className="flex items-center justify-between gap-4">
-                      <Icon className="h-9 w-9 text-accent" />
-                      <span className="tabular mono text-sm font-bold text-muted">
+                    {/* Marge : numero et pictogramme, hors du flux de lecture. */}
+                    <div className="flex items-start gap-4 md:flex-col md:gap-6">
+                      <span className="marginalia tabular text-sm">
                         {offre.index}
                       </span>
+                      <Icon className="h-7 w-7 text-muted transition-colors group-hover:text-accent" />
                     </div>
 
-                    <h3 className="title mt-5 text-2xl group-hover:underline md:text-3xl">
+                    <h3 className="title text-3xl md:text-4xl lg:text-[2.75rem]">
                       {offre.title}
                     </h3>
 
-                    <p className="mt-3 text-muted">{offre.pitch}</p>
+                    <div className="lg:pt-2">
+                      <p className="max-w-xl text-lg leading-relaxed text-muted">
+                        {offre.pitch}
+                      </p>
 
-                    <ul className="mt-6 flex flex-wrap gap-2">
-                      {offre.stack.map((tool) => (
-                        <li key={tool} className="blk-flat mono px-2 py-1 text-xs">
-                          {tool}
-                        </li>
-                      ))}
-                    </ul>
+                      <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2">
+                        {offre.stack.map((tool) => (
+                          <li key={tool} className="mono text-xs text-muted">
+                            {tool}
+                          </li>
+                        ))}
+                      </ul>
 
-                    <span className="mono mt-auto pt-6 text-sm font-bold">
-                      En savoir plus
-                    </span>
+                      <span className="mono mt-6 inline-block border-b border-current pb-1 text-xs uppercase transition-colors group-hover:text-accent">
+                        Voir le detail
+                      </span>
+                    </div>
                   </Link>
-                </Card>
-              </Reveal>
+                </li>
             );
           })}
-        </div>
+        </ul>
       </div>
     </section>
   );

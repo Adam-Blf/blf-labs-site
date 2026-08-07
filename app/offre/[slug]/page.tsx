@@ -5,7 +5,6 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { Reveal } from "@/components/ui/Reveal";
 import { OFFRES, OFFRE_BY_SLUG } from "@/content/offres";
 
 // Next 16 : `params` est une promesse, il faut l'attendre avant de lire le slug.
@@ -74,23 +73,19 @@ export default async function OffrePage({ params }: PageProps) {
 
         <section className="rule-b bg-surface">
           <div className="section mx-auto max-w-4xl px-5">
-            <Reveal>
-              <h2 className="title text-2xl md:text-4xl">Ce qui est livre</h2>
-            </Reveal>
+            <h2 className="title text-2xl md:text-4xl">Ce qui est livre</h2>
 
             <ul className="mt-8 space-y-4">
-              {offre.deliverables.map((item, index) => (
-                <Reveal key={item} delay={index * 0.05}>
-                  <li className="flex gap-4">
-                    {/* Puce dessinee : la regle typographique interdit les
-                        cadratins, et une puce coloree tient mieux le rythme. */}
-                    <span
-                      aria-hidden="true"
-                      className="mt-[9px] block h-2 w-2 shrink-0 rounded-full bg-support"
-                    />
-                    <span className="leading-relaxed">{item}</span>
-                  </li>
-                </Reveal>
+              {offre.deliverables.map((item) => (
+                <li key={item} className="flex gap-4">
+                  {/* Puce dessinee : la regle typographique interdit les
+                      cadratins. */}
+                  <span
+                    aria-hidden="true"
+                    className="mt-[11px] block h-px w-5 shrink-0 bg-accent"
+                  />
+                  <span className="leading-relaxed">{item}</span>
+                </li>
               ))}
             </ul>
 

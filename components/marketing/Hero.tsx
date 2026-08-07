@@ -1,47 +1,58 @@
-import { ButtonLink } from "@/components/ui/Button";
+import Link from "next/link";
 
 /**
- * Hero de la page d'accueil.
+ * Hero "manifeste".
  *
- * Reecrit le 2026-08-07. La version precedente cumulait trois tics de page
- * generee : un mot surligne en couleur au milieu du titre, une promesse vague
- * ("on transforme votre besoin"), et une rangee de chiffres administratifs
- * (SIRET, code APE, date d'immatriculation) presentee comme un argument de
- * vente. Un numero de SIRET ne vend rien : sa place est dans le pied de page et
- * les mentions legales, ou la loi l'exige.
+ * Troisieme version, apres deux rejets pour cause de rendu generique. Les deux
+ * precedentes suivaient le schema titre court, sous-titre explicatif, deux
+ * boutons, celui de n'importe quelle page d'accueil de studio.
  *
- * La promesse retenue est celle qui distingue reellement le studio d'une agence :
- * le client repart proprietaire de son code et de ses acces.
+ * Ici : une seule affirmation, en tres gros, qui occupe l'ecran. Aucun bouton
+ * au premier coup d'oeil, seulement une invitation a descendre. Le pari assume
+ * est qu'une phrase qui engage retient plus qu'une promesse tiede.
+ *
+ * L'affirmation est defendable et pas seulement percutante : le studio remet au
+ * client le depot de code, le nom de domaine et les acces d'hebergement, ce qui
+ * n'est le cas ni d'un logiciel en abonnement, ni d'une agence qui conserve le
+ * code. Elle vise une pratique du marche, aucun concurrent nomme.
  */
 export function Hero() {
   return (
-    <section className="rule-b">
-      <div className="section mx-auto max-w-6xl px-5">
-        <div className="max-w-3xl">
-          <p className="mono text-xs uppercase text-muted">
-            Studio de developpement, Ile-de-France
-          </p>
+    <section className="rule-b flex min-h-[calc(100svh-5rem)] items-center">
+      <div className="mx-auto w-full max-w-6xl px-5 py-20">
+        <h1 className="title max-w-5xl text-balance text-[2.5rem] leading-[1.08] sm:text-6xl lg:text-7xl">
+          La plupart des logiciels qu&rsquo;on vous vend ne vous appartiennent
+          pas.
+          <br />
+          <span className="text-accent">Les notres, si.</span>
+        </h1>
 
-          {/* text-wrap: balance repartit les lignes de facon egale. Des retours
-              forcés donnaient une ligne pleine suivie d'un mot orphelin, et
-              cassaient a chaque changement de largeur d'ecran. */}
-          <h1 className="title mt-6 text-balance text-[2.75rem] leading-[1.05] sm:text-6xl lg:text-7xl">
-            On construit votre outil. Vous en gardez les cles.
-          </h1>
+        <p className="mt-10 max-w-xl text-lg leading-relaxed text-muted">
+          Sites, applications web et mobiles, outils data. A la livraison, le
+          code, le nom de domaine et les acces sont a votre nom.
+        </p>
 
-          <p className="mt-8 max-w-xl text-lg leading-relaxed text-muted">
-            Sites, applications web et mobiles, outils data. Un seul
-            interlocuteur du cadrage a la mise en ligne, et le code, le domaine
-            et les acces a votre nom.
-          </p>
-
-          <div className="mt-10 flex flex-wrap gap-4">
-            <ButtonLink href="/commander">Commander un projet</ButtonLink>
-            <ButtonLink href="/#offre" variant="ghost">
-              Voir l&rsquo;offre
-            </ButtonLink>
-          </div>
-        </div>
+        {/* Invitation a descendre plutot qu'un bouton : la page se lit, elle ne
+            se consomme pas en un clic. Le lien reste un vrai lien d'ancrage,
+            donc utilisable au clavier et annonce correctement. */}
+        <Link
+          href="/#offre"
+          className="mono mt-16 inline-flex min-h-[44px] items-center gap-3 text-sm uppercase text-muted transition-colors hover:text-ink"
+        >
+          Ce qu&rsquo;on fabrique
+          <svg
+            viewBox="0 0 24 24"
+            className="h-5 w-5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M12 5v14M19 12l-7 7-7-7" />
+          </svg>
+        </Link>
       </div>
     </section>
   );
