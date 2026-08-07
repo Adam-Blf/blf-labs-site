@@ -76,3 +76,8 @@ scripts/*.local.sh
 # Outils d'agents
 .claude/
 .aider*
+# Config MCP : porte des cles API en clair (x-api-key), ne doit jamais partir
+# dans un depot public.
+.mcp.json
+mcp.json
+21st_sk_*

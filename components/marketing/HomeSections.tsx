@@ -1,15 +1,18 @@
 import { CtaBand } from "./CtaBand";
+import { Faq } from "./Faq";
 import { Hero } from "./Hero";
 import { Methode } from "./Methode";
 import { OffreGrid } from "./OffreGrid";
 import { ReferencesSection } from "./ReferencesSection";
 
 /**
- * Corps de la page d'accueil, isole de la page elle-meme.
+ * Corps de la page d'accueil, isole de la page elle-meme pour rester
+ * reutilisable (il a servi au comparateur de directions artistiques).
  *
- * Raison d'etre : le comparateur de palettes (/design-preview) rejoue exactement
- * la meme page dans chaque palette. Sans ce composant, il faudrait dupliquer le
- * contenu et les trois maquettes divergeraient a la premiere retouche.
+ * Ordre des sections : ce qu'on fait, comment on le fait, la preuve que ca
+ * marche, les objections, puis l'appel a l'action. Mettre la FAQ avant l'appel
+ * a l'action est deliberé : elle leve les dernieres reserves juste avant le
+ * bouton.
  */
 export function HomeSections() {
   return (
@@ -18,6 +21,7 @@ export function HomeSections() {
       <OffreGrid />
       <Methode />
       <ReferencesSection compact />
+      <Faq />
       <CtaBand />
     </>
   );

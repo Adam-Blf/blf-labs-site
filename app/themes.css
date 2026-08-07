@@ -1,148 +1,24 @@
 /*
-  Huit directions artistiques candidates pour le site BLF Lab's.
+  Direction artistique retenue : "Bento tech".
 
-  Une direction n'est PAS qu'une palette : elle fixe aussi la typographie des
-  titres, l'epaisseur des traits, le rayon des angles, la nature de l'ombre, la
-  casse et le rythme vertical. C'est ce qui fait que deux directions ne se
-  ressemblent pas, la ou huit jeux de couleurs sur une meme maquette donnent huit
-  fois la meme page.
+  Choisie par Adam le 2026-08-07 parmi huit candidates comparees sur la vraie
+  page d'accueil. Synthese de ses deux preferences : la STRUCTURE de la direction
+  Bento (grands rayons, cartes souples, boutons pilule, casse normale, aucun
+  trait epais) et la PALETTE de la direction Tech (fonds profonds, accent violet,
+  appui turquoise). Registre vise : produit logiciel contemporain, rassurant pour
+  un client qui achete du developpement, sans le folklore brutaliste de Bacchana.
 
-  Chaque direction se pose en classe (.dir-brut, .dir-affiche...) et fonctionne
-  en clair comme en sombre. Une fois le choix fait, les sept perdantes sont
-  supprimees de ce fichier, ainsi que les polices devenues inutiles.
+  Un trait de 1 px est conserve la ou Bento n'en avait aucun : sans lui, les
+  cartes ne se detachent plus du fond en mode sombre, et les zones cliquables
+  deviennent difficiles a percevoir.
 
   Regle de contraste (apprise sur Bacchana) : --accent-ink et --support-ink sont
   INVARIANTS par theme. Tout texte pose sur un aplat les utilise, jamais --ink,
-  sans quoi le texte s'inverse avec le theme alors que l'aplat reste clair.
+  sans quoi le texte s'inverse avec le theme alors que l'aplat, lui, ne bouge
+  pas. Verifie par scripts/check_contrast.mjs.
 */
 
-/* =================================================================
-   1. BRUT - neobrutalisme, navy et laiton
-   Traits epais, ombres dures, capitales. L'identite deja utilisee sur
-   les badges des depots Adam-Blf.
-   ================================================================= */
-.dir-brut {
-  --paper: #f4f1ea;
-  --ink: #001329;
-  --muted: #4a5763;
-  --surface: #fffdf7;
-  --line: #001329;
-  --accent: #d4a437;
-  --accent-ink: #1a1200;
-  --support: #b93a27;
-  --support-ink: #fff3ef;
-
-  --radius: 0px;
-  --border-w: 3px;
-  --shadow: 6px 6px 0 0 var(--line);
-  --shadow-sm: 4px 4px 0 0 var(--line);
-  --font-title: var(--font-bricolage);
-  --font-body: var(--font-grotesk);
-  --title-transform: uppercase;
-  --title-weight: 800;
-  --title-tracking: -0.02em;
-  --title-leading: 1.02;
-  --section-py: 4.5rem;
-}
-.dark .dir-brut,
-.dir-brut.dark {
-  --paper: #06101c;
-  --ink: #f2efe6;
-  --muted: #a3b3c2;
-  --surface: #0c1c2c;
-  --line: #f2efe6;
-  --support: #e4573f;
-  --support-ink: #1a0600;
-}
-
-/* =================================================================
-   2. AFFICHE - affichiste suisse, noir blanc rouge
-   Typo enorme et large, aucun trait, aucune ombre. Tout repose sur
-   l'echelle et le vide.
-   ================================================================= */
-.dir-affiche {
-  --paper: #ffffff;
-  --ink: #0a0a0a;
-  --muted: #5c5c5c;
-  --surface: #f0f0f0;
-  --line: #0a0a0a;
-  --accent: #e6001e;
-  --accent-ink: #ffffff;
-  --support: #0a0a0a;
-  --support-ink: #ffffff;
-
-  --radius: 0px;
-  --border-w: 0px;
-  --shadow: none;
-  --shadow-sm: none;
-  --font-title: var(--font-poster);
-  --font-body: var(--font-grotesk);
-  --title-transform: uppercase;
-  --title-weight: 400;
-  --title-tracking: -0.045em;
-  --title-leading: 0.92;
-  --section-py: 6rem;
-}
-.dark .dir-affiche,
-.dir-affiche.dark {
-  --paper: #0a0a0a;
-  --ink: #f7f7f7;
-  --muted: #a8a8a8;
-  --surface: #171717;
-  --line: #f7f7f7;
-  --accent: #ff2038;
-  --accent-ink: #140002;
-  --support: #f7f7f7;
-  --support-ink: #0a0a0a;
-}
-
-/* =================================================================
-   3. EDITORIAL - revue imprimee
-   Serif d'affichage en bas de casse, filets fins, grandes marges.
-   Le registre le plus calme et le plus haut de gamme.
-   ================================================================= */
-.dir-editorial {
-  --paper: #faf7f2;
-  --ink: #1a1714;
-  --muted: #6b6259;
-  --surface: #ffffff;
-  --line: #d6cec2;
-  --accent: #1a1714;
-  --accent-ink: #faf7f2;
-  --support: #9a5b34;
-  --support-ink: #ffffff;
-
-  --radius: 0px;
-  --border-w: 1px;
-  --shadow: none;
-  --shadow-sm: none;
-  --font-title: var(--font-serif);
-  --font-body: var(--font-grotesk);
-  --title-transform: none;
-  --title-weight: 400;
-  --title-tracking: -0.015em;
-  --title-leading: 1.05;
-  --section-py: 6.5rem;
-}
-.dark .dir-editorial,
-.dir-editorial.dark {
-  --paper: #14110e;
-  --ink: #f2ece3;
-  --muted: #a99e91;
-  --surface: #1c1815;
-  --line: #3a332c;
-  --accent: #f2ece3;
-  --accent-ink: #14110e;
-  --support: #c2794a;
-  --support-ink: #1a0c02;
-}
-
-/* =================================================================
-   4. TECH - produit logiciel haut de gamme
-   Fond profond, angles adoucis, traits discrets, ombre diffuse,
-   un seul accent lumineux. Registre Linear et Vercel.
-   ================================================================= */
-.dir-tech {
+.dir-labs {
   --paper: #f7f8fa;
   --ink: #0d1117;
   --muted: #5b6472;
@@ -150,23 +26,26 @@
   --line: #e2e5ea;
   --accent: #5b5bd6;
   --accent-ink: #ffffff;
-  --support: #0d9488;
+  --support: #0d7d72;
   --support-ink: #ffffff;
 
-  --radius: 14px;
+  --radius: 22px;
+  --radius-sm: 14px;
+  --radius-pill: 999px;
   --border-w: 1px;
-  --shadow: 0 18px 40px -20px rgba(13, 17, 23, 0.28);
-  --shadow-sm: 0 8px 20px -12px rgba(13, 17, 23, 0.3);
+  --shadow: 0 14px 36px -18px rgba(13, 17, 23, 0.26);
+  --shadow-sm: 0 6px 18px -10px rgba(13, 17, 23, 0.28);
   --font-title: var(--font-grotesk);
   --font-body: var(--font-grotesk);
   --title-transform: none;
   --title-weight: 700;
-  --title-tracking: -0.03em;
-  --title-leading: 1.05;
-  --section-py: 5.5rem;
+  --title-tracking: -0.035em;
+  --title-leading: 1.04;
+  --section-py: 5rem;
 }
-.dark .dir-tech,
-.dir-tech.dark {
+
+.dark .dir-labs,
+.dir-labs.dark {
   --paper: #0a0c10;
   --ink: #eceef2;
   --muted: #9aa3b2;
@@ -176,172 +55,6 @@
   --accent-ink: #0a0026;
   --support: #2dd4bf;
   --support-ink: #00201c;
-  --shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.8);
-  --shadow-sm: 0 8px 20px -12px rgba(0, 0, 0, 0.8);
-}
-
-/* =================================================================
-   5. BLUEPRINT - plan d'ingenieur
-   Bleu nuit, traits fins cyan, tout en capitales monospace. Le plus
-   "laboratoire" au sens propre.
-   ================================================================= */
-.dir-blueprint {
-  --paper: #eef3f8;
-  --ink: #06243d;
-  --muted: #4a6a85;
-  --surface: #ffffff;
-  --line: #06243d;
-  --accent: #0b7fab;
-  --accent-ink: #ffffff;
-  --support: #d1495b;
-  --support-ink: #ffffff;
-
-  --radius: 0px;
-  --border-w: 1px;
-  --shadow: none;
-  --shadow-sm: none;
-  --font-title: var(--font-mono);
-  --font-body: var(--font-grotesk);
-  --title-transform: uppercase;
-  --title-weight: 700;
-  --title-tracking: 0.01em;
-  --title-leading: 1.1;
-  --section-py: 5rem;
-}
-.dark .dir-blueprint,
-.dir-blueprint.dark {
-  --paper: #05192b;
-  --ink: #d7ecf7;
-  --muted: #7d9db2;
-  --surface: #082238;
-  --line: #2c5f80;
-  --accent: #35c5f0;
-  --accent-ink: #00161f;
-  --support: #ff6b7d;
-  --support-ink: #250008;
-}
-
-/* =================================================================
-   6. RISO - impression risographie
-   Deux encres franches qui se superposent, ombre decalee coloree,
-   papier chaud. Chaleureux et artisanal.
-   ================================================================= */
-.dir-riso {
-  --paper: #fdf3e3;
-  --ink: #221c1a;
-  --muted: #6a5c52;
-  --surface: #fff9ee;
-  --line: #221c1a;
-  --accent: #ff5c39;
-  --accent-ink: #1c0400;
-  --support: #2b4bd6;
-  --support-ink: #ffffff;
-
-  --radius: 2px;
-  --border-w: 2px;
-  --shadow: 7px 7px 0 0 var(--support);
-  --shadow-sm: 4px 4px 0 0 var(--support);
-  --font-title: var(--font-bricolage);
-  --font-body: var(--font-grotesk);
-  --title-transform: none;
-  --title-weight: 800;
-  --title-tracking: -0.03em;
-  --title-leading: 1;
-  --section-py: 5rem;
-}
-.dark .dir-riso,
-.dir-riso.dark {
-  --paper: #1a1512;
-  --ink: #f7ead6;
-  --muted: #b2a08e;
-  --surface: #241d19;
-  --line: #f7ead6;
-  --accent: #ff7355;
-  --accent-ink: #1c0400;
-  --support: #6b83f0;
-  --support-ink: #050a2b;
-}
-
-/* =================================================================
-   7. BENTO - carte souple contemporaine
-   Grands rayons, aucun trait, ombres tres douces, casse normale.
-   Le registre le plus doux et le plus "application".
-   ================================================================= */
-.dir-bento {
-  --paper: #f1f0ee;
-  --ink: #1b1a18;
-  --muted: #6d6a65;
-  --surface: #ffffff;
-  --line: transparent;
-  --accent: #1b1a18;
-  --accent-ink: #f7f6f4;
-  --support: #cf5c36;
-  --support-ink: #ffffff;
-
-  --radius: 26px;
-  --border-w: 0px;
-  --shadow: 0 12px 32px -16px rgba(27, 26, 24, 0.22);
-  --shadow-sm: 0 6px 18px -10px rgba(27, 26, 24, 0.25);
-  --font-title: var(--font-grotesk);
-  --font-body: var(--font-grotesk);
-  --title-transform: none;
-  --title-weight: 700;
-  --title-tracking: -0.035em;
-  --title-leading: 1.03;
-  --section-py: 5rem;
-}
-.dark .dir-bento,
-.dir-bento.dark {
-  --paper: #131211;
-  --ink: #f2f1ef;
-  --muted: #a09d97;
-  --surface: #1d1b19;
-  --line: transparent;
-  --accent: #f2f1ef;
-  --accent-ink: #131211;
-  --support: #e07a52;
-  --support-ink: #1c0800;
-  --shadow: 0 12px 32px -16px rgba(0, 0, 0, 0.75);
-  --shadow-sm: 0 6px 18px -10px rgba(0, 0, 0, 0.75);
-}
-
-/* =================================================================
-   8. TERMINAL - console
-   Tout en monospace, phosphore sur noir. Le plus radical, le plus
-   clivant, le plus "ingenieur".
-   ================================================================= */
-.dir-terminal {
-  --paper: #f4f4ef;
-  --ink: #14180f;
-  --muted: #5a6150;
-  --surface: #ffffff;
-  --line: #14180f;
-  --accent: #2f7d32;
-  --accent-ink: #ffffff;
-  --support: #b45309;
-  --support-ink: #ffffff;
-
-  --radius: 0px;
-  --border-w: 1px;
-  --shadow: none;
-  --shadow-sm: none;
-  --font-title: var(--font-mono);
-  --font-body: var(--font-mono);
-  --title-transform: uppercase;
-  --title-weight: 700;
-  --title-tracking: -0.01em;
-  --title-leading: 1.15;
-  --section-py: 4.5rem;
-}
-.dark .dir-terminal,
-.dir-terminal.dark {
-  --paper: #080a06;
-  --ink: #c8f7a0;
-  --muted: #7c9a63;
-  --surface: #0e1209;
-  --line: #2f4a1f;
-  --accent: #7ee34f;
-  --accent-ink: #06120a;
-  --support: #f0b429;
-  --support-ink: #1a1000;
+  --shadow: 0 14px 36px -18px rgba(0, 0, 0, 0.8);
+  --shadow-sm: 0 6px 18px -10px rgba(0, 0, 0, 0.8);
 }

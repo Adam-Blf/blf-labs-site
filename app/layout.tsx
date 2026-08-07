@@ -1,19 +1,26 @@
 import type { Metadata } from "next";
-import { display, mono, poster, sans, serif } from "./fonts";
+import { mono, sans } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://beloucif.com"),
   title: {
     default: "BLF Lab's - studio de developpement d'applications",
     template: "%s - BLF Lab's",
   },
   description:
     "Studio independant qui concoit et livre des sites, des applications web et mobiles, et des outils data et IA. Base en Ile-de-France.",
+  openGraph: {
+    type: "website",
+    locale: "fr_FR",
+    siteName: "BLF Lab's",
+    url: "https://beloucif.com",
+  },
 };
 
 /**
  * Applique le theme avant le premier rendu pour eviter le flash de theme clair
- * sur un visiteur en sombre. Reste inline volontairement : un fichier separe
+ * chez un visiteur en sombre. Reste inline volontairement : un fichier separe
  * serait charge trop tard.
  */
 const themeBootstrap = `
@@ -26,27 +33,15 @@ try {
 } catch (e) {}
 `;
 
-// Direction artistique active. Tant que le choix n'est pas fait, le site tourne
-// sur "brut" ; les huit candidates sont comparables sur /design-preview.
-const DIRECTION = "dir-brut";
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const fonts = [
-    display.variable,
-    sans.variable,
-    mono.variable,
-    serif.variable,
-    poster.variable,
-  ].join(" ");
-
   return (
     <html
       lang="fr"
-      className={`${fonts} ${DIRECTION} h-full antialiased`}
+      className={`${sans.variable} ${mono.variable} dir-labs h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

@@ -15,10 +15,11 @@ Usage :
   python scripts/ovh_dns.py delete --id 123456789
   python scripts/ovh_dns.py refresh
 
-Le fichier d'environnement est cherche dans cet ordre :
+Le fichier d'environnement est cherche dans cet ordre, premier existant retenu :
   1. l'option --env-file
   2. la variable d'environnement OVH_ENV_FILE
-  3. C:/Users/adamb/Desktop/bacchana.env
+  3. C:/Users/adamb/Desktop/.env          (fichier dedie Icons8 + OVH)
+  4. C:/Users/adamb/Desktop/bacchana.env  (repli historique)
 """
 
 from __future__ import annotations
@@ -33,8 +34,27 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-DEFAULT_ENV = Path("C:/Users/adamb/Desktop/bacchana.env")
+ENV_CANDIDATES = (
+    Path("C:/Users/adamb/Desktop/.env"),
+    Path("C:/Users/adamb/Desktop/bacchana.env"),
+)
 ZONE = "beloucif.com"
+
+
+def resolve_env_file(explicit: Path | None) -> Path:
+    """Premier fichier d'environnement existant, sans jamais lire son contenu."""
+    if explicit:
+        return explicit
+    override = os.environ.get("OVH_ENV_FILE")
+    if override:
+        return Path(override)
+    for candidate in ENV_CANDIDATES:
+        if candidate.exists():
+            return candidate
+    sys.exit(
+        "Aucun fichier d'environnement trouve. Emplacements essayes : "
+        + ", ".join(str(path) for path in ENV_CANDIDATES)
+    )
 REQUIRED = ("OVH_APPLICATION_KEY", "OVH_APPLICATION_SECRET", "OVH_CONSUMER_KEY")
 
 ENDPOINTS = {
@@ -173,8 +193,7 @@ def main() -> int:
     p_ref.set_defaults(func=cmd_refresh)
 
     args = parser.parse_args()
-    env_file = args.env_file or Path(os.environ.get("OVH_ENV_FILE", DEFAULT_ENV))
-    creds = load_credentials(env_file)
+    creds = load_credentials(resolve_env_file(args.env_file))
     args.func(creds, args)
     return 0
 
