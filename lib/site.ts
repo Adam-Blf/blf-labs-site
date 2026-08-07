@@ -13,7 +13,7 @@ export const SITE = {
   // patronyme, "BLF Lab's" n'est que le nom commercial. Formulation exacte
   // exigee tant que le nom commercial n'est pas declare.
   legalName: "Adam Beloucif",
-  legalMention: "Adam Beloucif, exercant sous le nom commercial BLF Lab's",
+  legalMention: "Adam Beloucif, exerçant sous le nom commercial BLF Lab's",
   legalForm: "Entrepreneur individuel",
   siren: "108386855",
   siret: "10838685500010",
@@ -34,6 +34,22 @@ export const SITE = {
   email: "adam@beloucif.com",
 
   /**
+   * Telephone de l'editeur, publie dans les mentions legales.
+   *
+   * Ce n'est pas un choix de communication : la loi pour la confiance dans
+   * l'economie numerique impose a un editeur professionnel personne physique
+   * d'etre joignable, et le telephone fait partie des elements exiges au meme
+   * titre que l'adresse, deja publiee. Une entreprise individuelle n'a pas de
+   * ligne distincte de celle de son dirigeant, donc c'est ce numero qui
+   * figure.
+   *
+   * Il est volontairement ABSENT des donnees structurees de la page d'accueil
+   * (voir components/seo/JsonLd.tsx) : l'obligation est de le rendre
+   * consultable, pas de le rendre moissonnable par les agregateurs.
+   */
+  phone: "+33 7 86 46 68 34",
+
+  /**
    * Adresse qui recoit reellement les notifications de commande.
    *
    * Elle est volontairement DIFFERENTE de l'adresse publique. adam@beloucif.com
@@ -52,7 +68,7 @@ export const SITE = {
   url: "https://beloucif.com",
   // Franchise en base : aucune TVA facturee, mention obligatoire sur les devis
   // et factures.
-  vat: "TVA non applicable, article 293 B du Code général des impots",
+  vat: "TVA non applicable, article 293 B du Code général des impôts",
   mediator: {
     name: "CM2C",
     fullName: "Centre de la médiation de la consommation de conciliateurs de justice",

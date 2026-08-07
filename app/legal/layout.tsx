@@ -2,7 +2,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 
 /**
- * Cadre commun aux pages legales.
+ * Cadre commun aux pages légales.
  *
  * Les styles de texte sont poses ici une fois pour toutes plutot que repetes
  * dans chaque page : les trois documents doivent se lire de la meme facon.

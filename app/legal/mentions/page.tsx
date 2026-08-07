@@ -24,18 +24,22 @@ export default function MentionsPage() {
         <li>{SITE.legalMention}</li>
         <li>Forme juridique : {SITE.legalForm}</li>
         <li className="tabular">SIREN : {SITE.siren}</li>
-        <li className="tabular">SIRET du siege : {SIRET_PRETTY}</li>
+        <li className="tabular">SIRET du siège : {SIRET_PRETTY}</li>
         <li>
           Code APE : {SITE.ape} ({SITE.apeLabel})
         </li>
-        <li>Siege social : {FULL_ADDRESS}</li>
+        <li>Siège social : {FULL_ADDRESS}</li>
         <li>
           Courriel : <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+        </li>
+        <li className="tabular">
+          Téléphone :{" "}
+          <a href={`tel:${SITE.phone.replace(/\s/g, "")}`}>{SITE.phone}</a>
         </li>
         <li>Directeur de la publication : Adam Beloucif</li>
       </ul>
 
-      <h2 className="title">Taxe sur la valeur ajoutee</h2>
+      <h2 className="title">Taxe sur la valeur ajoutée</h2>
       <p>{SITE.vat}.</p>
 
       <h2 className="title">Hébergeur</h2>
@@ -51,8 +55,8 @@ export default function MentionsPage() {
 
       <h2 className="title">Médiation de la consommation</h2>
       <p>
-        Conformement a l&rsquo;article L. 612-1 du Code de la consommation, tout
-        consommateur peut recourir gratuitement a un mediateur en vue de la
+        Conformément à l&rsquo;article L. 612-1 du Code de la consommation, tout
+        consommateur peut recourir gratuitement à un médiateur en vue de la
         resolution amiable d&rsquo;un litige. Le mediateur retenu est{" "}
         {SITE.mediator.name} ({SITE.mediator.fullName}), {SITE.mediator.address},{" "}
         <a href={SITE.mediator.url} target="_blank" rel="noopener noreferrer">

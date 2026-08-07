@@ -41,42 +41,78 @@ export default function ConfidentialitePage() {
         </li>
       </ul>
 
-      <h2 className="title">Finalite et base légale</h2>
+      <h2 className="title">Finalité et base légale</h2>
       <p>
-        Ces données servent exclusivement a répondre a votre demande et, le cas
-        echeant, a etablir un devis. La base légale est l&rsquo;execution de
-        mesures precontractuelles prises a votre demande, au sens de
-        l&rsquo;article 6.1.b du règlement général sur la protection des données.
-        Elles ne sont ni revendues, ni utilisees pour de la prospection, ni
-        transmises a des tiers a des fins commerciales.
+        Le nom, l&rsquo;adresse électronique, le téléphone, l&rsquo;organisation
+        et la description du besoin servent exclusivement à répondre à votre
+        demande et, le cas échéant, à établir un devis. La base légale est
+        l&rsquo;exécution de mesures précontractuelles prises à votre demande,
+        au sens de l&rsquo;article 6.1.b du règlement général sur la protection
+        des données. Ces informations ne sont ni revendues, ni utilisées pour de
+        la prospection, ni transmises à des tiers à des fins commerciales.
+      </p>
+      <p>
+        L&rsquo;empreinte technique de l&rsquo;adresse IP et le type de
+        navigateur relèvent d&rsquo;une finalité distincte : limiter les envois
+        automatisés du formulaire. La base légale en est l&rsquo;intérêt
+        légitime de l&rsquo;éditeur à se protéger contre les abus, au sens de
+        l&rsquo;article 6.1.f du même règlement. L&rsquo;adresse IP n&rsquo;est
+        jamais enregistrée en clair : seule une empreinte calculée avec un
+        secret non public est conservée, et elle ne sert qu&rsquo;à cette
+        vérification.
       </p>
 
-      <h2 className="title">Duree de conservation</h2>
+      <h2 className="title">Durée de conservation</h2>
       <p>
-        Trois ans a compter du dernier contact, duree usuelle pour un dossier de
-        prospection. Les demandes qui donnent lieu a un contrat sont conservees
-        selon les obligations comptables applicables. Vous pouvez demander la
-        suppression a tout moment.
+        Trois ans à compter du dernier contact pour les informations liées à
+        votre demande, durée usuelle pour un dossier de prospection. Les
+        demandes qui donnent lieu à un contrat sont conservées selon les
+        obligations comptables applicables. Vous pouvez demander la suppression
+        à tout moment.
+      </p>
+      <p>
+        L&rsquo;empreinte d&rsquo;adresse IP et le type de navigateur suivent
+        une durée distincte, bien plus courte : celle de la fenêtre de
+        limitation, soit une heure. Les conserver plus longtemps
+        n&rsquo;apporterait rien à la finalité qui les justifie.
       </p>
 
       <h2 className="title">Destinataires et sous-traitants</h2>
       <ul>
         <li>
-          <strong>Vercel Inc.</strong> hébergé le site. Les journaux techniques
-          sont conserves de façon limitee dans le temps.
+          <strong>Vercel Inc.</strong> héberge le site. La durée de conservation
+          de ses journaux techniques est celle fixée par sa propre politique de
+          confidentialité, consultable à l&rsquo;adresse{" "}
+          <a
+            href="https://vercel.com/legal/privacy-policy"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            vercel.com/legal/privacy-policy
+          </a>
+          .
         </li>
         <li>
-          <strong>Supabase</strong> hébergé la base de données des demandes, sur
-          une infrastructure situee dans l&rsquo;Union europeenne.
+          <strong>Supabase</strong> héberge la base de données des demandes, sur
+          une infrastructure située dans l&rsquo;Union européenne.
         </li>
         <li>
-          <strong>Resend</strong> achemine les emails de notification et
-          d&rsquo;accuse de reception, depuis la region Irlande.
+          <strong>Resend</strong> achemine les messages de notification et
+          d&rsquo;accusé de réception, depuis la région Irlande.
         </li>
       </ul>
+
+      <h2 className="title">Transferts hors de l&rsquo;Union européenne</h2>
       <p>
-        Aucun transfert de données en dehors de l&rsquo;Union europeenne
-        n&rsquo;est effectue pour le stockage des demandes.
+        Le stockage des demandes reste hébergé dans l&rsquo;Union européenne et
+        ne fait l&rsquo;objet d&rsquo;aucun transfert. En revanche, Vercel Inc.
+        est une société établie aux États-Unis : les journaux techniques de
+        connexion, dont l&rsquo;adresse IP avant tout traitement par le site,
+        sont donc transférés hors de l&rsquo;Union européenne. Ce transfert est
+        encadré par la certification de Vercel Inc. au titre du cadre
+        transatlantique de protection des données, reconnu par une décision
+        d&rsquo;adéquation de la Commission européenne au sens de
+        l&rsquo;article 45 du règlement général sur la protection des données.
       </p>
 
       <h2 className="title">Vos droits</h2>
