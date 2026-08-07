@@ -53,11 +53,7 @@ export default async function OffrePage({ params }: PageProps) {
               Retour aux services
             </Link>
 
-            <p className="tabular mono mt-8 text-sm font-bold text-support">
-              {offre.index}
-            </p>
-
-            <h1 className="title mt-3 text-4xl md:text-6xl">{offre.title}</h1>
+            <h1 className="title mt-8 text-4xl md:text-6xl">{offre.title}</h1>
 
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
               {offre.intro}
@@ -124,10 +120,7 @@ export default async function OffrePage({ params }: PageProps) {
                   href={`/offre/${item.slug}`}
                   className="blk-sm group bg-surface p-5 transition-transform hover:-translate-y-1"
                 >
-                  <span className="tabular mono text-xs text-support">
-                    {item.index}
-                  </span>
-                  <h3 className="title mt-2 text-lg group-hover:underline">
+                  <h3 className="title text-lg group-hover:underline">
                     {item.title}
                   </h3>
                 </Link>

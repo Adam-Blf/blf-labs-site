@@ -22,10 +22,9 @@ export function Faq() {
   return (
     <section id="faq" className="rule-b">
       <div className="section mx-auto max-w-3xl px-5">
-        <div className="flex items-baseline gap-6">
-          <span className="marginalia text-sm">04</span>
-          <h2 className="title text-3xl md:text-5xl">Ce qu&rsquo;on nous demande</h2>
-        </div>
+        <h2 className="title text-4xl sm:text-5xl lg:text-6xl">
+          Ce qu&rsquo;on <span className="grad-text">nous demande</span>
+        </h2>
 
         <ul className="mt-10 space-y-3">
           {FAQ.map((item, index) => {

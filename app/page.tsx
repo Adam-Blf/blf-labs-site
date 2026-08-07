@@ -26,40 +26,44 @@ export default function Home() {
               Par ou <span className="grad-text">commencer</span>
             </h2>
 
+            {/* Aucune numerotation : les sections se distinguent par leur
+                titre et leur contenu, pas par un compteur. */}
             <div className="mt-14 grid gap-6 md:grid-cols-3">
-              <Link
-                href="/services"
-                className="glass group p-8 transition-transform duration-300 hover:-translate-y-1"
-              >
-                <p className="mono text-xs text-muted">01</p>
-                <h3 className="title mt-4 text-2xl">Les services</h3>
-                <p className="mt-3 font-light text-muted">
-                  {OFFRES.length} familles de projets, de la vitrine a
-                  l&rsquo;outil metier.
-                </p>
-              </Link>
+              {[
+                {
+                  href: "/services",
+                  title: "Les services",
+                  body: `${OFFRES.length} familles de projets, de la vitrine a l'outil metier.`,
+                },
+                {
+                  href: "/methode",
+                  title: "La methode",
+                  body: "Comment un projet se deroule, du cadrage a la remise des cles.",
+                },
+                {
+                  href: "/references",
+                  title: "Les realisations",
+                  body: "Des projets livres, en ligne, que vous pouvez consulter.",
+                },
+              ].map((card) => (
+                <Link
+                  key={card.href}
+                  href={card.href}
+                  className="glass group flex flex-col justify-between gap-10 p-8 transition-transform duration-300 hover:-translate-y-1"
+                >
+                  <h3 className="title text-2xl">{card.title}</h3>
 
-              <Link
-                href="/methode"
-                className="glass group p-8 transition-transform duration-300 hover:-translate-y-1"
-              >
-                <p className="mono text-xs text-muted">02</p>
-                <h3 className="title mt-4 text-2xl">La methode</h3>
-                <p className="mt-3 font-light text-muted">
-                  Comment un projet se deroule, du cadrage a la remise des cles.
-                </p>
-              </Link>
-
-              <Link
-                href="/references"
-                className="glass group p-8 transition-transform duration-300 hover:-translate-y-1"
-              >
-                <p className="mono text-xs text-muted">03</p>
-                <h3 className="title mt-4 text-2xl">Les realisations</h3>
-                <p className="mt-3 font-light text-muted">
-                  Des projets livres, en ligne, que vous pouvez consulter.
-                </p>
-              </Link>
+                  <div>
+                    <p className="font-light text-muted">{card.body}</p>
+                    <span
+                      aria-hidden="true"
+                      className="mt-6 inline-block text-xl text-[#f5a524] transition-transform duration-300 group-hover:translate-x-1"
+                    >
+                      &rarr;
+                    </span>
+                  </div>
+                </Link>
+              ))}
             </div>
           </div>
         </section>
