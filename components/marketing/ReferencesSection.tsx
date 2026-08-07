@@ -1,12 +1,16 @@
+import Image from "next/image";
 import { REFERENCES } from "@/content/references";
 
 /**
- * Realisations, en cartes de verre.
+ * Realisations, en grille portfolio.
  *
- * La specification d'origine prevoyait une galerie dont les vignettes
- * s'agrandissent au survol. Elle reposait sur des captures des projets, qui
- * n'existent pas encore ici : la carte s'eleve donc au survol, et l'effet
- * d'agrandissement sera rebranche quand les captures seront disponibles.
+ * Refonte du 2026-08-07. Le diagnostic etait sans appel : la page ne montrait
+ * rien, seulement du texte. Pour un studio, c'est le pire defaut possible - on
+ * demande a un client de juger un travail qu'il ne voit pas.
+ *
+ * Chaque realisation porte donc maintenant une capture du site reel, prise en
+ * ligne puis convertie en WebP. La vignette s'agrandit legerement au survol et
+ * son voile s'estompe : le mouvement sert a designer, pas a decorer.
  */
 export function ReferencesSection({ compact = false }: { compact?: boolean }) {
   return (
@@ -21,67 +25,82 @@ export function ReferencesSection({ compact = false }: { compact?: boolean }) {
           </p>
         </div>
 
-        <div className="mt-16 grid gap-6 lg:grid-cols-2">
-          {REFERENCES.map((reference) => (
-            <article
-              key={reference.slug}
-              className="glass group relative overflow-hidden p-8 transition-transform duration-500 hover:-translate-y-2 sm:p-10"
-            >
-              <span
-                aria-hidden="true"
-                className="absolute -left-20 -top-20 h-48 w-48 rounded-full bg-gradient-to-br from-[#f5a524]/15 to-[#ff6b4a]/15 blur-3xl"
-              />
-
-              <div className="relative z-10">
-                <p className="mono text-xs text-muted">{reference.role}</p>
-
-                <h3 className="title mt-4 text-3xl sm:text-4xl">
-                  {reference.title}
-                </h3>
-
-                <p className="mt-5 font-light leading-relaxed text-muted">
-                  {reference.summary}
-                </p>
-
-                {!compact && (
-                  <ul className="mt-8 space-y-3">
-                    {reference.facts.map((fact) => (
-                      <li
-                        key={fact}
-                        className="flex gap-3 text-sm font-light text-muted-strong"
-                      >
-                        <span
-                          aria-hidden="true"
-                          className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-[#f5a524]"
-                        />
-                        <span>{fact}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
-                  <ul className="flex flex-wrap gap-2">
-                    {reference.tags.map((tag) => (
-                      <li
-                        key={tag}
-                        className="rounded-full border border-line px-3 py-1 text-xs text-muted"
-                      >
-                        {tag}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <a
-                    href={reference.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-pill glass-sm px-5 py-2.5 text-sm font-medium"
-                  >
-                    Voir le site
-                  </a>
+        <div className="mt-16 grid gap-8 lg:grid-cols-2">
+          {REFERENCES.map((reference, index) => (
+            <article key={reference.slug} className="group">
+              <a
+                href={reference.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-line">
+                  <Image
+                    src={reference.shot}
+                    alt={`Capture du site ${reference.title}`}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    /* La premiere vignette est visible d'emblee sur la page
+                       dediee : la charger en priorite evite un trou pendant le
+                       rendu. Les suivantes restent en chargement differe. */
+                    priority={index === 0}
+                    className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                  />
+                  {/* Voile qui s'estompe au survol : la capture s'eclaircit
+                      quand on la designe. */}
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-gradient-to-t from-[#0c1128] via-[#0c1128]/30 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-40"
+                  />
                 </div>
-              </div>
+
+                <div className="mt-6">
+                  <div className="flex flex-wrap items-baseline justify-between gap-4">
+                    <h3 className="title text-2xl sm:text-3xl">
+                      {reference.title}
+                    </h3>
+                    <span className="text-sm text-[#f5a524] transition-transform duration-300 group-hover:translate-x-1">
+                      Voir le site &rarr;
+                    </span>
+                  </div>
+
+                  <p className="mono mt-3 text-[0.7rem] text-muted">
+                    {reference.role}
+                  </p>
+
+                  <p className="mt-4 font-light leading-relaxed text-muted">
+                    {reference.summary}
+                  </p>
+                </div>
+              </a>
+
+              {!compact && (
+                <ul className="mt-6 space-y-3">
+                  {reference.facts.map((fact) => (
+                    <li
+                      key={fact}
+                      className="flex gap-3 text-sm font-light text-muted-strong"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-[#f5a524]"
+                      />
+                      <span>{fact}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <ul className="mt-6 flex flex-wrap gap-2">
+                {reference.tags.map((tag) => (
+                  <li
+                    key={tag}
+                    className="rounded-full border border-line px-3 py-1 text-xs text-muted"
+                  >
+                    {tag}
+                  </li>
+                ))}
+              </ul>
             </article>
           ))}
         </div>

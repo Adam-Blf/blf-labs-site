@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { CtaBand } from "@/components/marketing/CtaBand";
 import { Hero } from "@/components/marketing/Hero";
+import { ReferencesSection } from "@/components/marketing/ReferencesSection";
 import { OFFRES } from "@/content/offres";
 
 /**
@@ -67,6 +69,13 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* Un apercu des realisations des l'accueil : c'est ce qu'un visiteur
+            veut voir en premier chez un studio, avant toute promesse. La version
+            compacte n'affiche pas le detail, la page dediee s'en charge. */}
+        <ReferencesSection compact />
+
+        <CtaBand />
       </main>
 
       <Footer />

@@ -17,6 +17,12 @@ export type Reference = {
   role: string;
   summary: string;
   url: string;
+  /**
+   * Capture du projet, dans public/shots. Produite par une capture du site en
+   * ligne puis convertie en WebP (scripts/optimize_shots.py). Ce sont les
+   * projets d'Adam : aucune image de tiers n'est reprise.
+   */
+  shot: string;
   /** Ce que le projet prouve concretement, pas un adjectif. */
   facts: string[];
   tags: string[];
@@ -30,6 +36,7 @@ export const REFERENCES: Reference[] = [
     summary:
       "Jeu de soiree concu, developpe et edite par le studio. Application web installable, plus une version iOS et une version Android construites a parite.",
     url: "https://bacchana.beloucif.com",
+    shot: "/shots/bacchana.webp",
     facts: [
       "Trois plateformes maintenues en parallele",
       "Achats integres et mesure d'audience avec consentement",
@@ -44,6 +51,7 @@ export const REFERENCES: Reference[] = [
     summary:
       "Site de presentation d'un cabinet : prestations, prise de contact, contenus modifiables par la praticienne sans passer par un developpeur.",
     url: "https://ohynozen.com",
+    shot: "/shots/ohynozen.webp",
     facts: [
       "Interface d'edition reservee a la proprietaire du site",
       "Pages legales et RGPD en place des la mise en ligne",
