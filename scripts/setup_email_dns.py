@@ -135,12 +135,23 @@ def main() -> int:
 
         label = f"{rtype:5} {sub or '@':22}"
 
-        # Cible telle qu'OVH la stocke reellement. Pour un MX, OVH prefixe la
-        # priorite dans la cible ("10 mx.example.com") alors que Resend la
-        # renvoie dans un champ separe : comparer les deux sans cette mise en
-        # forme faisait croire a une difference a chaque execution, et le script
-        # supprimait puis recreait l'enregistrement sans raison.
-        expected = f"{priority} {value}" if priority is not None else value
+        # Cible telle qu'OVH la stocke reellement.
+        #
+        # 1. Pour un MX, OVH prefixe la priorite dans la cible
+        #    ("10 mx.example.com") alors que Resend la renvoie dans un champ
+        #    separe. Comparer les deux sans cette mise en forme faisait croire a
+        #    une difference a chaque execution.
+        #
+        # 2. Un nom d'hote sans point final est traite comme RELATIF a la zone.
+        #    Sans le point, OVH a enregistre
+        #    "feedback-smtp.eu-west-1.amazonses.com.beloucif.com", cible
+        #    inexistante, et la verification Resend a echoue. Constate en
+        #    interrogeant un resolveur public, pas en relisant le script.
+        target = value
+        if rtype in ("MX", "CNAME") and not target.endswith("."):
+            target = f"{target}."
+
+        expected = f"{priority} {target}" if priority is not None else target
 
         if match and match["target"].strip('"') == expected.strip('"'):
             print(f"OK      {label} deja correct")

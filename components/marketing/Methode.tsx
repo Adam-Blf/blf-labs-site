@@ -1,40 +1,52 @@
 const ETAPES = [
   {
-    index: "01",
     title: "Cadrage",
-    body: "Un echange pour comprendre le metier avant la technique. On sort avec un perimetre ecrit, un budget et une date.",
+    body: "Un échange pour comprendre le metier avant la technique. On en sort avec un périmètre écrit, un prix et une date.",
   },
   {
-    index: "02",
     title: "Maquette",
-    body: "Vous voyez les ecrans avant qu'ils soient codes. Les allers-retours se font la, ou ils ne coutent rien.",
+    body: "Les écrans sont valides avant d'être codes. C'est la que les allers-retours coutent le moins cher.",
   },
   {
-    index: "03",
-    title: "Developpement",
-    body: "Livraisons regulieres plutot qu'un grand soir. Chaque bloc fini est teste et visible en ligne.",
+    title: "Développement",
+    body: "Chaque bloc termine est teste et mis en ligne sur une adresse privee. Vous suivez l'avancement sans rien installer.",
   },
   {
-    index: "04",
-    title: "Mise en ligne",
-    body: "Nom de domaine, hebergement et acces a votre nom. Vous repartez proprietaire, pas locataire.",
+    title: "Remise des cles",
+    body: "Depot de code, nom de domaine et accès d'hébergement transferes a votre nom. Rien ne reste chez le prestataire.",
   },
 ];
 
+/**
+ * Deroulement d'un projet.
+ *
+ * Aucune numerotation affichee : l'ordre est porte par la liste ordonnee et par
+ * la lecture de gauche a droite. Un compteur en gros chiffre est un tic de page
+ * d'agence, et il n'apporte rien que la position ne dise deja.
+ */
 export function Methode() {
   return (
-    <section id="methode" className="rule-b bg-surface">
-      <div className="section mx-auto max-w-6xl px-5">
-        <h2 className="title text-3xl md:text-5xl">Comment ca se passe</h2>
+    <section id="méthode" className="relative">
 
-        <ol className="mt-10 grid gap-6 md:grid-cols-4">
+      <div className="section relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <h2 className="title max-w-3xl text-4xl sm:text-5xl lg:text-6xl">
+          Comment <span className="grad-text">ça se passe</span>
+        </h2>
+        <p className="mt-6 max-w-2xl text-lg font-light text-muted">
+          Quatre temps, toujours les mêmes, quelle que soit la taille du projet.
+        </p>
+
+        <ol className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {ETAPES.map((etape) => (
-            <li key={etape.index} className="blk bg-paper p-6">
-              <span className="tabular mono text-sm font-bold text-support">
-                {etape.index}
-              </span>
-              <h3 className="title mt-3 text-xl">{etape.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted">
+            <li key={etape.title} className="glass flex flex-col gap-4 p-8">
+              {/* Filet colore en tete de carte : marque le rythme sans
+                  recourir a un chiffre. */}
+              <span
+                aria-hidden="true"
+                className="h-px w-10 bg-gradient-to-r from-orange to-rose"
+              />
+              <h3 className="title text-xl sm:text-2xl">{etape.title}</h3>
+              <p className="text-sm font-light leading-relaxed text-muted">
                 {etape.body}
               </p>
             </li>

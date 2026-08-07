@@ -6,7 +6,7 @@
     masque arrondi, et une icone deja arrondie se retrouverait avec un double
     arrondi et un lisere disgracieux.
   -->
-  <rect width="180" height="180" fill="#5b5bd6"/>
+  <rect width="180" height="180" fill="#d6401f"/>
   <g fill="#ffffff" transform="translate(-38.6 39.4) scale(1.02)">
     <path d="M44 24H53V68H44Z"/>
     <path d="M53 24H77V33H53Z"/>

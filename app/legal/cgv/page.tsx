@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { FULL_ADDRESS, SIRET_PRETTY, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Conditions generales de vente",
+  title: "Conditions générales de vente",
   robots: { index: false, follow: true },
   alternates: { canonical: "/legal/cgv" },
 };
@@ -11,7 +11,7 @@ export default function CgvPage() {
   return (
     <article>
       <h1 className="title text-4xl md:text-5xl">
-        Conditions generales de vente
+        Conditions générales de vente
       </h1>
       <p>
         Ces conditions s&rsquo;appliquent aux prestations de developpement
@@ -23,17 +23,17 @@ export default function CgvPage() {
 
       <h2 className="title">1. Prestations</h2>
       <p>
-        Conception, developpement, mise en ligne et maintenance de sites,
+        Conception, développement, mise en ligne et maintenance de sites,
         d&rsquo;applications web et mobiles, et d&rsquo;outils de traitement de
-        donnees. Le perimetre exact, les livrables et le calendrier figurent au
-        devis, qui prevaut sur toute description generale du site.
+        données. Le périmètre exact, les livrables et le calendrier figurent au
+        devis, qui prévaut sur toute description générale du site.
       </p>
 
       <h2 className="title">2. Devis et commande</h2>
       <p>
-        Chaque devis precise le prix, le delai et le contenu de la prestation. Il
+        Chaque devis précise le prix, le délai et le contenu de la prestation. Il
         est valable trente jours. La commande est ferme a compter de la signature
-        du devis et du versement de l&rsquo;acompte qui y est indique.
+        du devis et du versement de l&rsquo;acompte qui y est indiqué.
       </p>
 
       <h2 className="title">3. Prix et paiement</h2>
@@ -48,56 +48,56 @@ export default function CgvPage() {
 
       <h2 className="title">4. Obligations du client</h2>
       <p>
-        Le client fournit en temps utile les contenus, acces et validations
-        necessaires. Tout retard de sa part decale le calendrier a due
-        concurrence. Il garantit detenir les droits sur les elements
+        Le client fournit en temps utile les contenus, accès et validations
+        nécessaires. Tout retard de sa part décale le calendrier a due
+        concurrence. Il garantit détenir les droits sur les éléments
         qu&rsquo;il transmet.
       </p>
 
-      <h2 className="title">5. Propriete intellectuelle</h2>
+      <h2 className="title">5. Propriété intellectuelle</h2>
       <p>
-        Les droits sur les livrables specifiques sont cedes au client au
-        paiement integral du prix. Les composants generiques et les
-        bibliotheques tierces restent regis par leurs licences respectives. Le
+        Les droits sur les livrables spécifiques sont cédés au client au
+        paiement intégral du prix. Les composants génériques et les
+        bibliothèques tierces restent régis par leurs licences respectives. Le
         prestataire conserve le droit de citer la prestation a titre de
-        reference, sauf demande contraire ecrite du client.
+        reference, sauf demande contraire écrite du client.
       </p>
 
       <h2 className="title">6. Garantie et maintenance</h2>
       <p>
-        Les non-conformites au devis signalees apres la livraison sont corrigees
-        sans supplement. Les evolutions fonctionnelles, la maintenance et
-        l&rsquo;hebergement font l&rsquo;objet d&rsquo;un accord distinct.
+        Les non-conformités au devis signalées après la livraison sont corrigées
+        sans supplement. Les évolutions fonctionnelles, la maintenance et
+        l&rsquo;hébergement font l&rsquo;objet d&rsquo;un accord distinct.
       </p>
 
-      <h2 className="title">7. Droit de retractation</h2>
+      <h2 className="title">7. Droit de rétractation</h2>
       <p>
         Le consommateur au sens du Code de la consommation dispose d&rsquo;un
-        delai de quatorze jours pour se retracter d&rsquo;un contrat conclu a
-        distance, conformement a l&rsquo;article L. 221-18. S&rsquo;il demande
-        expressement que la prestation commence avant la fin de ce delai, il
-        reste redevable du travail deja realise en cas de retractation. Ce droit
+        délai de quatorze jours pour se rétracter d&rsquo;un contrat conclu a
+        distance, conformément a l&rsquo;article L. 221-18. S&rsquo;il demande
+        expressement que la prestation commence avant la fin de ce délai, il
+        reste redevable du travail déjà réalisé en cas de rétractation. Ce droit
         ne s&rsquo;applique pas aux contrats conclus entre professionnels.
       </p>
 
-      <h2 className="title">8. Responsabilite</h2>
+      <h2 className="title">8. Responsabilité</h2>
       <p>
         Le prestataire est tenu d&rsquo;une obligation de moyens. Sa
-        responsabilite est plafonnee au montant de la prestation concernee et ne
+        responsabilité est plafonnée au montant de la prestation concernée et ne
         couvre pas les dommages indirects tels que perte de chiffre
-        d&rsquo;affaires ou de donnees imputable a un tiers ou au client.
+        d&rsquo;affaires ou de données imputable a un tiers ou au client.
       </p>
 
-      <h2 className="title">9. Donnees personnelles</h2>
+      <h2 className="title">9. Données personnelles</h2>
       <p>
         Le traitement des donnees du client est decrit dans la{" "}
-        <a href="/legal/confidentialite">politique de confidentialite</a>. Lorsque
-        la prestation conduit le prestataire a traiter des donnees pour le compte
+        <a href="/legal/confidentialite">politique de confidentialité</a>. Lorsque
+        la prestation conduit le prestataire a traiter des données pour le compte
         du client, un accord de sous-traitance conforme a l&rsquo;article 28 du
-        reglement general sur la protection des donnees est conclu.
+        règlement général sur la protection des données est conclu.
       </p>
 
-      <h2 className="title">10. Mediation et droit applicable</h2>
+      <h2 className="title">10. Médiation et droit applicable</h2>
       <p>
         Conformement a l&rsquo;article L. 612-1 du Code de la consommation, le
         consommateur peut recourir gratuitement au mediateur{" "}
@@ -105,8 +105,8 @@ export default function CgvPage() {
         <a href={SITE.mediator.url} target="_blank" rel="noopener noreferrer">
           {SITE.mediator.url}
         </a>
-        , apres avoir adresse une reclamation ecrite restee sans reponse
-        satisfaisante. Les presentes conditions sont soumises au droit francais.
+        , après avoir adresse une réclamation écrite restée sans réponse
+        satisfaisante. Les présentes conditions sont soumises au droit français.
       </p>
     </article>
   );

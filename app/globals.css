@@ -2,120 +2,209 @@
 @import "./themes.css";
 
 /*
-  Les composants ne codent en dur ni epaisseur de trait, ni rayon, ni ombre, ni
-  casse de titre : ils utilisent les classes ci-dessous, qui lisent les tokens de
-  la direction artistique active (voir themes.css). C'est ce qui permet de
-  changer completement de style sans toucher a une seule ligne de composant.
+  Le mode sombre est pilote par la classe `.dark` posee sur <html> par le script
+  d'amorcage du layout, pas par `prefers-color-scheme`. Sans cette declaration,
+  Tailwind 4 ferait suivre `dark:` a la preference systeme, et la bascule
+  manuelle du site n'aurait aucun effet sur les regles `dark:`.
 */
-
 @custom-variant dark (&:where(.dark, .dark *));
+
+/*
+  Utilitaires de la direction "laboratoire".
+  Les composants n'ecrivent jamais une couleur en dur : ils composent ces
+  classes, qui lisent les jetons de themes.css.
+*/
 
 @theme inline {
   --color-paper: var(--paper);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
+  --color-muted-strong: var(--muted-strong);
+  --color-faint: var(--faint);
   --color-surface: var(--surface);
+  --color-surface-strong: var(--surface-strong);
   --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-support: var(--support);
   --color-support-ink: var(--support-ink);
+  --color-nuit: var(--nuit);
+  --color-neige: var(--neige);
+  --color-violet: var(--violet);
+  --color-citron: var(--citron);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-text), system-ui, sans-serif;
+  overflow-x: hidden;
 }
 
-/* Bloc : carte, bouton, encadre. Toute la personnalite de la direction passe
-   par ces quatre proprietes. */
-.blk {
-  border-width: var(--border-w);
-  border-style: solid;
-  border-color: var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+::selection {
+  background: var(--violet);
+  color: var(--accent-ink);
 }
 
-.blk-sm {
-  border-width: var(--border-w);
-  border-style: solid;
-  border-color: var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-}
-
-/* Bloc sans relief : etiquettes, filets, separations internes. */
-.blk-flat {
-  border-width: var(--border-w);
-  border-style: solid;
-  border-color: var(--line);
-  border-radius: var(--radius);
-}
-
-/* Titres : police, casse, graisse, chasse et interlignage viennent tous de la
-   direction active. */
+/*
+  Titre. La largeur variable d'Archivo (axe wdth) est la signature du site :
+  les titres sont larges et compacts, ce qu'aucune police a chasse fixe ne
+  sait faire. C'est ce reglage, et non un effet graphique, qui rend les pages
+  reconnaissables.
+*/
 .title {
   font-family: var(--font-title), system-ui, sans-serif;
   text-transform: var(--title-transform);
   font-weight: var(--title-weight);
   letter-spacing: var(--title-tracking);
   line-height: var(--title-leading);
+  font-variation-settings: "wdth" var(--title-width);
+}
+
+/* Titre etroit, pour les colonnes serrees ou un titre large deborderait. */
+.title-serre {
+  --title-width: 88;
 }
 
 /*
-  Etiquettes techniques.
-  Il n'y a plus de police monospace : celle utilisee jusqu'ici portait un zero
-  pointe, trop reconnaissable. Le role est desormais tenu par la police de texte
-  en petites capitales espacees, ce qui distingue l'etiquette du contenu sans
-  charger une famille supplementaire.
+  Mot mis en avant dans un titre : il passe en violet plein.
+  Pas de degrade - deux teintes qui se fondent dans un titre etaient
+  precisement le tic visuel a supprimer.
 */
-.mono {
-  font-family: var(--font-text), system-ui, sans-serif;
-  letter-spacing: 0.06em;
-  font-weight: 600;
+.grad-text {
+  color: var(--violet);
 }
 
-/* Rythme vertical des sections, lui aussi porte par la direction. */
+/*
+  Etiquette : petites capitales tres espacees, dans la meme Archivo que le
+  reste. Il n'y a pas de monospace sur ce site (voir app/fonts.ts).
+*/
+.mono {
+  letter-spacing: 0.2em;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-variation-settings: "wdth" 88;
+}
+
 .section {
   padding-top: var(--section-py);
   padding-bottom: var(--section-py);
 }
 
-/* Trait de separation entre sections : invisible quand la direction ne veut pas
-   de traits (affichiste, bento), sans qu'aucun composant n'ait a le savoir. */
 .rule-b {
-  border-bottom-width: var(--border-w);
-  border-bottom-style: solid;
-  border-bottom-color: var(--line);
+  border-bottom: var(--border-w) solid var(--line);
 }
 
 .rule-t {
-  border-top-width: var(--border-w);
-  border-top-style: solid;
-  border-top-color: var(--line);
+  border-top: var(--border-w) solid var(--line);
 }
 
-/* Les chiffres (SIRET, tarifs, dates) ne doivent pas danser d'une ligne a
-   l'autre. */
 .tabular {
   font-variant-numeric: tabular-nums;
 }
 
-/* Anneau de focus visible sur toutes les directions, exigence a11y. */
+/*
+  Surfaces. Un cadre net, pas de flou : le verre depoli est le decor par defaut
+  des maquettes generees, et il coute cher a l'affichage.
+*/
+.blk,
+.blk-sm,
+.blk-flat,
+.glass,
+.glass-sm {
+  background: var(--surface);
+  border: var(--border-w) solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+/*
+  Grille de laboratoire, posee en fond de section. Elle rappelle le papier
+  millimetre d'un carnet de paillasse et donne de la matiere aux grands aplats
+  sans ajouter ni image ni couleur. Purement decorative, donc masquee aux
+  lecteurs d'ecran par aria-hidden cote composant.
+*/
+.grille {
+  background-image:
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+/*
+  Bloc signature : l'aplat sombre a coins arrondis du logo, decline en
+  interface. C'est le seul arrondi du site, tout le reste est a angle droit,
+  ce qui le garde distinctif.
+*/
+.bloc-marque {
+  background: var(--nuit);
+  color: var(--neige);
+  border-radius: 22px;
+}
+
+/* Bouton principal. */
+.btn-pill {
+  border-radius: var(--radius-pill);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.btn-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glow);
+}
+
+.btn-pill:active {
+  transform: translateY(0);
+}
+
+/*
+  Lien de navigation : le trait se deploie de la gauche vers la droite.
+  Anime sur `transform` et non sur `width`, pour rester fluide.
+*/
+.nav-link {
+  position: relative;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  height: 2px;
+  width: 100%;
+  background: var(--violet);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
 :where(a, button, input, textarea, select, [tabindex]):focus-visible {
-  outline: 3px solid var(--support);
+  outline: 2px solid var(--violet);
   outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 }

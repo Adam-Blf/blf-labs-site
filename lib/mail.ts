@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { OPTION_LABELS } from "@/content/options";
 import { SITE } from "@/lib/site";
 import {
   BUDGET_LABELS,
@@ -36,11 +37,21 @@ function summaryRows(order: OrderInput): string {
   const rows: [string, string][] = [
     ["Type de projet", PROJECT_TYPE_LABELS[order.projectType] ?? order.projectType],
     ["Budget", BUDGET_LABELS[order.budget]],
-    ["Echeance", DEADLINE_LABELS[order.deadline]],
+    ["Échéance", DEADLINE_LABELS[order.deadline]],
     ["Nom", order.name],
     ["Email", order.email],
     ["Telephone", order.phone ?? "non renseigne"],
   ];
+
+  // Prestations complementaires cochees : elles conditionnent le chiffrage.
+  if (order.options?.length) {
+    rows.push([
+      "Prestations en plus",
+      order.options.map((slug) => OPTION_LABELS[slug] ?? slug).join(", "),
+    ]);
+  } else {
+    rows.push(["Prestations en plus", "aucune"]);
+  }
 
   // Les informations de facturation figurent dans la notification : elles
   // permettent d'etablir le devis sans avoir a les redemander au client.
@@ -98,9 +109,13 @@ export async function sendOrderEmails(order: OrderInput): Promise<boolean> {
 
   try {
     // Notification interne. `replyTo` permet de repondre au client d'un clic.
+    //
+    // Destinataire : la boite finale, pas l'adresse publique. Passer par la
+    // redirection adam@beloucif.com faisait echouer SPF a l'arrivee chez Gmail
+    // et les demandes finissaient en indesirable. Voir SITE.notificationEmail.
     const notify = await resend.emails.send({
       from: FROM,
-      to: SITE.email,
+      to: SITE.notificationEmail,
       replyTo: order.email,
       subject: `Nouvelle demande : ${PROJECT_TYPE_LABELS[order.projectType] ?? order.projectType} - ${order.name}`,
       html: shell("Nouvelle demande de projet", table + message),
@@ -118,8 +133,8 @@ export async function sendOrderEmails(order: OrderInput): Promise<boolean> {
         "Votre demande est arrivee",
         `<p style="margin:0 0 16px;font-size:15px;line-height:1.6">Bonjour ${esc(order.name)},</p>
          <p style="margin:0 0 16px;font-size:15px;line-height:1.6">
-           Votre demande a bien ete enregistree. Vous recevrez une reponse avec une estimation
-           de budget et de delai, ou une orientation vers quelqu'un de plus adapte si le projet
+           Votre demande a bien été enregistree. Vous recevrez une réponse avec une estimation
+           de budget et de délai, ou une orientation vers quelqu'un de plus adapte si le projet
            ne correspond pas a ce que fait le studio.
          </p>
          <p style="margin:0 0 8px;font-size:13px;color:#5b6472">Recapitulatif de votre demande :</p>

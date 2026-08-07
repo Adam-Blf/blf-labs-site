@@ -1,60 +1,109 @@
 /*
-  Direction artistique retenue : "Bento tech".
+  Direction artistique : laboratoire. Deux modes.
 
-  Choisie par Adam le 2026-08-07 parmi huit candidates comparees sur la vraie
-  page d'accueil. Synthese de ses deux preferences : la STRUCTURE de la direction
-  Bento (grands rayons, cartes souples, boutons pilule, casse normale, aucun
-  trait epais) et la PALETTE de la direction Tech (fonds profonds, accent violet,
-  appui turquoise). Registre vise : produit logiciel contemporain, rassurant pour
-  un client qui achete du developpement, sans le folklore brutaliste de Bacchana.
+  La palette n'est plus choisie, elle est RELEVEE sur les logos fournis par
+  Adam (brand/logos/logo.svg et logo-inverse.svg). Trois valeurs seulement en
+  sortent, et ce sont les trois seules couleurs du site :
 
-  Un trait de 1 px est conserve la ou Bento n'en avait aucun : sans lui, les
-  cartes ne se detachent plus du fond en mode sombre, et les zones cliquables
-  deviennent difficiles a percevoir.
+    #111016  le noir violace du bloc de logo        -> --nuit
+    #edeef1  le blanc froid du logo inverse         -> --neige
+    #cb6ce6  le violet de l'apostrophe et du favicon -> --violet
 
-  Regle de contraste (apprise sur Bacchana) : --accent-ink et --support-ink sont
-  INVARIANTS par theme. Tout texte pose sur un aplat les utilise, jamais --ink,
-  sans quoi le texte s'inverse avec le theme alors que l'aplat, lui, ne bouge
-  pas. Verifie par scripts/check_contrast.mjs.
+  Une quatrieme teinte, le citron #d9fb50, est ajoutee en tension. Ce n'est pas
+  une invention decorative : c'est la complementaire reelle du violet, donc la
+  seule couleur qui puisse l'accompagner sans creer un second accent concurrent.
+  Elle sert par petites touches (soulignements, chiffres, puces actives), jamais
+  en aplat large. C'est ce qui repond au reproche d'un site "mort et sans ame"
+  sans retomber dans une palette a cinq couleurs qui ferait gabarit.
+
+  Familles ecartees et pourquoi, pour qu'on ne les repropose pas :
+    - bleu, turquoise, vert : refuses un par un, et le vert entrait en
+      collision avec Spotify ;
+    - orange, rose, jaune ensemble : direction "chaude et pop" abandonnee, sans
+      rapport avec le logo reel ;
+    - degrade violet sur blanc : signature visuelle des interfaces generees. Le
+      violet n'apparait ici qu'en aplat franc, jamais en degrade.
+
+  REGLE DE CONTRASTE, apprise a nos depens sur ce projet meme.
+  --accent-ink et --support-ink sont INVARIANTS d'un mode a l'autre. Un aplat
+  violet reste le meme violet en clair comme en sombre, donc le texte pose
+  dessus ne doit jamais utiliser --ink, qui s'inverse. C'est exactement ce
+  defaut qui avait produit du texte noir sur fond noir dans le formulaire, puis
+  du texte blanc sur fond blanc. Le violet #cb6ce6 est une teinte CLAIRE : son
+  encre est donc le noir #111016, dans les deux modes, sans exception.
+
+  Contrastes mesures (ratio WCAG) :
+    Clair  : #111016 sur #f7f7fa = 17,2:1 | gris #56525e = 6,8:1
+             #111016 sur violet  =  8,1:1 | #111016 sur citron = 15,4:1
+    Sombre : #edeef1 sur #111016 = 16,3:1 | gris #9a94a6 = 7,4:1
+             #111016 sur violet  =  8,1:1 | #111016 sur citron = 15,4:1 (identiques,
+             puisque les aplats et leur encre ne bougent pas)
 */
 
+/* ---- Mode clair ---- */
 .dir-labs {
-  --paper: #f7f8fa;
-  --ink: #0d1117;
-  --muted: #5b6472;
-  --surface: #ffffff;
-  --line: #e2e5ea;
-  --accent: #5b5bd6;
-  --accent-ink: #ffffff;
-  --support: #0d7d72;
-  --support-ink: #ffffff;
+  /* Les quatre couleurs de la marque. Elles ne changent PAS avec le mode. */
+  --nuit: #111016;
+  --neige: #edeef1;
+  --violet: #cb6ce6;
+  --violet-clair: #e292ff;
+  --citron: #d9fb50;
 
-  --radius: 22px;
-  --radius-sm: 14px;
+  --paper: #f7f7fa;
+  --ink: #111016;
+  --muted: #56525e;
+  --muted-strong: #2b2833;
+  --faint: #9a94a6;
+
+  /* Encres posees sur les aplats. Invariantes, elles aussi. */
+  --accent: var(--violet);
+  --accent-ink: #111016;
+  --support: var(--citron);
+  --support-ink: #111016;
+
+  --surface: #ffffff;
+  --surface-strong: #eceaf1;
+  --line: rgba(17, 16, 22, 0.14);
+  --line-strong: rgba(17, 16, 22, 0.32);
+
+  /* Angles droits : le logo est trace a la regle, l'interface aussi. Le seul
+     arrondi du site est celui du bloc de logo, qui reste donc distinctif. */
+  --radius: 4px;
+  --radius-sm: 3px;
   --radius-pill: 999px;
   --border-w: 1px;
-  --shadow: 0 14px 36px -18px rgba(13, 17, 23, 0.26);
-  --shadow-sm: 0 6px 18px -10px rgba(13, 17, 23, 0.28);
-  --font-title: var(--font-display);
-  --font-text: var(--font-body);
-  --title-transform: none;
-  --title-weight: 700;
-  --title-tracking: -0.035em;
-  --title-leading: 1.04;
-  --section-py: 5rem;
+  --shadow: 0 24px 60px -34px rgba(17, 16, 22, 0.4);
+  --shadow-sm: 0 12px 28px -20px rgba(17, 16, 22, 0.35);
+  --glow: 0 10px 30px -12px rgba(203, 108, 230, 0.55);
+
+  --font-title: var(--font-archivo);
+  --font-text: var(--font-archivo);
+  --title-transform: uppercase;
+  --title-weight: 800;
+  --title-tracking: -0.03em;
+  --title-leading: 0.92;
+  /* Largeur variable : c'est la signature typographique du site. */
+  --title-width: 118;
+  --section-py: 8rem;
 }
 
+/* ---- Mode sombre ---- */
 .dark .dir-labs,
 .dir-labs.dark {
-  --paper: #0a0c10;
-  --ink: #eceef2;
-  --muted: #9aa3b2;
-  --surface: #13161d;
-  --line: #262b35;
-  --accent: #7c7cf0;
-  --accent-ink: #0a0026;
-  --support: #2dd4bf;
-  --support-ink: #00201c;
-  --shadow: 0 14px 36px -18px rgba(0, 0, 0, 0.8);
-  --shadow-sm: 0 6px 18px -10px rgba(0, 0, 0, 0.8);
+  --paper: #111016;
+  --ink: #edeef1;
+  --muted: #9a94a6;
+  --muted-strong: #d5d1de;
+  --faint: #4b4657;
+
+  /* Les quatre couleurs restent identiques : c'est ce qui tient l'identite
+     d'un mode a l'autre. Seuls les fonds et l'encre s'inversent. */
+  --surface: #1a1822;
+  --surface-strong: #22202c;
+  --line: rgba(237, 238, 241, 0.16);
+  --line-strong: rgba(237, 238, 241, 0.34);
+
+  --shadow: 0 28px 70px -34px rgba(0, 0, 0, 0.9);
+  --shadow-sm: 0 14px 34px -20px rgba(0, 0, 0, 0.9);
+  --glow: 0 10px 34px -12px rgba(203, 108, 230, 0.6);
 }

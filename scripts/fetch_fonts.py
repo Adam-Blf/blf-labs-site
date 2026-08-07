@@ -23,25 +23,40 @@ UA = (
 )
 
 #
-# Choix typographique (revise le 2026-08-07) :
-# Space Grotesk et Space Mono ont ete abandonnees. Leur chiffre zero porte un
-# point central, detail qui les rend immediatement reconnaissables et donne au
-# site l'air d'un gabarit genere. Remplacees par une paire au dessin plus
-# ordinaire sur les chiffres, mais plus caracterisee sur les lettres.
+# Choix typographique (revise le 2026-08-07, apres reception des logos).
+#
+# La police decoule du logo, elle n'est plus choisie a part. Le lettrage de
+# "BLF Lab's" est construit sur une grille carree : fûts droits, terminaisons a
+# angle droit, contreformes rectangulaires, aucune courbe molle. Archivo reprend
+# ce squelette - c'est une grotesque a coupes droites, franchement carree dans
+# les graisses hautes - donc un titre de page et le logo pose au-dessus se
+# lisent comme sortis de la meme main.
+#
+# Son axe de largeur (wdth 62 -> 125) est la vraie raison de ce choix : il donne
+# des titres larges et compacts impossibles a obtenir avec une police a chasse
+# fixe, et c'est ce qui signe les pages sans recourir a un effet.
+#
+# Ecartees, et pourquoi :
+#   - Space Grotesk et Space Mono : leur zero porte un point central. Adam l'a
+#     refuse explicitement, ce detail est devenu un marqueur d'interface generee.
+#   - Outfit et Poppins : geometriques neutres, aucun caractere propre, ce sont
+#     les polices par defaut des maquettes generees.
+#   - Inter, Roboto, Arial : polices par defaut.
+#   - IBM Plex, JetBrains Mono : bannies (regle polices d'Adam).
+#
+# Le zero d'Archivo est plein, sans point ni barre : le piege precedent ne peut
+# pas se reproduire.
+#
+# Il n'y a volontairement PAS de seconde famille. Les etiquettes et les numeros
+# legaux sont composes dans Archivo en capitales espacees plutot que dans une
+# monospace : une seule voix typographique tient mieux qu'un duo, et cela
+# supprime le risque de reintroduire une mono au zero pointe.
 #
 FONTS: dict[str, str] = {
-    # Titres : Bricolage Grotesque, variable. Dessin contraste et un peu
-    # irregulier, qui donne du caractere sans tomber dans la police d'affichage
-    # decorative.
-    "bricolage-grotesque": (
+    # Archivo, variable sur deux axes : largeur 62 -> 125, graisse 400 -> 900.
+    "archivo": (
         "https://fonts.googleapis.com/css2"
-        "?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap"
-    ),
-    # Texte courant : Hanken Grotesk, variable. Tres lisible en petit corps,
-    # chiffres sans fioriture.
-    "hanken-grotesk": (
-        "https://fonts.googleapis.com/css2"
-        "?family=Hanken+Grotesk:wght@400..700&display=swap"
+        "?family=Archivo:wdth,wght@62..125,400..900&display=swap"
     ),
 }
 

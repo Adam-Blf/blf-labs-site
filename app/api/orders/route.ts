@@ -68,7 +68,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          "Trop de demandes envoyees depuis cette connexion. Reessayez dans une heure, ou ecrivez directement par email.",
+          "Trop de demandes envoyees depuis cette connexion. Réessayez dans une heure, ou ecrivez directement par email.",
       },
       { status: 429 },
     );
@@ -80,6 +80,7 @@ export async function POST(request: Request) {
       project_type: order.projectType,
       budget_range: order.budget,
       deadline: order.deadline,
+      options: order.options ?? [],
       message: order.message,
       name: order.name,
       email: order.email,

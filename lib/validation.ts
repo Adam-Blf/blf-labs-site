@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { OFFRES } from "@/content/offres";
+import { OPTIONS } from "@/content/options";
 import { isSirenOrSiret, isVatNumber } from "@/lib/siren";
 
 /**
@@ -90,13 +91,23 @@ export const orderSchema = z.object({
     message: "Choisissez un type de projet.",
   }),
   budget: z.enum(BUDGET_RANGES, { message: "Choisissez un budget." }),
-  deadline: z.enum(DEADLINES, { message: "Choisissez une echeance." }),
+  deadline: z.enum(DEADLINES, { message: "Choisissez une échéance." }),
+
+  /**
+   * Prestations complementaires cochees. Toutes facultatives : un client peut
+   * ne vouloir que le developpement. La liste des valeurs acceptees vient de
+   * content/options.ts, donc ajouter une prestation la-bas suffit.
+   */
+  options: z
+    .array(z.enum(OPTIONS.map((option) => option.slug) as [string, ...string[]]))
+    .optional()
+    .default([]),
 
   message: z
     .string()
     .trim()
-    .min(30, "Decrivez votre besoin en 30 caracteres au minimum.")
-    .max(4000, "Merci de resumer en moins de 4 000 caracteres."),
+    .min(30, "Décrivez votre besoin en 30 caractères au minimum.")
+    .max(4000, "Merci de résumer en moins de 4 000 caractères."),
 
   name: z
     .string()
@@ -124,7 +135,7 @@ export const orderSchema = z.object({
 
   // Consentement explicite, jamais pre-coche cote interface.
   consent: z.literal(true, {
-    message: "Votre accord est necessaire pour traiter la demande.",
+    message: "Votre accord est nécessaire pour traiter la demande.",
   }),
 
   // Piege a robots : un champ invisible que seul un automate remplit. Il doit
@@ -186,7 +197,7 @@ export type OrderInput = z.infer<typeof orderSchema>;
 
 /** Champs de l'etape courante, pour valider au fil de l'eau. */
 export const STEP_FIELDS = [
-  ["projectType", "budget", "deadline"],
+  ["projectType", "budget", "deadline", "options"],
   ["message"],
   [
     "customerType",

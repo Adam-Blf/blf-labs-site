@@ -1,27 +1,59 @@
 import type { Metadata } from "next";
-import { display, sans } from "./fonts";
+import { sans } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://beloucif.com"),
   title: {
-    default: "BLF Lab's - studio de developpement d'applications",
+    // Ce texte est ce que Google affiche en titre de resultat : les accents
+    // manquants y etaient visibles publiquement.
+    default: "BLF Lab's - studio de développement d'applications",
     template: "%s - BLF Lab's",
   },
   description:
-    "Studio independant qui concoit et livre des sites, des applications web et mobiles, et des outils data et IA. Base en Ile-de-France.",
+    "Studio indépendant qui conçoit et livre des sites, des applications web et mobiles, et des outils data et IA. Basé en Île-de-France.",
+  keywords: [
+    "développement web",
+    "création site internet",
+    "application web",
+    "application mobile",
+    "studio développement Île-de-France",
+    "développeur freelance Val-de-Marne",
+  ],
+  authors: [{ name: "Adam Beloucif" }],
+  creator: "Adam Beloucif",
+  publisher: "BLF Lab's",
+  // Adresse canonique : sans elle, une page atteinte avec un parametre de
+  // suivi (utm_source et consorts) peut etre indexee comme un doublon.
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "fr_FR",
     siteName: "BLF Lab's",
     url: "https://beloucif.com",
+    title: "BLF Lab's - studio de développement d'applications",
+    description:
+      "Studio indépendant qui conçoit et livre des sites, des applications web et mobiles, et des outils data et IA.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      // Sans ces trois valeurs, Google tronque par defaut l'apercu et la
+      // vignette dans ses resultats.
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
   },
 };
 
 /**
- * Applique le theme avant le premier rendu pour eviter le flash de theme clair
- * chez un visiteur en sombre. Reste inline volontairement : un fichier separe
- * serait charge trop tard.
+ * Applique le theme avant le premier rendu, pour eviter le flash de theme clair
+ * chez un visiteur qui a choisi le sombre. Reste inline volontairement : un
+ * fichier separe serait charge trop tard.
  */
 const themeBootstrap = `
 try {
@@ -41,7 +73,7 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${display.variable} ${sans.variable} dir-labs h-full antialiased`}
+      className={`${sans.variable} dir-labs h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

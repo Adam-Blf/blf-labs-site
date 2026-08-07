@@ -3,7 +3,7 @@ import { SITE, SIRET_PRETTY } from "@/lib/site";
 import { Wordmark } from "./Wordmark";
 
 const LEGAL = [
-  { href: "/legal/mentions", label: "Mentions legales" },
+  { href: "/legal/mentions", label: "Mentions légales" },
   { href: "/legal/confidentialite", label: "Confidentialite" },
   { href: "/legal/cgv", label: "CGV" },
 ];
@@ -15,7 +15,7 @@ export function Footer() {
         <div>
           <Wordmark />
           <p className="mt-3 max-w-xs text-sm text-muted">
-            Studio independant de developpement d&rsquo;applications, base en
+            Studio independant de développement d&rsquo;applications, base en
             Ile-de-France.
           </p>
         </div>

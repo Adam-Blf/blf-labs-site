@@ -1,48 +1,89 @@
-import { Card } from "@/components/ui/Card";
+import Image from "next/image";
 import { REFERENCES } from "@/content/references";
 
+/**
+ * Realisations, en grille portfolio.
+ *
+ * Refonte du 2026-08-07. Le diagnostic etait sans appel : la page ne montrait
+ * rien, seulement du texte. Pour un studio, c'est le pire defaut possible - on
+ * demande a un client de juger un travail qu'il ne voit pas.
+ *
+ * Chaque realisation porte donc maintenant une capture du site reel, prise en
+ * ligne puis convertie en WebP. La vignette s'agrandit legerement au survol et
+ * son voile s'estompe : le mouvement sert a designer, pas a decorer.
+ */
 export function ReferencesSection({ compact = false }: { compact?: boolean }) {
   return (
-    <section className="rule-b">
-      <div className="section mx-auto max-w-6xl px-5">
-        <h2 className="title text-3xl md:text-5xl">Realisations</h2>
-        <p className="mt-4 max-w-2xl text-muted">
-          Des projets en ligne, consultables. Pas de captures d&rsquo;ecran de
-          maquettes jamais livrees.
-        </p>
+    <section id="réalisations" className="relative">
+      <div className="section mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <h2 className="title max-w-2xl text-4xl sm:text-5xl lg:text-6xl">
+            Déjà <span className="grad-text">en ligne</span>
+          </h2>
+          <p className="max-w-sm font-light text-muted">
+            Des projets livres et consultables, pas des maquettes.
+          </p>
+        </div>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          {REFERENCES.map((reference) => (
-            <Card key={reference.slug} className="p-7">
-              <div className="flex flex-wrap items-baseline justify-between gap-3">
-                <h3 className="title text-2xl md:text-3xl">
-                  {reference.title}
-                </h3>
-                <a
-                  href={reference.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mono text-sm underline underline-offset-4"
-                >
-                  Voir le site
-                </a>
-              </div>
+        <div className="mt-16 grid gap-8 lg:grid-cols-2">
+          {REFERENCES.map((reference, index) => (
+            <article key={reference.slug} className="group">
+              <a
+                href={reference.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-line">
+                  <Image
+                    src={reference.shot}
+                    alt={`Capture du site ${reference.title}`}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    /* La premiere vignette est visible d'emblee sur la page
+                       dediee : la charger en priorite evite un trou pendant le
+                       rendu. Les suivantes restent en chargement differe. */
+                    priority={index === 0}
+                    className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                  />
+                  {/* Voile qui s'estompe au survol : la capture s'eclaircit
+                      quand on la designe. */}
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-gradient-to-t from-[#0b0b0c] via-[#0b0b0c]/30 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-40"
+                  />
+                </div>
 
-              <p className="mono mt-2 text-xs uppercase tracking-wide text-support">
-                {reference.role}
-              </p>
+                <div className="mt-6">
+                  <div className="flex flex-wrap items-baseline justify-between gap-4">
+                    <h3 className="title text-2xl sm:text-3xl">
+                      {reference.title}
+                    </h3>
+                    <span className="text-sm text-muted-strong transition-transform duration-300 group-hover:translate-x-1">
+                      Voir le site &rarr;
+                    </span>
+                  </div>
 
-              <p className="mt-4 text-muted">{reference.summary}</p>
+                  <p className="mono mt-3 text-[0.7rem] text-muted">
+                    {reference.role}
+                  </p>
+
+                  <p className="mt-4 font-light leading-relaxed text-muted">
+                    {reference.summary}
+                  </p>
+                </div>
+              </a>
 
               {!compact && (
-                <ul className="mt-5 space-y-2">
+                <ul className="mt-6 space-y-3">
                   {reference.facts.map((fact) => (
-                    <li key={fact} className="flex gap-3 text-sm">
-                      {/* Puce dessinee, pas un caractere tiret : la regle
-                          typographique interdit les cadratins. */}
+                    <li
+                      key={fact}
+                      className="flex gap-3 text-sm font-light text-muted-strong"
+                    >
                       <span
                         aria-hidden="true"
-                        className="mt-[7px] block h-2 w-2 shrink-0 bg-support"
+                        className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
                       />
                       <span>{fact}</span>
                     </li>
@@ -52,12 +93,15 @@ export function ReferencesSection({ compact = false }: { compact?: boolean }) {
 
               <ul className="mt-6 flex flex-wrap gap-2">
                 {reference.tags.map((tag) => (
-                  <li key={tag} className="blk-flat mono px-2 py-1 text-xs">
+                  <li
+                    key={tag}
+                    className="rounded-full border border-line px-3 py-1 text-xs text-muted"
+                  >
                     {tag}
                   </li>
                 ))}
               </ul>
-            </Card>
+            </article>
           ))}
         </div>
       </div>

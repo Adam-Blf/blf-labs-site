@@ -1,44 +1,34 @@
 import localFont from "next/font/local";
 
 /**
- * Polices auto-hebergees depuis public/fonts (voir scripts/fetch_fonts.py).
- * Aucun appel a un CDN : le site s'affiche a l'identique sur un poste sans acces
- * internet sortant, et aucune requete ne part chez Google au chargement.
+ * Archivo, police unique du site, variable sur deux axes.
  *
- * Choix revise le 2026-08-07. Space Grotesk et Space Mono ont ete ecartees :
- * leur zero porte un point central, signature trop reconnaissable qui donnait au
- * site l'air d'un gabarit genere. La paire actuelle a des chiffres ordinaires et
- * des lettres caracterisees, ce qui est exactement l'inverse de ce qu'on veut
- * eviter.
+ * Le choix decoule du logo et non d'un gout : le lettrage de "BLF Lab's" est
+ * trace sur une grille carree, fûts droits et terminaisons a angle droit.
+ * Archivo a le meme squelette, si bien qu'un titre de page et le logo pose
+ * au-dessus se lisent comme sortis de la meme main.
  *
- * Aucune police "par defaut" non plus (ni Inter, ni Roboto, ni Arial), ni Anton
- * (deja la signature de Bacchana), ni IBM Plex / JetBrains Mono.
+ * L'axe de largeur (wdth 62 -> 125) est la raison principale du choix : il
+ * donne des titres larges et compacts qu'aucune police a chasse fixe ne peut
+ * produire. C'est lui qui signe les pages, sans recourir a un effet visuel.
+ *
+ * Rapatriee dans public/fonts par scripts/fetch_fonts.py plutot que servie
+ * depuis Google Fonts : aucune requete ne part vers un tiers au chargement.
+ *
+ * Une seule famille, volontairement. Les etiquettes et les numeros legaux sont
+ * composes en capitales espacees dans cette meme Archivo, pas dans une
+ * monospace : cela evite d'introduire une seconde voix typographique, et cela
+ * ferme la porte au zero pointe qui avait fait rejeter Space Mono.
  */
-
-// Titres. Variable 400 -> 800, dessin contraste et legerement irregulier.
-export const display = localFont({
-  src: [
-    {
-      path: "../public/fonts/bricolage-grotesque-400-800-latin.woff2",
-      weight: "400 800",
-      style: "normal",
-    },
-  ],
-  variable: "--font-display",
-  display: "swap",
-  fallback: ["Segoe UI", "system-ui", "sans-serif"],
-});
-
-// Texte courant et etiquettes. Variable 400 -> 700, tres lisible en petit corps.
 export const sans = localFont({
   src: [
     {
-      path: "../public/fonts/hanken-grotesk-400-700-latin.woff2",
-      weight: "400 700",
+      path: "../public/fonts/archivo-400-900-latin.woff2",
+      weight: "100 900",
       style: "normal",
     },
   ],
-  variable: "--font-body",
+  variable: "--font-archivo",
   display: "swap",
   fallback: ["Segoe UI", "system-ui", "sans-serif"],
 });

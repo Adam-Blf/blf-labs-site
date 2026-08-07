@@ -25,6 +25,10 @@ create table if not exists public.orders (
   project_type text not null,
   budget_range text not null,
   deadline text not null,
+  -- Prestations complementaires cochees a la commande (nom de domaine,
+  -- hebergement, maintenance...). Stockees en tableau : la liste evolue avec
+  -- l'offre, une colonne par option serait ingerable.
+  options text[] not null default '{}',
   message text not null,
 
   -- Contact

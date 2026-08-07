@@ -5,14 +5,14 @@ import {
   IconDataIa,
   IconSitesWeb,
 } from "@/components/icons/OffreIcons";
-import { Card } from "@/components/ui/Card";
-import { Reveal } from "@/components/ui/Reveal";
 import { OFFRES, type OffreSlug } from "@/content/offres";
 
 /**
- * Le pictogramme est associe ici, pas dans `content/offres.ts` : le contenu
- * editorial reste du texte pur, sans dependance a un composant React, ce qui
- * permet de le reutiliser cote serveur (emails, exports) sans embarquer de JSX.
+ * Services, en grille de quatre cartes de verre.
+ *
+ * Le pictogramme est pose dans un quart de disque flou, en angle de carte,
+ * conformement a la specification. Le halo est purement decoratif, donc masque
+ * aux lecteurs d'ecran.
  */
 const ICONS: Record<OffreSlug, (props: { className?: string }) => React.ReactNode> = {
   "sites-web": IconSitesWeb,
@@ -23,54 +23,62 @@ const ICONS: Record<OffreSlug, (props: { className?: string }) => React.ReactNod
 
 export function OffreGrid() {
   return (
-    <section id="offre" className="rule-b">
-      <div className="section mx-auto max-w-6xl px-5">
-        <Reveal>
-          <h2 className="title text-3xl md:text-5xl">Ce qu&rsquo;on fabrique</h2>
-          <p className="mt-4 max-w-2xl text-muted">
-            Quatre familles de projets. Si le votre tient dans plusieurs cases,
-            ou dans aucune, c&rsquo;est une conversation, pas un probleme.
-          </p>
-        </Reveal>
+    <section id="offre" className="relative">
+      <div className="section mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <h2 className="title max-w-3xl text-4xl sm:text-5xl lg:text-6xl">
+          Des services conçus pour{" "}
+          <span className="grad-text">votre activite</span>
+        </h2>
+        <p className="mt-6 max-w-2xl text-lg font-light text-muted">
+          Quatre familles de projets. Si le votre tient dans plusieurs cases, ou
+          dans aucune, c&rsquo;est une conversation, pas un problème.
+        </p>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          {OFFRES.map((offre, index) => {
+        <div className="mt-16 grid gap-6 md:grid-cols-2">
+          {OFFRES.map((offre) => {
             const Icon = ICONS[offre.slug];
 
             return (
-              <Reveal key={offre.slug} delay={index * 0.06}>
-                <Card className="h-full transition-transform duration-200 hover:-translate-y-1">
-                  <Link
-                    href={`/offre/${offre.slug}`}
-                    className="group flex h-full flex-col p-7"
-                  >
-                    <div className="flex items-center justify-between gap-4">
-                      <Icon className="h-9 w-9 text-accent" />
-                      <span className="tabular mono text-sm font-bold text-muted">
-                        {offre.index}
-                      </span>
-                    </div>
+              <Link
+                key={offre.slug}
+                href={`/offre/${offre.slug}`}
+                className="glass group relative overflow-hidden p-8 transition-transform duration-300 hover:scale-[1.02] sm:p-10"
+              >
+                {/* Quart de disque colore, dans l'angle de la carte. */}
+                <span
+                  aria-hidden="true"
+                  className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-gradient-to-br from-orange/25 to-transparent blur-2xl transition-opacity duration-500 group-hover:opacity-80"
+                />
 
-                    <h3 className="title mt-5 text-2xl group-hover:underline md:text-3xl">
-                      {offre.title}
-                    </h3>
+                <div className="relative z-10">
+                  <span className="glass-sm inline-flex h-14 w-14 items-center justify-center">
+                    <Icon className="h-7 w-7 text-ink" />
+                  </span>
 
-                    <p className="mt-3 text-muted">{offre.pitch}</p>
+                  <h3 className="title mt-8 text-2xl sm:text-3xl">
+                    {offre.title}
+                  </h3>
 
-                    <ul className="mt-6 flex flex-wrap gap-2">
-                      {offre.stack.map((tool) => (
-                        <li key={tool} className="blk-flat mono px-2 py-1 text-xs">
-                          {tool}
-                        </li>
-                      ))}
-                    </ul>
+                  <p className="mt-4 font-light leading-relaxed text-muted">
+                    {offre.pitch}
+                  </p>
 
-                    <span className="mono mt-auto pt-6 text-sm font-bold">
-                      En savoir plus
-                    </span>
-                  </Link>
-                </Card>
-              </Reveal>
+                  <ul className="mt-8 flex flex-wrap gap-2">
+                    {offre.stack.map((tool) => (
+                      <li
+                        key={tool}
+                        className="rounded-full border border-line px-3 py-1 text-xs font-medium text-muted"
+                      >
+                        {tool}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <span className="mono mt-8 inline-block text-xs text-muted transition-colors group-hover:text-ink">
+                    En savoir plus
+                  </span>
+                </div>
+              </Link>
             );
           })}
         </div>

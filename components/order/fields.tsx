@@ -187,6 +187,60 @@ export function RadioCards<T extends string>({
   );
 }
 
+/**
+ * Groupe de cases a cocher, presente en lignes cliquables.
+ *
+ * Un `fieldset` avec `legend` : c'est ce qui fait annoncer l'intitule du groupe
+ * avant chaque option par un lecteur d'ecran. Chaque ligne entiere est une
+ * etiquette, donc cliquable sur toute sa largeur et non seulement sur la case.
+ */
+export function CheckboxCards<T extends string>({
+  legend,
+  options,
+  values,
+  onToggle,
+}: {
+  legend: string;
+  options: { value: T; label: string; hint?: string }[];
+  values: string[];
+  onToggle: (value: T, checked: boolean) => void;
+}) {
+  return (
+    <fieldset>
+      <legend className="mono text-xs text-muted">{legend}</legend>
+
+      <div className="mt-4 space-y-2">
+        {options.map((option) => {
+          const checked = values.includes(option.value);
+          return (
+            <label
+              key={option.value}
+              className={`blk-flat flex min-h-[44px] cursor-pointer items-start gap-4 p-4 transition-colors ${
+                checked ? "border-accent" : ""
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={checked}
+                onChange={(event) => onToggle(option.value, event.target.checked)}
+                className="mt-1 h-4 w-4 shrink-0 accent-current"
+              />
+              <span>
+                <span className="block font-medium">{option.label}</span>
+                {option.hint && (
+                  <span className="mt-1 block text-sm font-light text-muted">
+                    {option.hint}
+                  </span>
+                )}
+              </span>
+            </label>
+          );
+        })}
+      </div>
+    </fieldset>
+  );
+}
+
 export function Checkbox({
   id,
   checked,

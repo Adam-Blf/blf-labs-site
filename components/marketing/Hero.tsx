@@ -1,47 +1,61 @@
-import { ButtonLink } from "@/components/ui/Button";
+import Link from "next/link";
+import { Graduation } from "@/components/ui/Graduation";
 
 /**
- * Hero de la page d'accueil.
+ * Hero pleine hauteur, en direction "laboratoire".
  *
- * Reecrit le 2026-08-07. La version precedente cumulait trois tics de page
- * generee : un mot surligne en couleur au milieu du titre, une promesse vague
- * ("on transforme votre besoin"), et une rangee de chiffres administratifs
- * (SIRET, code APE, date d'immatriculation) presentee comme un argument de
- * vente. Un numero de SIRET ne vend rien : sa place est dans le pied de page et
- * les mentions legales, ou la loi l'exige.
+ * Les deux disques flous qui occupaient ce fond ont ete retires. Un halo de
+ * couleur diffuse derriere un titre est le decor par defaut des maquettes
+ * generees, et c'est exactement ce qui donnait au site son air de gabarit. Ils
+ * sont remplaces par la grille millimetree de la paillasse : elle donne de la
+ * matiere au fond sans ajouter de couleur, et elle appartient au sujet - un
+ * studio qui s'appelle Lab's travaille sur du papier quadrille.
  *
- * La promesse retenue est celle qui distingue reellement le studio d'une agence :
- * le client repart proprietaire de son code et de ses acces.
+ * Le fond en degrade vers le bas evite que la grille ne coure jusqu'au bord du
+ * bloc suivant, ce qui ferait un raccord visible.
  */
 export function Hero() {
   return (
-    <section className="rule-b">
-      <div className="section mx-auto max-w-6xl px-5">
-        <div className="max-w-3xl">
-          <p className="mono text-xs uppercase text-muted">
-            Studio de developpement, Ile-de-France
-          </p>
+    <section className="relative flex min-h-screen items-center overflow-hidden">
+      {/* Papier quadrille. Decoratif, donc masque aux lecteurs d'ecran. */}
+      <span
+        aria-hidden="true"
+        className="grille absolute inset-0 opacity-40 [mask-image:linear-gradient(to_bottom,black,transparent_85%)]"
+      />
 
-          {/* text-wrap: balance repartit les lignes de facon egale. Des retours
-              forcés donnaient une ligne pleine suivie d'un mot orphelin, et
-              cassaient a chaque changement de largeur d'ecran. */}
-          <h1 className="title mt-6 text-balance text-[2.75rem] leading-[1.05] sm:text-6xl lg:text-7xl">
-            On construit votre outil. Vous en gardez les cles.
-          </h1>
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-32 sm:px-6 lg:px-8">
+        {/* Pas de bandeau d'accroche au-dessus du titre : Adam l'a refuse deux
+            fois. Le hero s'ouvre directement sur la phrase. */}
+        <h1 className="title max-w-4xl text-5xl sm:text-7xl lg:text-8xl">
+          On construit votre logiciel.
+          <br />
+          <span className="grad-text">Vous en gardez les clés.</span>
+        </h1>
 
-          <p className="mt-8 max-w-xl text-lg leading-relaxed text-muted">
-            Sites, applications web et mobiles, outils data. Un seul
-            interlocuteur du cadrage a la mise en ligne, et le code, le domaine
-            et les acces a votre nom.
-          </p>
+        <p className="mt-10 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl">
+          Sites, applications web et mobiles, outils data et IA. Un seul
+          interlocuteur du cadrage a la mise en ligne, et le code, le nom de
+          domaine et les accès livrés à votre nom.
+        </p>
 
-          <div className="mt-10 flex flex-wrap gap-4">
-            <ButtonLink href="/commander">Commander un projet</ButtonLink>
-            <ButtonLink href="/#offre" variant="ghost">
-              Voir l&rsquo;offre
-            </ButtonLink>
-          </div>
+        <div className="mt-12 flex flex-wrap items-center gap-4">
+          {/* Seul aplat colore de la page : l'action principale. Le violet
+              vient du logo et ne sert qu'ici. */}
+          <Link
+            href="/commander"
+            className="btn-pill bg-accent px-8 py-4 font-bold text-accent-ink"
+          >
+            Démarrer un projet
+          </Link>
+          <Link
+            href="/services"
+            className="btn-pill border border-line-strong px-8 py-4 font-medium text-ink"
+          >
+            Voir les services
+          </Link>
         </div>
+
+        <Graduation className="mt-24" />
       </div>
     </section>
   );
