@@ -3,7 +3,6 @@ import { FULL_ADDRESS, SIRET_PRETTY, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Conditions générales de vente",
-  robots: { index: false, follow: true },
   alternates: { canonical: "/legal/cgv" },
 };
 

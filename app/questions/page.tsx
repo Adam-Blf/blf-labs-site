@@ -5,7 +5,7 @@ import { CtaBand } from "@/components/marketing/CtaBand";
 import { Faq } from "@/components/marketing/Faq";
 
 export const metadata: Metadata = {
-  title: "Questions frequentes",
+  title: "Questions fréquentes",
   description:
     "Prix, délais, propriété du code, suivi après la mise en ligne, TVA : les questions posees avant de commander un projet.",
   alternates: { canonical: "/questions" },

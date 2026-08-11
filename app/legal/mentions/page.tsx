@@ -5,7 +5,6 @@ export const metadata: Metadata = {
   title: "Mentions légales",
   // Une page legale n'a aucune raison d'etre indexee, elle capte des recherches
   // sans rapport avec l'activite.
-  robots: { index: false, follow: true },
   alternates: { canonical: "/legal/mentions" },
 };
 
