@@ -154,8 +154,8 @@ export default function ConfidentialitePage() {
         Vous disposez d&rsquo;un droit d&rsquo;accès, de rectification,
         d&rsquo;effacement, de limitation et d&rsquo;opposition, ainsi que
         d&rsquo;un droit a la portabilite de vos données. Pour les exercer,
-        ecrivez a <a href={`mailto:${SITE.email}`}>{SITE.email}</a> ; une reponse
-        vous sera apportee sous un mois. Si la reponse ne vous satisfait pas,
+        écrivez à <a href={`mailto:${SITE.email}`}>{SITE.email}</a> ; une réponse
+        vous sera apportée sous un mois. Si la réponse ne vous satisfait pas,
         vous pouvez saisir la Commission nationale de l&rsquo;informatique et des
         libertes,{" "}
         <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer">

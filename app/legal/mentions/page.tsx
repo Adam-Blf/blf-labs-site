@@ -56,13 +56,13 @@ export default function MentionsPage() {
       <p>
         Conformément à l&rsquo;article L. 612-1 du Code de la consommation, tout
         consommateur peut recourir gratuitement à un médiateur en vue de la
-        resolution amiable d&rsquo;un litige. Le mediateur retenu est{" "}
+        résolution amiable d&rsquo;un litige. Le médiateur retenu est{" "}
         {SITE.mediator.name} ({SITE.mediator.fullName}), {SITE.mediator.address},{" "}
         <a href={SITE.mediator.url} target="_blank" rel="noopener noreferrer">
           {SITE.mediator.url}
         </a>
         . La saisine du médiateur suppose qu&rsquo;une réclamation écrite ait
-        d&rsquo;abord été adressée a l&rsquo;éditeur et soit restée sans réponse
+        d&rsquo;abord été adressée à l&rsquo;éditeur et soit restée sans réponse
         satisfaisante.
       </p>
 
@@ -78,8 +78,8 @@ export default function MentionsPage() {
 
       <h2 className="title">Données personnelles</h2>
       <p>
-        Le traitement des donnees transmises par le formulaire de commande est
-        decrit dans la{" "}
+        Le traitement des données transmises par le formulaire de commande est
+        décrit dans la{" "}
         <a href="/legal/confidentialite">politique de confidentialité</a>.
       </p>
     </article>

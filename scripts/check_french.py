@@ -13,6 +13,17 @@ Portee et limites, a connaitre avant de faire confiance a ce script :
   - il respecte la casse initiale (Methode -> Methode accentue, METHODE reste
     en capitales, ou l'accent est facultatif en francais).
 
+ANGLE MORT CONNU, mesure le 2026-08-11 : un paragraphe JSX qui contient une
+interpolation `{...}` n'est PAS analyse. L'extraction du texte affiche exclut
+les accolades pour ne pas toucher aux expressions, et un paragraphe comme
+`<p>Les prix sont exprimes en euros. {SITE.vat}.</p>` est donc saute en entier.
+Consequence reelle : les pages legales, qui interpolent le SIRET, l'adresse et
+le mediateur a chaque phrase, etaient invisibles pour cette garde. Vingt fautes
+d'accent y ont survecu jusqu'a une relecture manuelle.
+
+Tant que ce n'est pas corrige, un "Aucun accent manquant detecte" ne vaut PAS
+pour les pages a forte interpolation. Les relire a la main.
+
 Usage :
   python scripts/check_french.py           # signale, ne modifie rien
   python scripts/check_french.py --fix     # applique les corrections

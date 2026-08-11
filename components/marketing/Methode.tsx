@@ -13,7 +13,7 @@ const ETAPES = [
   },
   {
     title: "Remise des cles",
-    body: "Depot de code, nom de domaine et accès d'hébergement transferes a votre nom. Rien ne reste chez le prestataire.",
+    body: "Depot de code, nom de domaine et accès d'hébergement transferes à votre nom. Rien ne reste chez le prestataire.",
   },
 ];
 

@@ -62,7 +62,7 @@ export function JsonLd() {
   return (
     <script
       type="application/ld+json"
-      // Le contenu est construit ici, a partir de constantes du depot : aucune
+      // Le contenu est construit ici, à partir de constantes du depot : aucune
       // saisie utilisateur n'y entre, donc rien a echapper.
       dangerouslySetInnerHTML={{ __html: JSON.stringify(donnees) }}
     />

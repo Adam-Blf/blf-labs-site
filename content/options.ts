@@ -58,7 +58,7 @@ export const OPTIONS: Option[] = [
     slug: "contenus",
     label: "Redaction des contenus",
     detail:
-      "Ecriture des textes du site a partir d'un échange. Sans cette option, vous fournissez les textes.",
+      "Ecriture des textes du site à partir d'un échange. Sans cette option, vous fournissez les textes.",
     group: "Contenu",
   },
   {
