@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { Breadcrumb } from "@/components/seo/Breadcrumb";
 import { CtaBand } from "@/components/marketing/CtaBand";
 import { ReferencesSection } from "@/components/marketing/ReferencesSection";
 
@@ -16,6 +17,9 @@ export default function ReferencesPage() {
     <>
       <Header />
       <main>
+        <div className="mx-auto max-w-6xl px-4 pt-8 sm:px-6 lg:px-8">
+          <Breadcrumb miettes={[{ nom: "Réalisations" }]} />
+        </div>
         {/* `compact` reste faux ici : la page dediee montre le detail de chaque
             projet, la version courte est reservee a l'accueil. */}
         <ReferencesSection />

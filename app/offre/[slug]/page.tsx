@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { Breadcrumb } from "@/components/seo/Breadcrumb";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { OFFRES, OFFRE_BY_SLUG } from "@/content/offres";
@@ -46,12 +47,15 @@ export default async function OffrePage({ params }: PageProps) {
       <main>
         <section className="rule-b">
           <div className="section mx-auto max-w-4xl px-5">
-            <Link
-              href="/services"
-              className="mono text-sm text-muted underline-offset-4 hover:underline"
-            >
-              Retour aux services
-            </Link>
+            {/* Remplace l'ancien lien "Retour aux services" : meme role de
+                remontee, mais il situe en plus la page dans le site et il est
+                balise pour les resultats de recherche. */}
+            <Breadcrumb
+              miettes={[
+                { nom: "Services", href: "/services" },
+                { nom: offre.title },
+              ]}
+            />
 
             <h1 className="title mt-8 text-4xl md:text-6xl">{offre.title}</h1>
 

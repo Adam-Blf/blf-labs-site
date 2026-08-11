@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/lib/site";
+import { ETUDES } from "@/content/etudes";
 import { OFFRES } from "@/content/offres";
 
 /**
@@ -30,6 +31,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { chemin: "/commander", priorite: 0.9, frequence: "yearly" },
     { chemin: "/methode", priorite: 0.7, frequence: "yearly" },
     { chemin: "/references", priorite: 0.7, frequence: "monthly" },
+    // Une etude de cas par realisation : c'est le contenu le plus long du
+    // site, donc celui qui a le plus de chances de se classer.
+    ...ETUDES.map((etude) => ({
+      chemin: `/references/${etude.slug}`,
+      priorite: 0.8,
+      frequence: "yearly" as const,
+    })),
     { chemin: "/questions", priorite: 0.6, frequence: "monthly" },
     { chemin: "/legal/mentions", priorite: 0.2, frequence: "yearly" },
     { chemin: "/legal/confidentialite", priorite: 0.2, frequence: "yearly" },

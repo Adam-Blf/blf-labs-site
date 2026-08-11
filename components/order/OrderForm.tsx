@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Checkbox, CheckboxCards, RadioCards, TextArea, TextField } from "./fields";
 import { OPTIONS, OPTION_GROUPS } from "@/content/options";
 import { WizardSteps, type WizardStep } from "@/components/ui/WizardSteps";
@@ -81,6 +82,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
+  const router = useRouter();
   const [sent, setSent] = useState(false);
   const [globalError, setGlobalError] = useState<string | null>(null);
 
@@ -137,6 +139,11 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
       }
 
       setSent(true);
+      // Redirection vers une adresse dediee plutot qu'un simple changement
+      // d'etat : c'est la seule facon de compter les demandes envoyees, et le
+      // bouton retour ramene alors sur un formulaire vierge au lieu d'un
+      // formulaire deja envoye qui invite a le renvoyer.
+      router.push("/commander/merci");
     } catch {
       // Panne reseau : on donne une porte de sortie plutot qu'un message vide.
       setGlobalError(
@@ -152,14 +159,15 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
       <div className="blk bg-surface p-8 text-center">
         <h2 className="title text-2xl">Demande envoyée</h2>
         <p className="mt-4 leading-relaxed text-muted">
-          Un accuse de reception vient de partir vers {values.email}. Vous
-          recevrez une reponse avec une estimation de budget et de delai.
+          Un accusé de réception vient de partir vers {values.email}. Vous
+          recevrez une réponse sous 48 heures ouvrées, avec une estimation de
+          budget et de délai.
         </p>
         <Link
           href="/"
           className="blk-sm title mt-8 inline-block min-h-[44px] bg-accent px-6 py-3 text-accent-ink"
         >
-          Revenir a l&rsquo;accueil
+          Revenir à l&rsquo;accueil
         </Link>
       </div>
     );
