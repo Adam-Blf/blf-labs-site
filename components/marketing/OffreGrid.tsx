@@ -5,6 +5,7 @@ import {
   IconDataIa,
   IconSitesWeb,
 } from "@/components/icons/OffreIcons";
+import { Reveal } from "@/components/motion/Reveal";
 import { OFFRES, type OffreSlug } from "@/content/offres";
 
 /**
@@ -34,7 +35,7 @@ export function OffreGrid() {
           dans aucune, c&rsquo;est une conversation, pas un problème.
         </p>
 
-        <div className="mt-16 grid gap-6 md:grid-cols-2">
+        <Reveal className="mt-16 grid gap-6 md:grid-cols-2">
           {OFFRES.map((offre) => {
             const Icon = ICONS[offre.slug];
 
@@ -81,7 +82,7 @@ export function OffreGrid() {
               </Link>
             );
           })}
-        </div>
+        </Reveal>
       </div>
     </section>
   );

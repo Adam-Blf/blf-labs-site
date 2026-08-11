@@ -5,6 +5,7 @@ import { CtaBand } from "@/components/marketing/CtaBand";
 import { Hero } from "@/components/marketing/Hero";
 import { ReferencesSection } from "@/components/marketing/ReferencesSection";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { Reveal } from "@/components/motion/Reveal";
 import { OFFRES } from "@/content/offres";
 
 /**
@@ -27,27 +28,27 @@ export default function Home() {
         <section className="relative">
           <div className="section mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <h2 className="title max-w-3xl text-4xl sm:text-5xl">
-              Par ou <span className="grad-text">commencer</span>
+              Par où <span className="grad-text">commencer</span>
             </h2>
 
             {/* Aucune numerotation : les sections se distinguent par leur
                 titre et leur contenu, pas par un compteur. */}
-            <div className="mt-14 grid gap-6 md:grid-cols-3">
+            <Reveal className="mt-14 grid gap-6 md:grid-cols-3">
               {[
                 {
                   href: "/services",
                   title: "Les services",
-                  body: `${OFFRES.length} familles de projets, de la vitrine a l'outil metier.`,
+                  body: `${OFFRES.length} familles de projets, de la vitrine à l'outil métier.`,
                 },
                 {
                   href: "/methode",
                   title: "La méthode",
-                  body: "Comment un projet se déroule, du cadrage a la remise des cles.",
+                  body: "Comment un projet se déroule, du cadrage à la remise des clés.",
                 },
                 {
                   href: "/references",
                   title: "Les réalisations",
-                  body: "Des projets livres, en ligne, que vous pouvez consulter.",
+                  body: "Des projets livrés, en ligne, que vous pouvez consulter.",
                 },
               ].map((card) => (
                 <Link
@@ -68,7 +69,7 @@ export default function Home() {
                   </div>
                 </Link>
               ))}
-            </div>
+            </Reveal>
           </div>
         </section>
 
