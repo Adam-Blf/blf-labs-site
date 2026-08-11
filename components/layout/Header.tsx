@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Wordmark } from "./Wordmark";
+import { GlassRefraction } from "./GlassRefraction";
 
 /**
  * Le site est multi-pages : chaque entree pointe vers une adresse reelle, pas
@@ -74,12 +75,14 @@ export function Header() {
         Coins droits plutot que pilule : le seul arrondi du site est celui du
         bloc de logo, ce qui le garde distinctif.
       */}
+      <GlassRefraction />
+
       <nav
         aria-label="Navigation principale"
         className={`mx-auto max-w-5xl border transition-colors duration-300 ${
           scrolled
             ? "border-line-strong bg-surface shadow-sm"
-            : "border-line bg-surface/80"
+            : "verre border-line bg-surface/70"
         }`}
       >
         <div className="flex items-center justify-between gap-6 px-5 py-3">
