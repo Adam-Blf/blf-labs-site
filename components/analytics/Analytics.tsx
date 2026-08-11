@@ -1,12 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Script from "next/script";
-import {
-  EVENEMENT_CONSENTEMENT,
-  identifiantMesure,
-  lireConsentement,
-} from "@/lib/consent";
+import { identifiantMesure } from "@/lib/consent";
+import { useConsentement } from "@/lib/useConsent";
 
 /**
  * Chargeur de Google Analytics 4, strictement conditionne au consentement.
@@ -28,22 +24,9 @@ import {
  */
 export function Analytics() {
   const identifiant = identifiantMesure();
-  const [accepte, setAccepte] = useState(false);
+  const consentement = useConsentement();
 
-  useEffect(() => {
-    setAccepte(lireConsentement() === "accepte");
-
-    function surChangement(evenement: Event) {
-      const detail = (evenement as CustomEvent<string>).detail;
-      setAccepte(detail === "accepte");
-    }
-
-    window.addEventListener(EVENEMENT_CONSENTEMENT, surChangement);
-    return () =>
-      window.removeEventListener(EVENEMENT_CONSENTEMENT, surChangement);
-  }, []);
-
-  if (!identifiant || !accepte) return null;
+  if (!identifiant || consentement !== "accepte") return null;
 
   return (
     <>

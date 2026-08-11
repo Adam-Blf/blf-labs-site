@@ -1,13 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  EVENEMENT_CONSENTEMENT,
-  ecrireConsentement,
-  identifiantMesure,
-  lireConsentement,
-} from "@/lib/consent";
+import { ecrireConsentement, identifiantMesure } from "@/lib/consent";
+import { useConsentement } from "@/lib/useConsent";
 
 /**
  * Bandeau de consentement a la mesure d'audience.
@@ -30,24 +25,12 @@ import {
  */
 export function ConsentBanner() {
   const identifiant = identifiantMesure();
-  const [visible, setVisible] = useState(false);
+  const consentement = useConsentement();
 
-  useEffect(() => {
-    if (!identifiant) return;
-
-    setVisible(lireConsentement() === "inconnu");
-
-    function surChangement(evenement: Event) {
-      const detail = (evenement as CustomEvent<string>).detail;
-      setVisible(detail === "inconnu");
-    }
-
-    window.addEventListener(EVENEMENT_CONSENTEMENT, surChangement);
-    return () =>
-      window.removeEventListener(EVENEMENT_CONSENTEMENT, surChangement);
-  }, [identifiant]);
-
-  if (!identifiant || !visible) return null;
+  // `null` signifie "pas encore lu", ce qui n'est pas la meme chose que
+  // "inconnu". Rendre le bandeau tant qu'on ne sait pas le ferait apparaitre
+  // puis disparaitre chez quelqu'un qui a deja repondu.
+  if (!identifiant || consentement !== "inconnu") return null;
 
   return (
     <div
