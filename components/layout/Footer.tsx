@@ -42,6 +42,7 @@ const NAVIGATION = [
   { href: "/studio-ou-agence", label: "Studio ou agence" },
   { href: "/developpement-web-ile-de-france", label: "Île-de-France" },
   { href: "/contact", label: "Contact" },
+  { href: "/rendez-vous", label: "Prendre rendez-vous" },
   { href: "/commander", label: "Démarrer un projet" },
 ];
 
