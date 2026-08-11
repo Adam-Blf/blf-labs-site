@@ -30,22 +30,22 @@ export const metadata: Metadata = {
 const PRINCIPES = [
   {
     titre: "Un seul interlocuteur",
-    detail:
+    texte:
       "La personne qui cadre le projet est celle qui l'écrit. Rien ne se perd entre un commercial, un chef de projet et un développeur, parce qu'il n'y en a qu'un.",
   },
   {
     titre: "Le code et les accès sont à vous",
-    detail:
+    texte:
       "Dépôt, nom de domaine, hébergement, comptes tiers : tout est ouvert à votre nom. Vous pouvez confier la suite à n'importe qui, sans rien demander. C'est la seule garantie qui vaille.",
   },
   {
     titre: "Ce qui est promis est vérifiable",
-    detail:
+    texte:
       "Les délais annoncés sont des délais tenus ou renégociés à l'avance. Les réalisations sont en ligne et consultables. Aucun chiffre n'est affiché sur ce site sans mesure derrière.",
   },
   {
     titre: "Le refus fait partie du travail",
-    detail:
+    texte:
       "Un projet hors budget, hors compétence ou mal cadré reçoit un non argumenté et une orientation ailleurs. C'est plus rapide pour tout le monde qu'un devis de complaisance.",
   },
 ];
@@ -96,7 +96,7 @@ export default function AProposPage() {
                   </p>
                   <h3 className="title mt-4 text-2xl">{principe.titre}</h3>
                   <p className="mt-4 leading-relaxed text-muted">
-                    {principe.detail}
+                    {principe.texte}
                   </p>
                 </li>
               ))}

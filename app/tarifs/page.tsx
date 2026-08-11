@@ -31,22 +31,22 @@ export const metadata: Metadata = {
 const FACTEURS = [
   {
     titre: "Le nombre d'écrans, pas le nombre de pages",
-    detail:
+    texte:
       "Un site de douze pages qui répètent la même mise en page coûte moins qu'un site de quatre écrans tous différents. C'est le nombre de gabarits distincts qui compte, pas le sommaire.",
   },
   {
     titre: "Qui écrit le contenu",
-    detail:
+    texte:
       "Des textes et des images fournis raccourcissent le projet. Des contenus à produire, à collecter ou à attendre l'allongent, et c'est le premier poste de dérive de délai.",
   },
   {
     titre: "Ce qui doit se connecter à l'existant",
-    detail:
+    texte:
       "Un site autonome est simple. Un site qui doit dialoguer avec un outil de facturation, un agenda ou un logiciel métier dépend de la qualité de leur interface, qui n'est jamais garantie à l'avance.",
   },
   {
     titre: "Le niveau d'exigence sur la donnée",
-    detail:
+    texte:
       "Un formulaire de contact et un tunnel de paiement avec relances ne sont pas le même travail. Les obligations de conformité, de traçabilité et de reprise sur panne se paient en temps, pas en licences.",
   },
 ];
@@ -133,7 +133,7 @@ export default function TarifsPage() {
                   </p>
                   <h3 className="title mt-4 text-2xl">{facteur.titre}</h3>
                   <p className="mt-4 leading-relaxed text-muted">
-                    {facteur.detail}
+                    {facteur.texte}
                   </p>
                 </li>
               ))}

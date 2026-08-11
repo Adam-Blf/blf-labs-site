@@ -31,13 +31,13 @@ export const metadata: Metadata = {
 const MOTIFS = [
   {
     titre: "Vous avez un projet",
-    detail:
+    texte:
       "Le formulaire de commande est plus rapide : il pose les questions dans le bon ordre et évite trois échanges d'emails pour cadrer le besoin.",
     action: { libelle: "Décrire le projet", href: "/commander" },
   },
   {
     titre: "Vous avez une question",
-    detail:
+    texte:
       "Prix, délais, propriété du code, maintenance : la plupart des réponses sont déjà écrites, et elles engagent quelque chose de vérifiable.",
     action: { libelle: "Voir les questions fréquentes", href: "/questions" },
   },
@@ -94,7 +94,7 @@ export default function ContactPage() {
               {MOTIFS.map((motif) => (
                 <li key={motif.titre} className="blk flex flex-col gap-6 p-8">
                   <h3 className="title text-2xl">{motif.titre}</h3>
-                  <p className="leading-relaxed text-muted">{motif.detail}</p>
+                  <p className="leading-relaxed text-muted">{motif.texte}</p>
                   <Link
                     href={motif.action.href}
                     className="nav-link mt-auto inline-block font-medium text-muted-strong transition-colors hover:text-ink"
