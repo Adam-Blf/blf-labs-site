@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ConsentControls } from "@/components/analytics/ConsentControls";
 import { FULL_ADDRESS, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -14,11 +15,45 @@ export default function ConfidentialitePage() {
         Politique de confidentialité
       </h1>
       <p>
-        Ce site collecte le minimum de données nécessaire pour répondre a une
-        demande de projet. Il n&rsquo;utilise ni traceur publicitaire, ni mesure
-        d&rsquo;audience, ni service tiers charge depuis le navigateur : aucun
-        bandeau cookies n&rsquo;est donc nécessaire, faute de cookie a consentir.
+        Ce site collecte le minimum de données nécessaire pour répondre à une
+        demande de projet. Il n&rsquo;utilise aucun traceur publicitaire et ne
+        revend rien. La seule mesure d&rsquo;audience présente est soumise à
+        votre accord préalable, et le site fonctionne à l&rsquo;identique si
+        vous le refusez.
       </p>
+
+      <h2 className="title">Mesure d&rsquo;audience</h2>
+      <p>
+        Le site utilise Google Analytics 4 pour compter les visites et savoir
+        quelles pages sont réellement consultées.
+      </p>
+      <ul>
+        <li>
+          <strong>Finalité</strong> : mesurer la fréquentation, sans profilage
+          publicitaire. Les signaux publicitaires de Google sont désactivés.
+        </li>
+        <li>
+          <strong>Base légale</strong> : votre consentement, article 6.1.a du
+          RGPD et article 82 de la loi Informatique et Libertés.
+        </li>
+        <li>
+          <strong>Dépôt</strong> : aucun cookie de mesure n&rsquo;est déposé et
+          aucune requête n&rsquo;est envoyée à Google tant que vous
+          n&rsquo;avez pas accepté. Refuser est aussi simple qu&rsquo;accepter.
+        </li>
+        <li>
+          <strong>Destinataire</strong> : Google Ireland Limited, en qualité de
+          sous-traitant.
+        </li>
+        <li>
+          <strong>Durée</strong> : 14 mois au maximum, conformément à la
+          recommandation de la CNIL.
+        </li>
+      </ul>
+      <p>
+        Vous pouvez revenir sur votre choix à tout moment, sans justification :
+      </p>
+      <ConsentControls />
 
       <h2 className="title">Responsable du traitement</h2>
       <p>

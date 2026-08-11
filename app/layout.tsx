@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Analytics } from "@/components/analytics/Analytics";
+import { ConsentBanner } from "@/components/analytics/ConsentBanner";
 import { sans } from "./fonts";
 import "./globals.css";
 
@@ -81,6 +83,13 @@ export default function RootLayout({
       </head>
       <body className="flex min-h-full flex-col bg-paper text-ink">
         {children}
+        {/*
+          Les deux ne s'affichent que si NEXT_PUBLIC_GA_ID est configure. Sans
+          cette variable, le site ne mesure rien et ne demande donc aucun
+          consentement : il tourne a l'identique, sans bandeau.
+        */}
+        <ConsentBanner />
+        <Analytics />
       </body>
     </html>
   );
