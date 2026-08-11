@@ -1,13 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
-  EVENEMENT_CONSENTEMENT,
   ecrireConsentement,
   identifiantMesure,
-  lireConsentement,
   type Consentement,
 } from "@/lib/consent";
+import { useConsentement } from "@/lib/useConsent";
 
 const LIBELLES: Record<Consentement, string> = {
   accepte: "Vous avez accepté la mesure d'audience.",
@@ -28,21 +26,7 @@ const LIBELLES: Record<Consentement, string> = {
  */
 export function ConsentControls() {
   const identifiant = identifiantMesure();
-  const [etat, setEtat] = useState<Consentement>("inconnu");
-  const [monte, setMonte] = useState(false);
-
-  useEffect(() => {
-    setMonte(true);
-    setEtat(lireConsentement());
-
-    function surChangement(evenement: Event) {
-      setEtat((evenement as CustomEvent<Consentement>).detail);
-    }
-
-    window.addEventListener(EVENEMENT_CONSENTEMENT, surChangement);
-    return () =>
-      window.removeEventListener(EVENEMENT_CONSENTEMENT, surChangement);
-  }, []);
+  const etat = useConsentement();
 
   if (!identifiant) {
     return (
@@ -55,9 +39,9 @@ export function ConsentControls() {
 
   return (
     <div className="not-prose flex flex-col gap-4">
-      {/* `monte` evite une divergence entre le rendu serveur et le navigateur :
-          l'etat vit dans le stockage local, que le serveur ne connait pas. */}
-      <p className="text-sm text-muted">{monte ? LIBELLES[etat] : ""}</p>
+      {/* Tant que l'etat vaut `null`, le stockage local n'a pas encore ete lu :
+          on n'annonce rien plutot que d'annoncer un choix qui n'est pas le sien. */}
+      <p className="text-sm text-muted">{etat ? LIBELLES[etat] : ""}</p>
 
       <div className="flex flex-wrap gap-3">
         <button
