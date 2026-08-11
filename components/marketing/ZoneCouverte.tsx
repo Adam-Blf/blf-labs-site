@@ -1,45 +1,52 @@
-"use client";
-
-import { useState } from "react";
-import { identifiantMesure } from "@/lib/consent";
-import { useConsentement } from "@/lib/useConsent";
+import Link from "next/link";
 
 /**
- * Carte de la zone d'intervention.
+ * Zone d'intervention.
  *
- * Deux choix expliquent tout ce fichier.
+ * CE FICHIER A ETE VIDE DE SA CARTE LE 2026-08-12, ET C'EST LE POINT
+ * IMPORTANT.
  *
- * PAS D'ADRESSE. La carte montre l'Ile-de-France, pas une epingle sur un
- * batiment. L'adresse enregistree de l'entreprise est un domicile : la publier
- * la rendrait cliquable en itineraire depuis n'importe quel resultat de
- * recherche, definitivement, puisqu'une adresse indexee ne se retire pas. Le
- * referencement local fonctionne sans, par `areaServed` dans les donnees
- * structurees. Si l'entreprise prend un jour des bureaux, il suffira de
- * remplacer la requete ci-dessous par leur adresse.
+ * La version precedente affichait une carte Google de l'Ile-de-France et
+ * annoncait du presentiel « pour le cadrage et les points d'etape », avec un
+ * lien d'itineraire et la phrase « les rendez-vous se tiennent chez vous ».
+ * Le studio ne se deplace jamais : tout se fait a distance. La section entiere
+ * promettait donc quelque chose qui n'existe pas.
  *
- * PAS DE CHARGEMENT AVANT ACCORD. Une iframe Google Maps depose des cookies
- * Google et transmet l'adresse IP du visiteur des l'affichage de la page, sans
- * qu'il ait rien demande. C'est un traceur tiers au sens de l'article 82 de la
- * loi Informatique et Libertes, et la CNIL sanctionne son depot prealable. Tant
- * que le visiteur n'a pas accepte, on affiche un apercu inerte et un bouton :
- * la carte ne se charge qu'au clic, ou apres acceptation du bandeau.
+ * Une carte est une promesse geographique. En afficher une quand la zone
+ * desservie est « partout » ne renseigne sur rien et suggere l'inverse de la
+ * verite. Elle est donc retiree, pas reparee. Effet de bord bienvenu : la page
+ * d'accueil ne contacte plus Google du tout, et n'a plus besoin de demander
+ * l'accord prealable que l'article 82 de la loi Informatique et Libertes
+ * imposait pour l'iframe.
+ *
+ * CE QUI REMPLACE. La question derriere « ou on intervient » n'est pas
+ * geographique, elle est : « est-ce que ca va marcher sans qu'on se voie ? ».
+ * On y repond par le fonctionnement reel plutot que par une carte.
  */
 
-/** Cadrage sur la region, pas sur un point. */
-const REQUETE = encodeURIComponent("Île-de-France, France");
+const MOMENTS = [
+  {
+    titre: "Le cadrage",
+    texte:
+      "Une à deux heures en visioconférence, écran partagé, dont sort un " +
+      "document écrit que vous gardez. C’est le seul moment qui décide du " +
+      "reste.",
+  },
+  {
+    titre: "Pendant",
+    texte:
+      "Chaque version est en ligne à une adresse que vous ouvrez quand vous " +
+      "voulez. Vous n’attendez pas une réunion pour voir où ça en est.",
+  },
+  {
+    titre: "Quand ça coince",
+    texte:
+      "Une visio dans la journée. Un blocage se règle en regardant le même " +
+      "écran, ce qui fonctionne à l’identique à distance.",
+  },
+];
 
 export function ZoneCouverte() {
-  const consentement = useConsentement();
-  const [chargeeALaDemande, setChargeeALaDemande] = useState(false);
-
-  // Sans identifiant de mesure, le site n'a pas de bandeau de consentement.
-  // La carte demande alors son propre accord, au clic : le visiteur reste celui
-  // qui decide de contacter Google.
-  const mesureActive = Boolean(identifiantMesure());
-  const accordDonne = mesureActive
-    ? consentement === "accepte" || chargeeALaDemande
-    : chargeeALaDemande;
-
   return (
     <section className="rule-t">
       <div className="section mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -48,49 +55,29 @@ export function ZoneCouverte() {
         </h2>
 
         <p className="mt-8 max-w-2xl text-lg leading-relaxed text-muted">
-          Toute l&rsquo;Île-de-France, en présentiel pour le cadrage et les
-          points d&rsquo;étape, à distance pour le reste. Ailleurs en France,
-          entièrement à distance : la méthode ne change pas.
+          Partout, entièrement à distance. Le studio est basé en
+          Île-de-France, ne se déplace pas et ne reçoit pas : ni déplacement à
+          facturer, ni créneau qui dépend d&rsquo;un train. La méthode est la
+          même pour un client à Créteil et pour un client à Toulouse.
         </p>
 
-        <div className="blk mt-12 overflow-hidden">
-          {accordDonne ? (
-            <iframe
-              title="Carte de la zone d'intervention, Île-de-France"
-              src={`https://www.google.com/maps?q=${REQUETE}&z=9&output=embed`}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="h-[380px] w-full border-0"
-            />
-          ) : (
-            <div className="flex h-[380px] flex-col items-center justify-center gap-6 bg-surface-strong px-6 text-center">
-              <p className="max-w-md leading-relaxed text-muted">
-                La carte est fournie par Google, qui dépose ses propres cookies
-                et reçoit votre adresse IP. Elle ne se charge donc pas sans
-                votre accord.
-              </p>
-              <button
-                type="button"
-                onClick={() => setChargeeALaDemande(true)}
-                className="btn-pill min-h-[44px] bg-accent px-6 py-3 font-semibold text-accent-ink"
-              >
-                Afficher la carte
-              </button>
-            </div>
-          )}
-        </div>
+        <ul className="mt-12 grid gap-6 md:grid-cols-3">
+          {MOMENTS.map((moment) => (
+            <li key={moment.titre} className="blk flex flex-col gap-4 p-8">
+              <h3 className="title text-2xl">{moment.titre}</h3>
+              <p className="leading-relaxed text-muted">{moment.texte}</p>
+            </li>
+          ))}
+        </ul>
 
-        <p className="mt-6 text-sm text-muted">
-          Le studio ne reçoit pas dans ses locaux : les rendez-vous se tiennent
-          chez vous ou en visioconférence.{" "}
-          <a
-            href={`https://www.google.com/maps/dir/?api=1&destination=${REQUETE}`}
-            target="_blank"
-            rel="noreferrer noopener"
+        <p className="mt-10 max-w-2xl text-sm leading-relaxed text-muted">
+          Tous les rendez-vous se tiennent en visioconférence.{" "}
+          <Link
+            href="/developpement-web-ile-de-france"
             className="text-ink underline underline-offset-4"
           >
-            Ouvrir l&rsquo;itinéraire dans Google Maps
-          </a>
+            Comment ça se passe concrètement
+          </Link>
         </p>
       </div>
     </section>

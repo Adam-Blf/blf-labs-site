@@ -72,11 +72,10 @@ export default function ContactPage() {
             </a>
 
             <p className="mt-8 max-w-2xl leading-relaxed text-muted">
-              Le studio n&rsquo;a pas de bureau ouvert au public : les
-              rendez-vous se tiennent chez vous, dans vos locaux, ou en
-              visioconférence. L&rsquo;intervention couvre toute
-              l&rsquo;Île-de-France en présentiel, et le reste de la France à
-              distance.
+              Le studio travaille entièrement à distance : tous les rendez-vous
+              se tiennent en visioconférence, sans déplacement ni bureau ouvert
+              au public. La zone d&rsquo;intervention est donc la France
+              entière, aux mêmes conditions partout.
             </p>
           </div>
         </section>

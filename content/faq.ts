@@ -46,6 +46,6 @@ export const FAQ: FaqItem[] = [
   {
     question: "Travaillez-vous en dehors de l'Ile-de-France ?",
     answer:
-      "Oui. Le suivi se fait en visio et par écrit, ce qui n'impose aucune contrainte géographique. Les rendez-vous sur place restent possibles en Ile-de-France.",
+      "Oui, partout. Le studio travaille entièrement à distance : cadrage en visioconférence, suivi en visio et par écrit, chaque version en ligne à une adresse que vous ouvrez quand vous voulez. Il n'y a pas de rendez-vous sur place, y compris en Ile-de-France, donc aucune contrainte géographique et aucun frais de déplacement.",
   },
 ];
