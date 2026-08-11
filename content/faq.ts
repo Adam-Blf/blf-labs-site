@@ -19,12 +19,12 @@ export const FAQ: FaqItem[] = [
       "Le devis est établi après le premier échange, puis fixé et signé avant que le développement commence : pas de facture surprise à la fin. Décrivez votre besoin dans le formulaire de commande, vous recevez une fourchette de budget en réponse.",
   },
   {
-    question: "En combien de temps c'est livre ?",
+    question: "En combien de temps c'est livré ?",
     answer:
-      "Deux à cinq semaines pour un site, un à trois mois pour une application, selon le périmètre convenu au cadrage. Vous recevez une version consultable en ligne dès les premiers jours, puis à chaque bloc termine : vous ne découvrez jamais le résultat à la fin.",
+      "Deux à cinq semaines pour un site, un à trois mois pour une application, selon le périmètre convenu au cadrage. Vous recevez une version consultable en ligne dès les premiers jours, puis à chaque bloc terminé : vous ne découvrez jamais le résultat à la fin.",
   },
   {
-    question: "A qui appartient le code une fois livre ?",
+    question: "À qui appartient le code une fois livré ?",
     answer:
       "À vous. Le dépôt de code, le nom de domaine et les accès d'hébergement sont mis à votre nom. Vous pouvez confier la suite à n'importe quel autre développeur sans rien demander à personne.",
   },
@@ -36,12 +36,12 @@ export const FAQ: FaqItem[] = [
   {
     question: "Que se passe-t-il après la mise en ligne ?",
     answer:
-      "Ce qui ne fonctionne pas comme convenu au devis est repris sans supplément. Au dela, la maintenance et les évolutions se font à la demande, sans engagement de durée impose.",
+      "Ce qui ne fonctionne pas comme convenu au devis est repris sans supplément. Au-delà, la maintenance et les évolutions se font à la demande, sans engagement de durée imposée.",
   },
   {
     question: "Facturez-vous la TVA ?",
     answer:
-      "Non. L'entreprise bénéficie de la franchise en base, article 293 B du Code général des impôts : le prix annonce est le prix paye, il n'y a pas de TVA à ajouter.",
+      "Non. L'entreprise bénéficie de la franchise en base, article 293 B du Code général des impôts : le prix annoncé est le prix payé, il n'y a pas de TVA à ajouter.",
   },
   {
     question: "Travaillez-vous en dehors de l'Ile-de-France ?",

@@ -15,7 +15,7 @@ export function CtaBand() {
         </h2>
 
         <p className="mx-auto mt-8 max-w-xl text-lg font-light text-muted">
-          Décrivez votre projet, même grossierement. Vous recevez une réponse
+          Décrivez votre projet, même grossièrement. Vous recevez une réponse
           sous 48 heures ouvrées, avec une estimation de budget et de délai.
         </p>
 
@@ -24,7 +24,7 @@ export function CtaBand() {
             href="/commander"
             className="btn-pill bg-accent px-8 py-4 font-semibold text-accent-ink"
           >
-            Demarrer un projet
+            Démarrer un projet
           </Link>
           <a
             href={`mailto:${SITE.email}`}

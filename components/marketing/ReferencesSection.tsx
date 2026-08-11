@@ -24,7 +24,7 @@ export function ReferencesSection({ compact = false }: { compact?: boolean }) {
             Déjà <span className="grad-text">en ligne</span>
           </h2>
           <p className="max-w-sm font-light text-muted">
-            Des projets livres et consultables, pas des maquettes.
+            Des projets livrés et consultables, pas des maquettes.
           </p>
         </div>
 

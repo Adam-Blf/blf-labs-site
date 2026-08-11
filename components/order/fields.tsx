@@ -110,7 +110,7 @@ export function TextArea({
       <div className="mt-2 flex items-baseline justify-between gap-4">
         <FieldError id={errorId} message={error} />
         <span className="tabular mono ml-auto shrink-0 text-xs text-muted">
-          {value.trim().length} caracteres
+          {value.trim().length} caractères
         </span>
       </div>
     </div>

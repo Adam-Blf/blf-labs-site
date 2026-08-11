@@ -34,7 +34,7 @@ const ETAPES = [
   {
     titre: "On se cale sous 48 heures ouvrées",
     texte:
-      "Une réponse avec deux ou trois créneaux. En visioconférence, ou chez vous si vous êtes en Île-de-France et que ça vous arrange.",
+      "Une réponse avec deux ou trois créneaux, en visioconférence. Écran partagé, et un document écrit qui vous reste à la fin.",
   },
   {
     titre: "Vingt minutes, pas une heure",

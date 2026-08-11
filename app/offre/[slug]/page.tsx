@@ -73,7 +73,7 @@ export default async function OffrePage({ params }: PageProps) {
 
         <section className="rule-b bg-surface">
           <div className="section mx-auto max-w-4xl px-5">
-            <h2 className="title text-2xl md:text-4xl">Ce qui est livre</h2>
+            <h2 className="title text-2xl md:text-4xl">Ce qui est livré</h2>
 
             <ul className="mt-8 space-y-4">
               {offre.deliverables.map((item) => (
@@ -99,7 +99,7 @@ export default async function OffrePage({ params }: PageProps) {
 
               <Card className="p-6">
                 <h3 className="mono text-xs uppercase tracking-widest text-muted">
-                  Outils utilises
+                  Outils utilisés
                 </h3>
                 <ul className="mt-3 flex flex-wrap gap-2">
                   {offre.stack.map((tool) => (

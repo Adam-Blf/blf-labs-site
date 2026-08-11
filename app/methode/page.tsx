@@ -8,7 +8,7 @@ import { Methode } from "@/components/marketing/Methode";
 export const metadata: Metadata = {
   title: "Méthode",
   description:
-    "Cadrage, maquette, developpement, remise des cles : comment se deroule un projet confie a BLF Lab's.",
+    "Cadrage, maquette, développement, remise des clés : comment se déroule un projet confié à BLF Lab's.",
   alternates: { canonical: "/methode" },
 };
 
