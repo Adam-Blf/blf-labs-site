@@ -16,7 +16,7 @@ export const FAQ: FaqItem[] = [
   {
     question: "Combien coûte un projet ?",
     answer:
-      "Le devis est établi après le premier échange, puis fixe et signe avant que le développement commence : pas de facture surprise à la fin. Decrivez votre besoin dans le formulaire de commande, vous recevez une fourchette de budget en réponse.",
+      "Le devis est établi après le premier échange, puis fixé et signé avant que le développement commence : pas de facture surprise à la fin. Décrivez votre besoin dans le formulaire de commande, vous recevez une fourchette de budget en réponse.",
   },
   {
     question: "En combien de temps c'est livre ?",
@@ -26,7 +26,7 @@ export const FAQ: FaqItem[] = [
   {
     question: "A qui appartient le code une fois livre ?",
     answer:
-      "A vous. Le dépôt de code, le nom de domaine et les accès d'hebergement sont mis à votre nom. Vous pouvez confier la suite à n'importe quel autre développeur sans rien demander à personne.",
+      "À vous. Le dépôt de code, le nom de domaine et les accès d'hébergement sont mis à votre nom. Vous pouvez confier la suite à n'importe quel autre développeur sans rien demander à personne.",
   },
   {
     question: "Qui va travailler sur mon projet ?",

@@ -37,11 +37,11 @@ export const REFERENCES: Reference[] = [
     title: "Bacchana",
     role: "Produit du studio, de la conception à la publication",
     summary:
-      "Jeu de soiree concu, developpe et edite par le studio. Application web installable, plus une version iOS et une version Android construites à parite.",
+      "Jeu de soirée conçu, développé et édité par le studio. Application web installable, plus une version iOS et une version Android construites à parité.",
     url: "https://bacchana.beloucif.com",
     shot: "/shots/bacchana.webp",
     facts: [
-      "Trois plateformes maintenues en parallele",
+      "Trois plateformes maintenues en parallèle",
       "Achats intégrés et mesure d'audience avec consentement",
       "Suivi des erreurs et tableau de bord produit en place",
     ],
@@ -50,16 +50,16 @@ export const REFERENCES: Reference[] = [
   {
     slug: "ohypnozen",
     title: "Ohypnozen",
-    role: "Site vitrine livre pour un cabinet de therapie",
+    role: "Site vitrine livré pour un cabinet de thérapie",
     summary:
-      "Site de presentation d'un cabinet : prestations, prise de contact, contenus modifiables par la praticienne sans passer par un développeur.",
+      "Site de présentation d'un cabinet : prestations, prise de contact, contenus modifiables par la praticienne sans passer par un développeur.",
     url: "https://ohypnozen.com",
     shot: "/shots/ohypnozen.webp",
     facts: [
-      "Interface d'edition reservee à la proprietaire du site",
-      "Pages légales et RGPD en place des la mise en ligne",
-      "Nom de domaine et hebergement au nom du cabinet",
+      "Interface d'édition réservée à la propriétaire du site",
+      "Pages légales et RGPD en place dès la mise en ligne",
+      "Nom de domaine et hébergement au nom du cabinet",
     ],
-    tags: ["Site vitrine", "Next.js", "Edition de contenu"],
+    tags: ["Site vitrine", "Next.js", "Édition de contenu"],
   },
 ];
