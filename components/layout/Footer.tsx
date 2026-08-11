@@ -28,11 +28,17 @@ import { Wordmark } from "./Wordmark";
  * ici sans intervention, et ne peut donc pas etre oubliee.
  */
 
+// Le pied de page porte TOUTES les entrees, y compris celles qui ne tiennent
+// pas dans la barre du haut : c'est lui qui garantit qu'aucune page n'est
+// orpheline, donc atteignable ni par un visiteur ni par un moteur.
 const NAVIGATION = [
   { href: "/services", label: "Services" },
+  { href: "/tarifs", label: "Budgets et délais" },
   { href: "/methode", label: "Méthode" },
   { href: "/references", label: "Réalisations" },
   { href: "/questions", label: "Questions" },
+  { href: "/a-propos", label: "À propos" },
+  { href: "/contact", label: "Contact" },
   { href: "/commander", label: "Démarrer un projet" },
 ];
 

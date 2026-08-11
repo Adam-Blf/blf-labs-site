@@ -28,6 +28,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }> = [
     { chemin: "", priorite: 1, frequence: "monthly" },
     { chemin: "/services", priorite: 0.9, frequence: "monthly" },
+    { chemin: "/tarifs", priorite: 0.9, frequence: "monthly" },
+    { chemin: "/contact", priorite: 0.8, frequence: "yearly" },
+    { chemin: "/a-propos", priorite: 0.7, frequence: "yearly" },
     { chemin: "/commander", priorite: 0.9, frequence: "yearly" },
     { chemin: "/methode", priorite: 0.7, frequence: "yearly" },
     { chemin: "/references", priorite: 0.7, frequence: "monthly" },
