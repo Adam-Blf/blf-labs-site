@@ -4,9 +4,12 @@
  * Regle : uniquement des projets en ligne, verifies accessibles, et dont l'URL
  * a ete controlee au moment de l'ecriture.
  *
- * Deux pieges deja rencontres sur cette seule fiche : le nom s'ecrit "ohynozen"
- * sans "p", contrairement au nom du projet d'hebergement, et l'extension est
- * ".com" - le ".fr" ne repond pas. Verifie par requete, pas de memoire.
+ * Piege sur cette fiche : le nom s'ecrit bien "ohypnozen", AVEC le "p". Une
+ * version precedente de ce commentaire affirmait le contraire et la fiche
+ * portait "ohynozen", ce qui affichait publiquement le nom d'une cliente mal
+ * orthographie. Les deux domaines repondent, mais le titre du site lui-meme
+ * dit "ohypnozen", et c'est lui qui fait foi. L'extension est ".com", le ".fr"
+ * ne repond pas. Verifie par requete, pas de memoire.
  *
  * Aucun projet hospitalier ici : donnees de sante, hors ligne par nature.
  */
@@ -45,13 +48,13 @@ export const REFERENCES: Reference[] = [
     tags: ["Produit", "Web", "iOS", "Android"],
   },
   {
-    slug: "ohynozen",
-    title: "Ohynozen",
+    slug: "ohypnozen",
+    title: "Ohypnozen",
     role: "Site vitrine livre pour un cabinet de therapie",
     summary:
       "Site de presentation d'un cabinet : prestations, prise de contact, contenus modifiables par la praticienne sans passer par un développeur.",
-    url: "https://ohynozen.com",
-    shot: "/shots/ohynozen.webp",
+    url: "https://ohypnozen.com",
+    shot: "/shots/ohypnozen.webp",
     facts: [
       "Interface d'edition reservee à la proprietaire du site",
       "Pages légales et RGPD en place des la mise en ligne",
