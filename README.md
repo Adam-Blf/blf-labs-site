@@ -1,8 +1,9 @@
 # BLF Lab's - site officiel
 
-Version 0.2.0
+Version 0.3.0
 
 <!-- adam-badges:start -->
+[![verification](https://img.shields.io/github/actions/workflow/status/Adam-Blf/blf-labs-site/ci.yml?branch=main&style=flat-square&label=verification)](https://github.com/Adam-Blf/blf-labs-site/actions/workflows/ci.yml)
 [![commits](https://img.shields.io/github/commit-activity/t/Adam-Blf/blf-labs-site?color=001329&label=commits&style=flat-square)](https://github.com/Adam-Blf/blf-labs-site/commits)
 [![visites](https://hits.sh/github.com/Adam-Blf/blf-labs-site.svg?style=flat-square&label=visites&color=001329)](https://hits.sh/github.com/Adam-Blf/blf-labs-site/)
 [![last commit](https://img.shields.io/github/last-commit/Adam-Blf/blf-labs-site?color=D4A437&style=flat-square&label=dernier%20push)](https://github.com/Adam-Blf/blf-labs-site/commits)
@@ -22,6 +23,7 @@ notifiee par email au studio, et confirmee au client par un accuse de reception.
 - [Variables d'environnement](#variables-denvironnement)
 - [Emails et DNS](#emails-et-dns)
 - [Scripts](#scripts)
+- [Verification](#verification)
 - [Choix structurants](#choix-structurants)
 
 ## Architecture
@@ -57,14 +59,43 @@ des pannes silencieuses.
 ## Direction artistique
 
 Huit directions completes ont ete maquettees sur la vraie page d&rsquo;accueil,
-puis departagees sur captures. La retenue est **"Bento tech"** : structure Bento
-(grands rayons, cartes souples, boutons pilule, casse normale) et palette Tech
-(fonds profonds, accent violet, appui turquoise).
+puis departagees sur captures. La retenue est la direction **"laboratoire"**,
+posee en classe `.dir-labs` : angles droits, filets fins de 1 px, aplats francs,
+titres en capitales dans la largeur variable d&rsquo;Archivo. Palette encre
+`#111016`, neige `#edeef1`, violet `#cb6ce6` et citron `#d9fb50`.
+
+Trois choses sont exclues par principe, parce qu&rsquo;elles signent une
+interface generee plutot qu&rsquo;une interface dessinee : **le degrade**, le
+**verre depoli** et le **halo de couleur diffuse** derriere un titre. La classe
+`.grad-text` porte donc un aplat de violet et non un degrade, et les disques
+flous du hero ont ete remplaces par la grille millimetree de la paillasse.
 
 Elle vit dans `app/themes.css` sous forme de jetons : couleurs, rayon, epaisseur
 de trait, ombre, police de titre, casse et rythme vertical. **Aucun composant ne
 code un style en dur** : ils lisent les classes `blk`, `title`, `section`,
 `rule-b`. Changer de direction ne demande donc de toucher aucun composant.
+
+### Effets
+
+Trois effets se greffent sur cette direction sans la modifier, et chacun se
+retire sans laisser de trou :
+
+- **Scene 3D du hero** (React Three Fiber). La fiole du logo en volume, avec une
+  refraction reelle. Elle ne se charge pas du tout sans WebGL 2.0, sous
+  `prefers-reduced-motion`, ou quand `Save-Data` est demande : le repli est
+  l&rsquo;etat par defaut, et c&rsquo;est la grille qui reste. Ni `three` ni
+  `drei` n&rsquo;entrent alors dans le paquet initial.
+- **Barre de navigation en verre refractif**. Une carte de deplacement SVG
+  courbe l&rsquo;arriere-plan sans le flouter, tant que la page n&rsquo;a pas
+  defile. Des qu&rsquo;un contenu passe dessous, la barre redevient opaque :
+  au-dessus d&rsquo;un texte qui glisse, une barre translucide est illisible.
+- **Revelation au defilement** (GSAP ScrollTrigger). Rien n&rsquo;est masque en
+  CSS : l&rsquo;etat visible est l&rsquo;etat naturel du document, donc une
+  panne de script ne produit jamais une page blanche.
+
+Le mouvement reduit est traite en JavaScript et pas seulement en CSS : le bloc
+`@media (prefers-reduced-motion: reduce)` annule des durees de transition, il
+n&rsquo;arrete ni une boucle WebGL ni un `requestAnimationFrame`.
 
 Regle de contraste heritee d&rsquo;un projet precedent : `--accent-ink` et
 `--support-ink` sont invariants par theme. Tout texte pose sur un aplat les
@@ -93,13 +124,14 @@ degrade, et le formulaire indique une alternative par email.
 | Variable | Role | Sans elle |
 |---|---|---|
 | `RESEND_API_KEY` | Envoi des emails | Aucun email, la demande reste en base |
-| `RESEND_FROM` | Adresse d&rsquo;expedition | Valeur par defaut `contact@beloucif.com` |
+| `RESEND_FROM` | Adresse d&rsquo;expedition | Valeur par defaut `contact@send.beloucif.com` |
 | `SUPABASE_URL` | Base de donnees | Aucune ecriture, seul l&rsquo;email part |
 | `SUPABASE_SERVICE_ROLE_KEY` | Ecriture serveur | Idem. **Jamais cote client** |
 | `NEXT_PUBLIC_SUPABASE_URL` | Authentification admin | `/admin` inaccessible |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Authentification admin | `/admin` inaccessible |
 | `ADMIN_EMAILS` | Liste blanche du back-office | Personne n&rsquo;entre |
 | `IP_HASH_SALT` | Sel de l&rsquo;empreinte d&rsquo;IP | Sel par defaut, a definir en production |
+| `NEXT_PUBLIC_GA_ID` | Mesure d&rsquo;audience GA4 | Aucune mesure, et **aucun bandeau de consentement** |
 
 ## Emails et DNS
 
@@ -125,6 +157,10 @@ Tout asset genere a son script reproductible, aucun n&rsquo;embarque de secret :
 | `scripts/fetch_icons.py` | Recupere les pictogrammes Icons8 et les convertit en composants React |
 | `scripts/ovh_dns.py` | Consulte et modifie la zone DNS de beloucif.com |
 | `scripts/setup_email_dns.py` | Lit les enregistrements exiges par Resend et les pose chez OVH, de facon idempotente |
+| `scripts/check_encoding.py` | Garde : UTF-8 propre, sans BOM ni mojibake. Executee en CI |
+| `scripts/check_french.py` | Garde : accents manquants dans le texte visible. `--fix` pour appliquer. Executee en CI |
+| `scripts/clean_svg.py` | Retire les metadonnees des SVG exportes de Canva |
+| `scripts/optimize_shots.py` | Convertit les captures en WebP |
 
 Les identifiants sont lus dans un fichier d&rsquo;environnement **hors depot**
 et ne sont jamais affiches, meme en cas d&rsquo;erreur.
@@ -148,3 +184,24 @@ et ne sont jamais affiches, meme en cas d&rsquo;erreur.
 ## Licence
 
 MIT, voir [LICENSE](LICENSE).
+
+## Verification
+
+Le depot ne se relit pas a la main. Un workflow GitHub Actions rejoue a chaque
+poussee et a chaque pull request : types, lint, tests, encodage, accents, build,
+plus une garde typographique qui refuse tiret cadratin, demi-cadratin et
+mediopoint dans le contenu publie.
+
+```bash
+npm run typecheck && npm run lint && npm test
+npm run check:encoding && npm run check:french
+npm run build
+```
+
+Les etapes sont independantes : un run signale **tout** ce qui casse, pas
+seulement la premiere erreur rencontree.
+
+Ce que la CI ne voit pas, et qu&rsquo;il faut donc regarder soi-meme : le rendu.
+Aucune de ces etapes ne dit si une scene 3D deborde du cadre ou si une barre de
+navigation devient illisible. Les deux sont arrives, et c&rsquo;est la capture
+d&rsquo;ecran qui les a trouves, pas le build.
