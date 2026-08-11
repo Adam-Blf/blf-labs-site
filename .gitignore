@@ -88,3 +88,4 @@ mcp.json
 # Bytecode Python, genere a l execution des scripts de garde.
 __pycache__/
 *.pyc
+preuves/
