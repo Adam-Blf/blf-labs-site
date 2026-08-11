@@ -7,7 +7,7 @@ import { SITE } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Commander un projet",
   description:
-    "Decrivez votre projet en quelques minutes. Vous recevez une réponse avec une estimation de budget et de délai.",
+    "Décrivez votre projet en quelques minutes. Vous recevez une réponse sous 48 heures ouvrées, avec une estimation de budget et de délai.",
   alternates: { canonical: "/commander" },
 };
 
@@ -27,7 +27,8 @@ export default async function CommanderPage({ searchParams }: PageProps) {
             <h1 className="title text-4xl md:text-6xl">Commander un projet</h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
               Trois étapes, cinq minutes. Vous recevez une réponse avec une
-              estimation de budget et de délai, ou une orientation ailleurs si ce
+              estimation de budget et de délai sous 48 heures ouvrées, ou une
+              orientation ailleurs si ce
               n&rsquo;est pas pour nous.
             </p>
 

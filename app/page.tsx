@@ -4,6 +4,8 @@ import { Header } from "@/components/layout/Header";
 import { CtaBand } from "@/components/marketing/CtaBand";
 import { Hero } from "@/components/marketing/Hero";
 import { ReferencesSection } from "@/components/marketing/ReferencesSection";
+import { Avis } from "@/components/marketing/Avis";
+import { ZoneCouverte } from "@/components/marketing/ZoneCouverte";
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Reveal } from "@/components/motion/Reveal";
@@ -98,6 +100,11 @@ export default function Home() {
             veut voir en premier chez un studio, avant toute promesse. La version
             compacte n'affiche pas le detail, la page dediee s'en charge. */}
         <ReferencesSection compact />
+
+        {/* Ne rend rien tant qu aucun avis reel n existe. */}
+        <Avis />
+
+        <ZoneCouverte />
 
         <CtaBand />
       </main>

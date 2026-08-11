@@ -16,7 +16,7 @@ export function CtaBand() {
 
         <p className="mx-auto mt-8 max-w-xl text-lg font-light text-muted">
           Décrivez votre projet, même grossierement. Vous recevez une réponse
-          avec une estimation de budget et de délai.
+          sous 48 heures ouvrées, avec une estimation de budget et de délai.
         </p>
 
         <div className="mt-12 flex flex-wrap items-center justify-center gap-4">

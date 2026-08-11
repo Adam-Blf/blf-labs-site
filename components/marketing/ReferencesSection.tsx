@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { Reveal } from "@/components/motion/Reveal";
+import Link from "next/link";
+import { ETUDE_PAR_SLUG } from "@/content/etudes";
 import { REFERENCES } from "@/content/references";
 
 /**
@@ -74,6 +76,18 @@ export function ReferencesSection({ compact = false }: { compact?: boolean }) {
                   </p>
                 </div>
               </a>
+
+              {/* Lien vers l'etude de cas, quand elle existe. Sans lui, la page
+                  la plus detaillee du site n'aurait aucun lien entrant : ni un
+                  visiteur ni un moteur ne la trouveraient. */}
+              {ETUDE_PAR_SLUG.has(reference.slug) && (
+                <Link
+                  href={`/references/${reference.slug}`}
+                  className="nav-link mt-6 inline-block text-sm font-medium text-muted-strong transition-colors hover:text-ink"
+                >
+                  Lire l&rsquo;étude de cas
+                </Link>
+              )}
 
               {!compact && (
                 <ul className="mt-6 space-y-3">
