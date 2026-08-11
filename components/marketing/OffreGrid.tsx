@@ -28,7 +28,7 @@ export function OffreGrid() {
       <div className="section mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <h2 className="title max-w-3xl text-4xl sm:text-5xl lg:text-6xl">
           Des services conçus pour{" "}
-          <span className="grad-text">votre activite</span>
+          <span className="grad-text">votre activité</span>
         </h2>
         <p className="mt-6 max-w-2xl text-lg font-light text-muted">
           Quatre familles de projets. Si le votre tient dans plusieurs cases, ou

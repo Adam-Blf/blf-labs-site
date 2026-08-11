@@ -58,7 +58,7 @@ export const OPTIONS: Option[] = [
     slug: "contenus",
     label: "Redaction des contenus",
     detail:
-      "Ecriture des textes du site à partir d'un échange. Sans cette option, vous fournissez les textes.",
+      "Écriture des textes du site à partir d'un échange. Sans cette option, vous fournissez les textes.",
     group: "Contenu",
   },
   {
@@ -72,14 +72,14 @@ export const OPTIONS: Option[] = [
     slug: "référencement",
     label: "Référencement",
     detail:
-      "Travail sur les mots-cles, les pages et la fiche Google, au-delà du référencement technique déjà compris.",
+      "Travail sur les mots-clés, les pages et la fiche Google, au-delà du référencement technique déjà compris.",
     group: "Contenu",
   },
   {
     slug: "formation",
     label: "Formation à l'édition",
     detail:
-      "Une seance pour apprendre à modifier vos contenus vous-même, avec un memo écrit.",
+      "Une séance pour apprendre à modifier vos contenus vous-même, avec un mémo écrit.",
     group: "Après livraison",
   },
   {

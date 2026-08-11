@@ -69,10 +69,10 @@ export default function MentionsPage() {
       <h2 className="title">Propriété intellectuelle</h2>
       <p>
         Les textes, le code source et les éléments graphiques de ce site sont la
-        propriété de son éditeur, a l&rsquo;exception des marques et des
+        propriété de son éditeur, à l&rsquo;exception des marques et des
         réalisations citées, qui restent la propriété de leurs titulaires
         respectifs. Les pictogrammes proviennent d&rsquo;Icons8. Les polices de
-        caractères Space Grotesk et Space Mono sont distribuees sous licence SIL
+        caractères Space Grotesk et Space Mono sont distribuées sous licence SIL
         Open Font.
       </p>
 

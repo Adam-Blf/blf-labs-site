@@ -133,7 +133,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
       if (!response.ok) {
         if (body.fieldErrors) setErrors(body.fieldErrors);
         setGlobalError(
-          body.error ?? "L'envoi a echoue. Réessayez dans un instant.",
+          body.error ?? "L'envoi a échoué. Réessayez dans un instant.",
         );
         return;
       }
@@ -147,7 +147,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
     } catch {
       // Panne reseau : on donne une porte de sortie plutot qu'un message vide.
       setGlobalError(
-        "Impossible de joindre le serveur. Verifiez votre connexion, ou ecrivez directement a adam@beloucif.com.",
+        "Impossible de joindre le serveur. Vérifiez votre connexion, ou écrivez directement à adam@beloucif.com.",
       );
     } finally {
       setSubmitting(false);
@@ -193,7 +193,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
 
           <RadioCards
             name="budget"
-            legend="Quel budget avez-vous en tete ?"
+            legend="Quel budget avez-vous en tête ?"
             value={values.budget as never}
             onChange={(value) => set("budget", value)}
             error={errors.budget}
@@ -260,8 +260,8 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
       content: (
         <TextArea
           id="message"
-          label="Decrivez ce que vous voulez obtenir"
-          hint="Le contexte, le problème a resoudre, et ce a quoi vous verrez que c'est reussi. Pas besoin de vocabulaire technique."
+          label="Décrivez ce que vous voulez obtenir"
+          hint="Le contexte, le problème à résoudre, et ce à quoi vous verrez que c'est réussi. Pas besoin de vocabulaire technique."
           value={values.message}
           onChange={(value) => set("message", value)}
           error={errors.message}
@@ -284,7 +284,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
               label: CUSTOMER_TYPE_LABELS[type],
               hint:
                 type === "entreprise"
-                  ? "Quelques informations de facturation en plus, exigees sur une facture professionnelle."
+                  ? "Quelques informations de facturation en plus, exigées sur une facture professionnelle."
                   : undefined,
             }))}
           />
@@ -309,7 +309,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
             />
             <TextField
               id="phone"
-              label="Telephone"
+              label="Téléphone"
               type="tel"
               optional
               value={values.phone}
@@ -339,7 +339,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
               </legend>
               <p className="mt-2 text-sm text-muted">
                 Obligatoires sur une facture professionnelle. Elles ne servent
-                qu&rsquo;a etablir le devis puis la facture.
+                qu&rsquo;à établir le devis puis la facture.
               </p>
 
               <div className="mt-6 space-y-6">
@@ -430,8 +430,8 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
             onChange={(checked) => set("consent", checked)}
             error={errors.consent}
           >
-            J&rsquo;accepte que ces informations soient utilisees pour répondre a
-            ma demande. Elles ne sont ni revendues ni utilisees pour de la
+            J&rsquo;accepte que ces informations soient utilisées pour répondre à
+            ma demande. Elles ne sont ni revendues ni utilisées pour de la
             prospection. Voir la{" "}
             <Link href="/legal/confidentialite" className="underline">
               politique de confidentialité

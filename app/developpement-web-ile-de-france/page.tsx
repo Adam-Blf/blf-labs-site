@@ -27,7 +27,7 @@ import { OFFRES } from "@/content/offres";
 export const metadata: Metadata = {
   title: "Développement web en Île-de-France",
   description:
-    "Studio de développement basé en Île-de-France : sites, applications web et mobiles, outils data. Présentiel dans toute la région, réponse sous 48 heures ouvrées.",
+    "Studio de développement basé en Île-de-France : sites, applications web et mobiles, outils data. Travail entièrement à distance, réponse sous 48 heures ouvrées.",
   alternates: { canonical: "/developpement-web-ile-de-france" },
 };
 

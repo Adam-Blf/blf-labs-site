@@ -37,7 +37,7 @@ export default async function CommanderPage({ searchParams }: PageProps) {
             </div>
 
             <p className="mt-10 text-sm text-muted">
-              Vous preferez écrire directement ?{" "}
+              Vous préférez écrire directement ?{" "}
               <a
                 href={`mailto:${SITE.email}`}
                 className="underline underline-offset-4"

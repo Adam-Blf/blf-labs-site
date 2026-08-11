@@ -1,19 +1,19 @@
 const ETAPES = [
   {
     title: "Cadrage",
-    body: "Un échange pour comprendre le metier avant la technique. On en sort avec un périmètre écrit, un prix et une date.",
+    body: "Un échange pour comprendre le métier avant la technique. On en sort avec un périmètre écrit, un prix et une date.",
   },
   {
     title: "Maquette",
-    body: "Les écrans sont valides avant d'être codes. C'est la que les allers-retours coutent le moins cher.",
+    body: "Les écrans sont validés avant d'être codés. C'est là que les allers-retours coûtent le moins cher.",
   },
   {
     title: "Développement",
-    body: "Chaque bloc termine est teste et mis en ligne sur une adresse privee. Vous suivez l'avancement sans rien installer.",
+    body: "Chaque bloc terminé est testé et mis en ligne sur une adresse privée. Vous suivez l'avancement sans rien installer.",
   },
   {
-    title: "Remise des cles",
-    body: "Depot de code, nom de domaine et accès d'hébergement transferes à votre nom. Rien ne reste chez le prestataire.",
+    title: "Remise des clés",
+    body: "Dépôt de code, nom de domaine et accès d'hébergement transférés à votre nom. Rien ne reste chez le prestataire.",
   },
 ];
 

@@ -24,7 +24,7 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={() => basculerTheme(!dark)}
-      aria-label={dark ? "Passer en theme clair" : "Passer en theme sombre"}
+      aria-label={dark ? "Passer en thème clair" : "Passer en thème sombre"}
       aria-pressed={sombre ?? undefined}
       className="blk-sm flex h-11 w-11 items-center justify-center bg-surface text-ink transition-transform hover:-translate-y-[2px]"
     >

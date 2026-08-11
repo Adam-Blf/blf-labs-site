@@ -60,17 +60,17 @@ export default function ConfidentialitePage() {
         <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
       </p>
 
-      <h2 className="title">Données collectees</h2>
+      <h2 className="title">Données collectées</h2>
       <p>Uniquement via le formulaire de commande :</p>
       <ul>
-        <li>Nom, adresse email, et si vous les indiquez, telephone et organisation.</li>
-        <li>Type de projet, budget envisage, échéance et description du besoin.</li>
+        <li>Nom, adresse email, et si vous les indiquez, téléphone et organisation.</li>
+        <li>Type de projet, budget envisagé, échéance et description du besoin.</li>
         <li>Date et heure de votre accord.</li>
         <li>
-          Une empreinte technique irreversible de votre adresse IP, ainsi que le
+          Une empreinte technique irréversible de votre adresse IP, ainsi que le
           type de navigateur. L&rsquo;adresse IP elle-même n&rsquo;est jamais
-          enregistree : seule une empreinte SHA-256 salee est conservee, ce qui
-          permet de limiter les envois automatises sans permettre de vous
+          enregistrée : seule une empreinte SHA-256 salée est conservée, ce qui
+          permet de limiter les envois automatisés sans permettre de vous
           identifier.
         </li>
       </ul>
@@ -153,11 +153,11 @@ export default function ConfidentialitePage() {
       <p>
         Vous disposez d&rsquo;un droit d&rsquo;accès, de rectification,
         d&rsquo;effacement, de limitation et d&rsquo;opposition, ainsi que
-        d&rsquo;un droit a la portabilite de vos données. Pour les exercer,
+        d&rsquo;un droit à la portabilité de vos données. Pour les exercer,
         écrivez à <a href={`mailto:${SITE.email}`}>{SITE.email}</a> ; une réponse
         vous sera apportée sous un mois. Si la réponse ne vous satisfait pas,
         vous pouvez saisir la Commission nationale de l&rsquo;informatique et des
-        libertes,{" "}
+        libertés,{" "}
         <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer">
           www.cnil.fr
         </a>
@@ -166,10 +166,10 @@ export default function ConfidentialitePage() {
 
       <h2 className="title">Sécurité</h2>
       <p>
-        Les demandes sont stockees dans une base dont les règles
+        Les demandes sont stockées dans une base dont les règles
         d&rsquo;accès interdisent toute lecture anonyme. L&rsquo;accès est
-        reserve a l&rsquo;éditeur, après authentification. Les echanges avec le
-        site sont chiffres par TLS.
+        réservé à l&rsquo;éditeur, après authentification. Les échanges avec le
+        site sont chiffrés par TLS.
       </p>
     </article>
   );

@@ -23,7 +23,7 @@ export async function POST(request: Request) {
   try {
     payload = await request.json();
   } catch {
-    return NextResponse.json({ error: "Requete illisible." }, { status: 400 });
+    return NextResponse.json({ error: "Requête illisible." }, { status: 400 });
   }
 
   const parsed = orderSchemaChecked.safeParse(payload);
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          "Trop de demandes envoyees depuis cette connexion. Réessayez dans une heure, ou ecrivez directement par email.",
+          "Trop de demandes envoyées depuis cette connexion. Réessayez dans une heure, ou écrivez directement par email.",
       },
       { status: 429 },
     );
@@ -111,7 +111,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          "Impossible d'enregistrer la demande pour le moment. Ecrivez a adam@beloucif.com, la demande sera traitee de la meme facon.",
+          "Impossible d'enregistrer la demande pour le moment. Écrivez à adam@beloucif.com, la demande sera traitée de la même façon.",
       },
       { status: 503 },
     );

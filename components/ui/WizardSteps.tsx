@@ -67,7 +67,7 @@ export function WizardSteps({
   const step = steps[index];
   if (!step) return null;
 
-  const position = `Etape ${index + 1} sur ${total} : ${step.label}`;
+  const position = `Étape ${index + 1} sur ${total} : ${step.label}`;
 
   function onRailKeyDown(event: KeyboardEvent<HTMLElement>) {
     let target = index;
@@ -145,7 +145,7 @@ export function WizardSteps({
                 </button>
               ) : (
                 <span>
-                  <span className="sr-only">{`Etape ${i + 1} sur ${total} : ${item.label}`}</span>
+                  <span className="sr-only">{`Étape ${i + 1} sur ${total} : ${item.label}`}</span>
                   {tile}
                 </span>
               )}
