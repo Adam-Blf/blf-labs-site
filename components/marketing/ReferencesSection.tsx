@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Reveal } from "@/components/motion/Reveal";
 import { REFERENCES } from "@/content/references";
 
 /**
@@ -25,7 +26,7 @@ export function ReferencesSection({ compact = false }: { compact?: boolean }) {
           </p>
         </div>
 
-        <div className="mt-16 grid gap-8 lg:grid-cols-2">
+        <Reveal className="mt-16 grid gap-8 lg:grid-cols-2">
           {REFERENCES.map((reference, index) => (
             <article key={reference.slug} className="group">
               <a
@@ -103,7 +104,7 @@ export function ReferencesSection({ compact = false }: { compact?: boolean }) {
               </ul>
             </article>
           ))}
-        </div>
+        </Reveal>
       </div>
     </section>
   );
