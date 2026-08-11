@@ -123,6 +123,42 @@ body {
 }
 
 /*
+  Verre a refraction. A ne pas confondre avec le verre depoli retire juste
+  au-dessus : il n'y a ici AUCUN flou.
+
+  Le filtre deforme reellement l'arriere-plan par une carte de deplacement, au
+  lieu de le diluer. C'est ce qui distingue un materiau d'un effet de maquette :
+  le fond reste lisible a travers, seulement courbe, comme derriere une vitre
+  epaisse.
+
+  Trois garde-fous, chacun paye par un bug connu de ce projet :
+
+  - La refraction ne s'applique QUE tant que la page n'a pas defile, quand la
+    barre survole le hero. Des qu'un contenu passe dessous, le composant repasse
+    sur le fond opaque : une barre translucide au-dessus d'un texte qui glisse
+    est illisible, c'est deja pour cette raison que le verre avait ete retire.
+  - Aucune couleur en dur. Les aretes sont composees a partir des jetons de
+    marque, jamais d'un blanc ecrit a la main : c'est ce blanc en dur qui
+    faisait peindre du blanc sur du blanc en theme clair.
+  - Le filtre est fixe, il n'anime rien. Rien a desactiver en mouvement reduit,
+    et aucun cout par image.
+
+  Sans le support de `backdrop-filter: url()`, seules les aretes restent : la
+  barre est alors simplement nette, ce qui est l'etat livre aujourd'hui.
+*/
+.verre {
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, var(--neige) 55%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, var(--nuit) 14%, transparent);
+}
+
+@supports (backdrop-filter: url("#blf-refraction")) {
+  .verre {
+    backdrop-filter: url("#blf-refraction");
+  }
+}
+
+/*
   Grille de laboratoire, posee en fond de section. Elle rappelle le papier
   millimetre d'un carnet de paillasse et donne de la matiere aux grands aplats
   sans ajouter ni image ni couleur. Purement decorative, donc masquee aux

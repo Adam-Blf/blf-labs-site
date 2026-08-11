@@ -129,8 +129,13 @@ function Drops({ colors }: { colors: ReturnType<typeof useThemeColors> }) {
   const drops = useMemo(
     () =>
       [
-        { position: [1.15, 1.5, -1.6], radius: 0.085, color: colors.violet },
-        { position: [3.35, 1.85, -2.2], radius: 0.055, color: colors.citron },
+        // Les deux premières passent derrière la barre de navigation. C'est
+        // volontaire : la barre est en verre à réfraction tant que la page n'a
+        // pas défilé, et un verre n'a d'intérêt que s'il a quelque chose à
+        // courber. Sans elles, l'effet existait dans le code et ne se voyait
+        // nulle part à l'écran.
+        { position: [-1.05, 2.5, -1.6], radius: 0.1, color: colors.violet },
+        { position: [1.35, 2.72, -2], radius: 0.07, color: colors.citron },
         { position: [1.5, -1.6, -1.4], radius: 0.06, color: colors.citron },
         { position: [3.05, -0.95, -2], radius: 0.045, color: colors.violet },
       ] as const,
