@@ -13,9 +13,10 @@ import { ThemeToggle } from "./ThemeToggle";
  */
 const NAV = [
   { href: "/services", label: "Services" },
+  { href: "/tarifs", label: "Tarifs" },
   { href: "/methode", label: "Méthode" },
   { href: "/references", label: "Réalisations" },
-  { href: "/questions", label: "Questions" },
+  { href: "/contact", label: "Contact" },
 ];
 
 /**

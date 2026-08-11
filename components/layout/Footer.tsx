@@ -28,11 +28,21 @@ import { Wordmark } from "./Wordmark";
  * ici sans intervention, et ne peut donc pas etre oubliee.
  */
 
+// Le pied de page porte TOUTES les entrees, y compris celles qui ne tiennent
+// pas dans la barre du haut : c'est lui qui garantit qu'aucune page n'est
+// orpheline, donc atteignable ni par un visiteur ni par un moteur.
 const NAVIGATION = [
   { href: "/services", label: "Services" },
+  { href: "/tarifs", label: "Budgets et délais" },
   { href: "/methode", label: "Méthode" },
   { href: "/references", label: "Réalisations" },
   { href: "/questions", label: "Questions" },
+  { href: "/a-propos", label: "À propos" },
+  { href: "/maintenance", label: "Maintenance" },
+  { href: "/studio-ou-agence", label: "Studio ou agence" },
+  { href: "/developpement-web-ile-de-france", label: "Île-de-France" },
+  { href: "/contact", label: "Contact" },
+  { href: "/rendez-vous", label: "Prendre rendez-vous" },
   { href: "/commander", label: "Démarrer un projet" },
 ];
 
@@ -40,6 +50,7 @@ const LEGAL = [
   { href: "/legal/mentions", label: "Mentions légales" },
   { href: "/legal/confidentialite", label: "Confidentialité" },
   { href: "/legal/cgv", label: "Conditions générales de vente" },
+  { href: "/legal/cookies", label: "Gestion des traceurs" },
 ];
 
 function Colonne({
