@@ -1,0 +1,120 @@
+# Verification automatique du depot.
+#
+# Pourquoi ce fichier existe : les gardes du projet (encodage, accents,
+# contraste des jetons) etaient ecrites, versionnees, documentees, et ne
+# tournaient qu'a la main. Une garde qu'il faut penser a lancer finit par ne
+# plus etre lancee, et elle ne garde alors plus rien.
+#
+# Chaque etape est independante des autres : on veut savoir TOUT ce qui casse
+# en un seul run, pas seulement la premiere chose qui casse. D'ou le
+# `if: always()` sur les etapes qui suivent l'installation.
+
+name: Verification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  # Permet de relancer a la main depuis l'onglet Actions, utile quand un
+  # service tiers a fait echouer un run sans rapport avec le code.
+  workflow_dispatch:
+
+# Deux pushes rapproches sur la meme branche : le premier run est annule.
+# Sans cela, deux runs concurrents se disputent le cache et gaspillent des
+# minutes pour un resultat qui sera de toute facon perime.
+concurrency:
+  group: verification-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verifier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # Alignee sur le moteur attendu par Next 16.
+          node-version: "22"
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # `npm ci` et non `npm install` : l'installation doit decouler du fichier
+      # de verrouillage, sinon la CI peut passer sur des versions que personne
+      # n'a en local.
+      - name: Installer les dependances
+        run: npm ci
+
+      - name: Types
+        if: always()
+        run: npm run typecheck
+
+      - name: Lint
+        if: always()
+        run: npm run lint
+
+      - name: Tests
+        if: always()
+        run: npm test
+
+      # Ces deux gardes sont la raison d'etre du workflow.
+      - name: Encodage UTF-8
+        if: always()
+        run: npm run check:encoding
+
+      - name: Accents du francais
+        if: always()
+        run: npm run check:french
+
+      # Le build en dernier : c'est l'etape la plus lente, et une erreur de
+      # type ou de lint aura deja ete signalee plus haut, plus vite.
+      - name: Build
+        if: always()
+        run: npm run build
+
+  # Garde typographique, exigee sur tous les depots d'Adam : ni tiret cadratin,
+  # ni demi-cadratin, ni mediopoint dans le contenu publie.
+  typographie:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Aucun tiret long ni mediopoint
+        run: |
+          set -euo pipefail
+          # On regarde le contenu redige et publie, pas les dependances ni les
+          # fichiers generes.
+          #
+          # CE QUE CETTE GARDE NE VOIT PAS, et il faut le savoir :
+          #   - AGENTS.md est exclu. Son contenu est pose par l'outillage Next
+          #     (bloc BEGIN:nextjs-agent-rules) et contient un tiret cadratin
+          #     que nous n'ecrivons pas et que nous ne pouvons pas corriger
+          #     durablement : il reviendrait a la prochaine regeneration.
+          #   - le contenu venu de la base de donnees ou d'une API n'est jamais
+          #     analyse ici, seulement les fichiers du depot.
+          cibles=$(git ls-files '*.md' '*.ts' '*.tsx' '*.css' '*.yml' \
+            ':!:package-lock.json' ':!:.agents/**' ':!:AGENTS.md')
+          if [ -z "$cibles" ]; then
+            echo "Aucun fichier a verifier."; exit 0
+          fi
+          # Le motif designe les caracteres par leur point de code PCRE, jamais
+          # en clair. Sinon ce fichier se signalerait lui-meme, et l'exclure de
+          # l'analyse creerait un angle mort a l'endroit precis ou la regle est
+          # definie : une garde ne doit pas cesser de voir la ou on explique ce
+          # qu'elle surveille.
+          #   2014 tiret cadratin, 2013 demi-cadratin, 00b7 mediopoint
+          motif='\x{2014}|\x{2013}|\x{00b7}'
+          if echo "$cibles" | xargs grep -nP "$motif" ; then
+            echo
+            echo "ECHEC : tiret cadratin, demi-cadratin ou mediopoint detecte."
+            echo "Separateurs autorises : - , ."
+            exit 1
+          fi
+          echo "Typographie conforme."

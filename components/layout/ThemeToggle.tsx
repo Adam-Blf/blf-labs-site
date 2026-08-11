@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { basculerTheme, useThemeSombre } from "@/lib/useTheme";
 
 /**
  * Bascule clair / sombre.
@@ -8,34 +8,24 @@ import { useEffect, useState } from "react";
  * Les pictogrammes sont dessines ici en SVG inline plutot qu'importes d'une
  * banque d'icones : un PNG servi par un CDN violerait la regle d'assets locaux
  * et ne suivrait pas la couleur du theme.
+ *
+ * L'etat n'est pas duplique dans React : il est lu directement sur la classe
+ * `.dark` de `<html>`, seule source de verite, posee avant le premier rendu par
+ * le script d'amorcage du layout. Le composant ne peut donc pas afficher un
+ * soleil pendant que la page est sombre.
  */
 export function ThemeToggle() {
-  const [dark, setDark] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setDark(document.documentElement.classList.contains("dark"));
-    setMounted(true);
-  }, []);
-
-  function toggle() {
-    const next = !dark;
-    setDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    try {
-      localStorage.setItem("blf-theme", next ? "dark" : "light");
-    } catch {
-      // Navigation privee ou stockage refuse : la bascule reste valable pour la
-      // session en cours, ce n'est pas une erreur a remonter a l'utilisateur.
-    }
-  }
+  // `null` tant que le navigateur n'a pas repondu : le serveur ne connait pas
+  // la classe, et c'est ce qui evite une divergence d'hydratation.
+  const sombre = useThemeSombre();
+  const dark = sombre ?? false;
 
   return (
     <button
       type="button"
-      onClick={toggle}
+      onClick={() => basculerTheme(!dark)}
       aria-label={dark ? "Passer en theme clair" : "Passer en theme sombre"}
-      aria-pressed={mounted ? dark : undefined}
+      aria-pressed={sombre ?? undefined}
       className="blk-sm flex h-11 w-11 items-center justify-center bg-surface text-ink transition-transform hover:-translate-y-[2px]"
     >
       <svg
