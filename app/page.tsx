@@ -4,9 +4,30 @@ import { Header } from "@/components/layout/Header";
 import { CtaBand } from "@/components/marketing/CtaBand";
 import { Hero } from "@/components/marketing/Hero";
 import { ReferencesSection } from "@/components/marketing/ReferencesSection";
+import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Reveal } from "@/components/motion/Reveal";
 import { OFFRES } from "@/content/offres";
+
+/**
+ * L'accueil etait la seule page sans metadonnees propres : elle heritait mot
+ * pour mot du titre et de la description de la racine.
+ *
+ * Ce n'est pas neutre. Le titre par defaut sert de repli a toute page qui n'en
+ * declare pas, donc il doit rester generique, alors que l'accueil a besoin
+ * d'etre precis : c'est lui qui se classe sur le nom du studio et sur son
+ * metier. Le titre est ecrit en entier plutot que passe par le gabarit
+ * `%s - BLF Lab's`, qui aurait donne "BLF Lab's - BLF Lab's".
+ */
+export const metadata: Metadata = {
+  title: {
+    absolute:
+      "BLF Lab's - développement de sites et d'applications en Île-de-France",
+  },
+  description:
+    "Studio indépendant : sites, applications web et mobiles, outils data et IA. Un seul interlocuteur du cadrage à la mise en ligne. Réponse sous 48 heures ouvrées.",
+  alternates: { canonical: "/" },
+};
 
 /**
  * Accueil.

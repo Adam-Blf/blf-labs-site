@@ -3,8 +3,7 @@ import { ConsentControls } from "@/components/analytics/ConsentControls";
 import { FULL_ADDRESS, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Politique de confidentialite",
-  robots: { index: false, follow: true },
+  title: "Politique de confidentialité",
   alternates: { canonical: "/legal/confidentialite" },
 };
 
