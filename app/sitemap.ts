@@ -31,6 +31,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { chemin: "/tarifs", priorite: 0.9, frequence: "monthly" },
     { chemin: "/contact", priorite: 0.8, frequence: "yearly" },
     { chemin: "/a-propos", priorite: 0.7, frequence: "yearly" },
+    { chemin: "/maintenance", priorite: 0.7, frequence: "yearly" },
+    { chemin: "/studio-ou-agence", priorite: 0.7, frequence: "yearly" },
+    {
+      chemin: "/developpement-web-ile-de-france",
+      priorite: 0.8,
+      frequence: "monthly",
+    },
     { chemin: "/commander", priorite: 0.9, frequence: "yearly" },
     { chemin: "/methode", priorite: 0.7, frequence: "yearly" },
     { chemin: "/references", priorite: 0.7, frequence: "monthly" },
@@ -45,6 +52,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { chemin: "/legal/mentions", priorite: 0.2, frequence: "yearly" },
     { chemin: "/legal/confidentialite", priorite: 0.2, frequence: "yearly" },
     { chemin: "/legal/cgv", priorite: 0.2, frequence: "yearly" },
+    { chemin: "/legal/cookies", priorite: 0.2, frequence: "yearly" },
   ];
 
   // Une page par offre, listee depuis le contenu pour qu'une nouvelle offre

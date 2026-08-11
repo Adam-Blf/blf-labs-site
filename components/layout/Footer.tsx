@@ -38,6 +38,9 @@ const NAVIGATION = [
   { href: "/references", label: "Réalisations" },
   { href: "/questions", label: "Questions" },
   { href: "/a-propos", label: "À propos" },
+  { href: "/maintenance", label: "Maintenance" },
+  { href: "/studio-ou-agence", label: "Studio ou agence" },
+  { href: "/developpement-web-ile-de-france", label: "Île-de-France" },
   { href: "/contact", label: "Contact" },
   { href: "/commander", label: "Démarrer un projet" },
 ];
@@ -46,6 +49,7 @@ const LEGAL = [
   { href: "/legal/mentions", label: "Mentions légales" },
   { href: "/legal/confidentialite", label: "Confidentialité" },
   { href: "/legal/cgv", label: "Conditions générales de vente" },
+  { href: "/legal/cookies", label: "Gestion des traceurs" },
 ];
 
 function Colonne({
