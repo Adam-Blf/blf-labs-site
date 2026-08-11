@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Graduation } from "@/components/ui/Graduation";
+import { HeroSceneMount } from "@/components/three/HeroSceneMount";
 
 /**
  * Hero pleine hauteur, en direction "laboratoire".
@@ -13,6 +14,11 @@ import { Graduation } from "@/components/ui/Graduation";
  *
  * Le fond en degrade vers le bas evite que la grille ne coure jusqu'au bord du
  * bloc suivant, ce qui ferait un raccord visible.
+ *
+ * La scène 3D se pose entre la grille et le texte. Elle rend la fiole du logo
+ * en volume, et non une nappe de couleur : c'est ce qui la distingue des
+ * disques flous retirés. Elle ne se charge que si la machine et le visiteur
+ * l'acceptent, sinon la grille reste le fond complet du bloc.
  */
 export function Hero() {
   return (
@@ -22,6 +28,8 @@ export function Hero() {
         aria-hidden="true"
         className="grille absolute inset-0 opacity-40 [mask-image:linear-gradient(to_bottom,black,transparent_85%)]"
       />
+
+      <HeroSceneMount />
 
       <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-32 sm:px-6 lg:px-8">
         {/* Pas de bandeau d'accroche au-dessus du titre : Adam l'a refuse deux
