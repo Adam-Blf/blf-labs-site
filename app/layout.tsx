@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Analytics } from "@/components/analytics/Analytics";
 import { ConsentBanner } from "@/components/analytics/ConsentBanner";
+import { StickyCta } from "@/components/layout/StickyCta";
 import { sans } from "./fonts";
 import "./globals.css";
 
@@ -88,6 +89,7 @@ export default function RootLayout({
           cette variable, le site ne mesure rien et ne demande donc aucun
           consentement : il tourne a l'identique, sans bandeau.
         */}
+        <StickyCta />
         <ConsentBanner />
         <Analytics />
       </body>
