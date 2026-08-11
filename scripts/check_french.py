@@ -91,7 +91,6 @@ WORDS: dict[str, str] = {
     "legales": "légales",
     "mediateur": "médiateur",
     "mediation": "médiation",
-    "consommateur": "consommateur",
     "conformement": "conformément",
     "regle": "règle",
     "regles": "règles",
@@ -150,7 +149,6 @@ WORDS: dict[str, str] = {
     "economie": "économie",
     "elements": "éléments",
     "element": "élément",
-    "graphiques": "graphiques",
     "citees": "citées",
     "caracteres": "caractères",
     "resolution": "résolution",
@@ -166,7 +164,6 @@ WORDS: dict[str, str] = {
     "complete": "complète",
     "reglement": "règlement",
     "reglementation": "réglementation",
-    "protection": "protection",
     "specifiques": "spécifiques",
     "cedes": "cédés",
     "generiques": "génériques",
@@ -176,19 +173,14 @@ WORDS: dict[str, str] = {
     "signalees": "signalées",
     "corrigees": "corrigées",
     "evolutions": "évolutions",
-    "fonctionnelles": "fonctionnelles",
     "retractation": "rétractation",
     "retracter": "rétracter",
     "responsabilite": "responsabilité",
     "plafonnee": "plafonnée",
     "concernee": "concernée",
-    "affaires": "affaires",
-    "imputable": "imputable",
     "penalites": "pénalités",
     "interet": "intérêt",
     "indemnite": "indemnité",
-    "recouvrement": "recouvrement",
-    "validations": "validations",
     "decale": "décale",
     "detenir": "détenir",
     "prevaut": "prévaut",
@@ -205,20 +197,11 @@ WORDS: dict[str, str] = {
     "controle": "contrôle",
     "cote": "côté",
     "installee": "installée",
-    "modifiables": "modifiables",
-    "praticienne": "praticienne",
-    "prestations": "prestations",
-    "obligatoires": "obligatoires",
     "separement": "séparément",
     "chiffrees": "chiffrées",
     "complementaires": "complémentaires",
-    "facultatif": "facultatif",
-    "renouvellement": "renouvellement",
     "recuperation": "récupération",
-    "acquis": "acquis",
     "seance": "séance",
-    "sauvegardes": "sauvegardes",
-    "surveillance": "surveillance",
     "declinaisons": "déclinaisons",
     "deja": "déjà",
 
@@ -226,17 +209,11 @@ WORDS: dict[str, str] = {
     # "ca se passe" ou "facon" sont tout aussi fautifs que "methode".
     "ca": "ça",
     "cedes": "cédés",
-    "commence": "commence",
-    "concernant": "concernant",
-    "avancement": "avancement",
     "remplacant": "remplaçant",
-    "annonce": "annonce",
     "lecon": "leçon",
     "apercu": "aperçu",
-    "francs": "francs",
     "garcon": "garçon",
     "recoit": "reçoit",
-    "recevez": "recevez",
     "apercoit": "aperçoit",
     "deca": "deçà",
     "maconnerie": "maçonnerie",
@@ -314,11 +291,25 @@ def visible_strings(text: str) -> list[tuple[int, int, str]]:
         text,
     ):
         forbidden.append((match.start(), match.end()))
-    for match in re.finditer(r"^import .*$", text, flags=re.M):
+    # Toute ligne d'import, y compris celles qui tiennent sur plusieurs lignes.
+    # Un identifiant importe est du code : l'accentuer casse la compilation.
+    for match in re.finditer(r"^\s*import\b[\s\S]*?(?:;|$)", text, flags=re.M):
+        forbidden.append((match.start(), match.end()))
+    for match in re.finditer(r'^.*\bfrom\s+["\'].*$', text, flags=re.M):
+        forbidden.append((match.start(), match.end()))
+
+    # Commentaires : ce n'est pas du texte affiche. Les corriger fait du bruit
+    # dans le rapport et masque les vraies fautes, visibles par un lecteur.
+    for match in re.finditer(r"//[^\n]*|/\*[\s\S]*?\*/|^\s*\*[^\n]*", text, flags=re.M):
         forbidden.append((match.start(), match.end()))
 
     def is_forbidden(start: int, end: int) -> bool:
-        return any(a <= start and end <= b for a, b in forbidden)
+        # CHEVAUCHEMENT et non inclusion. La version precedente exigeait que le
+        # segment soit entierement contenu dans la zone interdite : un segment
+        # qui commencait dans un import et se terminait apres passait au travers,
+        # et c'est ainsi que `import { Methode }` devenait `import { Méthode }`,
+        # exactement la panne que l'en-tete de ce fichier dit avoir deja subie.
+        return any(start < b and a < end for a, b in forbidden)
 
     # Motifs qui trahissent du code et non du texte affiche. Sans ce filtre, un
     # segment ouvert sur `/>` et referme sur le `<` d'une balise plus bas
