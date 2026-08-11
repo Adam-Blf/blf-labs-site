@@ -84,3 +84,7 @@ scripts/*.local.sh
 mcp.json
 21st_sk_*
 .env*
+
+# Bytecode Python, genere a l execution des scripts de garde.
+__pycache__/
+*.pyc
