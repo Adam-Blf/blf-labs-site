@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Wordmark } from "./Wordmark";
 import { GlassRefraction } from "./GlassRefraction";
+import { ThemeToggle } from "./ThemeToggle";
 
 /**
  * Le site est multi-pages : chaque entree pointe vers une adresse reelle, pas
@@ -104,6 +105,14 @@ export function Header() {
           </ul>
 
           <div className="flex items-center gap-2">
+            {/*
+              La bascule de theme existait dans le depot mais n'etait rendue
+              nulle part : le site suivait la preference systeme sans jamais
+              laisser le visiteur en decider. Un theme sombre sans commande est
+              un theme sombre a moitie livre.
+            */}
+            <ThemeToggle />
+
             <Link
               href="/commander"
               className="btn-pill hidden bg-accent px-5 py-2.5 text-sm font-semibold text-accent-ink sm:block"

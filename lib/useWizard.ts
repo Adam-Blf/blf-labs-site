@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 /**
  * Etat d'un formulaire en plusieurs etapes.
@@ -33,8 +33,16 @@ export function useWizard({ total, onComplete }: UseWizardOptions) {
 
   // Garde la derniere fonction de fin sans la mettre en dependance des
   // callbacks : sinon `next` change d'identite a chaque rendu du parent.
+  //
+  // L'affectation se fait dans un effet et non pendant le rendu. Ecrire dans
+  // une ref pendant le rendu casse la promesse d'un rendu sans effet de bord :
+  // React peut rendre un composant sans le valider, et l'ecriture aurait alors
+  // deja eu lieu. C'est effectif au meme moment ici, puisque `finish` n'est lu
+  // que dans un gestionnaire d'evenement, jamais pendant le rendu.
   const finish = useRef(onComplete);
-  finish.current = onComplete;
+  useEffect(() => {
+    finish.current = onComplete;
+  }, [onComplete]);
 
   const goTo = useCallback(
     (to: number) => {
