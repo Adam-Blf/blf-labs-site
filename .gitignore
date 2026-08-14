@@ -70,7 +70,11 @@ scripts/*.local.sh
 # Sorties de travail
 /playwright-report/
 /test-results/
+# Captures brutes avant conversion WebP. Deux fichiers .pyc avaient ete suivis
+# ici par accident, d'ou la regle explicite : rien de compile ne part au depot.
 /screenshots/
+__pycache__/
+*.pyc
 # Journaux et instantanes laisses par le pilotage de navigateur
 .playwright-mcp/
 *.local
