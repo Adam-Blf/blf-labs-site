@@ -21,9 +21,12 @@ export type Reference = {
   summary: string;
   url: string;
   /**
-   * Capture du projet, dans public/shots. Produite par une capture du site en
-   * ligne puis convertie en WebP (scripts/optimize_shots.py). Ce sont les
-   * projets d'Adam : aucune image de tiers n'est reprise.
+   * Capture du projet, dans public/shots. Produite par scripts/capture_shots.py,
+   * qui ouvre le site en ligne, ecarte le guide d'introduction et le bandeau de
+   * consentement, puis convertit en WebP. Ces deux ecrans avaient fini par etre
+   * tout ce que la vitrine montrait des projets : une capture prise au premier
+   * chargement ne prouve rien. Ce sont les projets d'Adam : aucune image de
+   * tiers n'est reprise.
    */
   shot: string;
   /** Ce que le projet prouve concretement, pas un adjectif. */

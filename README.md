@@ -1,6 +1,6 @@
 # BLF Lab's - site officiel
 
-Version 0.3.0
+Version 0.3.1
 
 <!-- adam-badges:start -->
 [![verification](https://img.shields.io/github/actions/workflow/status/Adam-Blf/blf-labs-site/ci.yml?branch=main&style=flat-square&label=verification)](https://github.com/Adam-Blf/blf-labs-site/actions/workflows/ci.yml)
@@ -160,7 +160,7 @@ Tout asset genere a son script reproductible, aucun n&rsquo;embarque de secret :
 | `scripts/check_encoding.py` | Garde : UTF-8 propre, sans BOM ni mojibake. Executee en CI |
 | `scripts/check_french.py` | Garde : accents manquants dans le texte visible. `--fix` pour appliquer. Executee en CI |
 | `scripts/clean_svg.py` | Retire les metadonnees des SVG exportes de Canva |
-| `scripts/optimize_shots.py` | Convertit les captures en WebP |
+| `scripts/capture_shots.py` | Recapture les realisations en ligne, guide d'introduction et bandeau cookies ecartes, et ecrit les vignettes WebP |
 
 Les identifiants sont lus dans un fichier d&rsquo;environnement **hors depot**
 et ne sont jamais affiches, meme en cas d&rsquo;erreur.

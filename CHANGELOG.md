@@ -6,6 +6,35 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.3.1 - 2026-08-14
+
+### Corrige
+
+- **Les deux captures de realisations ne montraient pas les projets.** Celle de
+  Bacchana affichait l'ecran d'accueil de son guide d'introduction avec le
+  bandeau cookies par dessus, celle d'Ohypnozen la page floutee derriere sa
+  visite guidee. La vitrine du studio prouvait donc l'existence de deux bandeaux
+  de consentement, et rien d'autre. Les captures montrent desormais l'interface
+  reelle des deux produits.
+
+### Ajoute
+
+- `scripts/capture_shots.py`, qui rejoue le parcours d'un visiteur avant de
+  declencher la capture : passer le guide, refuser les traceurs, laisser
+  l'interface se poser, puis convertir en WebP. Il remplace
+  `scripts/optimize_shots.py`, qui se contentait de convertir et cherchait
+  encore ses fichiers sources sous l'ancienne orthographe fautive du nom de la
+  cliente, donc n'aurait rien reproduit du tout.
+- Le script force la resolution IPv4 des domaines captures : sur un acces qui
+  fait du DNS64/NAT64, un domaine sans enregistrement IPv6 se voit repondre une
+  adresse synthetisee qui ne route pas, et la capture echouait sur le reseau
+  plutot que sur le site.
+
+### Retire
+
+- Deux fichiers `.pyc` suivis par accident dans `scripts/__pycache__`, et la
+  regle `.gitignore` qui manquait pour les tenir dehors.
+
 ## 0.3.0 - 2026-08-11
 
 ### Ajoute
