@@ -66,7 +66,7 @@ const EMPTY: Values = {
 };
 
 /**
- * Formulaire de commande en trois etapes.
+ * Formulaire de commande guide, une question par etape.
  *
  * La validation utilise le MEME schema Zod que la route d'API : les messages
  * affiches ici sont donc exactement ceux que le serveur appliquerait. Valider
@@ -160,7 +160,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
   }
 
   async function submit() {
-    if (!validateStep(2)) return;
+    if (!validateStep(STEP_FIELDS.length - 1)) return;
 
     setSubmitting(true);
     setGlobalError(null);
@@ -199,34 +199,44 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
 
   const steps: WizardStep[] = [
     {
-      id: "projet",
-      label: "Votre projet",
+      id: "type",
+      label: "Type de projet",
       content: (
-        <div className="space-y-8">
-          <RadioCards
-            name="projectType"
-            legend="De quel type de projet s'agit-il ?"
-            value={values.projectType as never}
-            onChange={(value) => set("projectType", value)}
-            error={errors.projectType}
-            options={PROJECT_TYPES.map((type) => ({
-              value: type,
-              label: PROJECT_TYPE_LABELS[type] ?? type,
-            }))}
-          />
-
-          <RadioCards
-            name="budget"
-            legend="Quel budget avez-vous en tête ?"
-            value={values.budget as never}
-            onChange={(value) => set("budget", value)}
-            error={errors.budget}
-            options={BUDGET_RANGES.map((range) => ({
-              value: range,
-              label: BUDGET_LABELS[range],
-            }))}
-          />
-
+        <RadioCards
+          name="projectType"
+          legend="De quel type de projet s'agit-il ?"
+          value={values.projectType as never}
+          onChange={(value) => set("projectType", value)}
+          error={errors.projectType}
+          options={PROJECT_TYPES.map((type) => ({
+            value: type,
+            label: PROJECT_TYPE_LABELS[type] ?? type,
+          }))}
+        />
+      ),
+    },
+    {
+      id: "budget",
+      label: "Budget",
+      content: (
+        <RadioCards
+          name="budget"
+          legend="Quel budget avez-vous en tête ?"
+          value={values.budget as never}
+          onChange={(value) => set("budget", value)}
+          error={errors.budget}
+          options={BUDGET_RANGES.map((range) => ({
+            value: range,
+            label: BUDGET_LABELS[range],
+          }))}
+        />
+      ),
+    },
+    {
+      id: "delai",
+      label: "Délai et options",
+      content: (
+        <div className="space-y-6">
           <RadioCards
             name="deadline"
             legend="Pour quand ?"
@@ -239,9 +249,6 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
             }))}
           />
 
-          {/* Prestations complementaires. Les faire cocher ici evite de les
-              decouvrir au moment du devis, quand le budget est deja fixe dans
-              la tete du client. */}
           <div>
             <p className="text-sm font-medium">
               Avez-vous besoin de ces prestations ?
@@ -250,7 +257,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
               Facultatif. Elles sont chiffrées séparément dans la réponse.
             </p>
 
-            <div className="mt-6 space-y-8">
+            <div className="mt-6 space-y-6">
               {OPTION_GROUPS.map((group) => (
                 <CheckboxCards
                   key={group}
@@ -296,7 +303,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
       id: "contact",
       label: "Vous joindre",
       content: (
-        <div className="space-y-8">
+        <div className="space-y-6">
           <RadioCards
             name="customerType"
             legend="Vous commandez en tant que"

@@ -6,6 +6,20 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.10.0 - 2026-08-20
+
+### Améliore
+
+- **Le hero et la page de commande tiennent dans le premier écran.** Le titre
+  d'accueil, trop grand, remplissait l'écran à lui seul et poussait les boutons
+  et toute preuve sous la ligne de flottaison ; il est redimensionné et complété
+  d'une bande de preuve, si bien que le message, l'action et les garanties sont
+  visibles sans scroller. La page `/commander` a un en-tête plus compact : le
+  formulaire est immédiatement atteignable.
+- **Le formulaire de commande est un vrai parcours guidé, une question par
+  étape** (type, budget, délai, besoin, coordonnées), chaque étape tenant à
+  l'écran, avec un **état de chargement** clair à l'envoi.
+
 ## 0.9.0 - 2026-08-20
 
 ### Ajoute
