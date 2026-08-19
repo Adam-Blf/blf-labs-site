@@ -231,6 +231,18 @@ export async function issueInvoice(id: string) {
   revalidatePath(`/admin/facturation/${id}`);
 }
 
+/** Enregistre le mode de reglement d'une facture (pour le livre des recettes). */
+export async function setInvoicePaymentMethod(id: string, method: string) {
+  const supabase = await db();
+  const { error } = await supabase
+    .from("invoices")
+    .update({ payment_method: method || null })
+    .eq("id", id);
+  if (error) throw new Error(error.message);
+  revalidatePath(`/admin/facturation/${id}`);
+  revalidatePath("/admin/comptabilite");
+}
+
 export async function updateInvoiceStatus(id: string, status: InvoiceStatus) {
   const supabase = await db();
   const patch: { status: InvoiceStatus; paid_at?: string | null } = { status };
