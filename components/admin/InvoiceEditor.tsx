@@ -7,6 +7,7 @@ import { formatEuros, type Invoice, type InvoiceLine } from "@/lib/admin-types";
 import { lineTotalCents } from "@/lib/invoice";
 import {
   addInvoiceLine,
+  generatePaymentLink,
   issueInvoice,
   removeInvoiceLine,
   setInvoicePaymentMethod,
@@ -31,30 +32,60 @@ export function InvoiceEditor({
 
   if (invoice.status !== "brouillon") {
     return (
-      <Card className="flex flex-wrap items-center justify-between gap-4 p-4 text-sm text-muted">
-        <span>
-          Pièce émise le {invoice.issued_at} sous le numéro{" "}
-          <span className="mono">{invoice.number}</span>. Verrouillée : numéro et
-          identité de l&apos;émetteur figés.
-        </span>
-        <label className="flex items-center gap-2">
-          <span>Mode de règlement</span>
-          <select
-            defaultValue={invoice.payment_method ?? ""}
-            onChange={(e) =>
-              start(() => setInvoicePaymentMethod(invoice.id, e.target.value))
-            }
-            disabled={pending}
-            className="blk-sm bg-paper px-3 py-2 text-ink"
-          >
-            <option value="">-</option>
-            {MODES.map((m) => (
-              <option key={m} value={m}>
-                {m}
-              </option>
-            ))}
-          </select>
-        </label>
+      <Card className="flex flex-col gap-4 p-4 text-sm text-muted">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <span>
+            Pièce émise le {invoice.issued_at} sous le numéro{" "}
+            <span className="mono">{invoice.number}</span>. Verrouillée : numéro
+            et identité de l&apos;émetteur figés.
+          </span>
+          <label className="flex items-center gap-2">
+            <span>Mode de règlement</span>
+            <select
+              defaultValue={invoice.payment_method ?? ""}
+              onChange={(e) =>
+                start(() => setInvoicePaymentMethod(invoice.id, e.target.value))
+              }
+              disabled={pending}
+              className="blk-sm bg-paper px-3 py-2 text-ink"
+            >
+              <option value="">-</option>
+              {MODES.map((m) => (
+                <option key={m} value={m}>
+                  {m}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        {invoice.kind === "facture" && (
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
+            {invoice.payment_url ? (
+              <a
+                href={invoice.payment_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="break-all text-ink underline decoration-dotted"
+              >
+                Lien de paiement en ligne
+              </a>
+            ) : (
+              <span>Pas encore de lien de paiement.</span>
+            )}
+            <Button
+              variant="ghost"
+              disabled={pending}
+              onClick={() => start(() => generatePaymentLink(invoice.id))}
+            >
+              {pending
+                ? "…"
+                : invoice.payment_url
+                  ? "Renvoyer le lien par email"
+                  : "Générer et envoyer le lien"}
+            </Button>
+          </div>
+        )}
       </Card>
     );
   }

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { supabaseServer } from "@/lib/supabase-server";
 import {
@@ -8,11 +9,16 @@ import {
   dueDateFrom,
   issuerSnapshot,
 } from "@/lib/invoice";
-import type {
-  InvoiceKind,
-  InvoiceStatus,
-  OrderStatus,
-  ProjectStatus,
+import { createInvoicePaymentLink } from "@/lib/stripe";
+import { sendInvoicePaymentEmail } from "@/lib/mail";
+import {
+  formatEuros,
+  INVOICE_COLUMNS,
+  type Invoice,
+  type InvoiceKind,
+  type InvoiceStatus,
+  type OrderStatus,
+  type ProjectStatus,
 } from "@/lib/admin-types";
 
 /**
@@ -228,6 +234,18 @@ export async function issueInvoice(id: string) {
     .eq("id", id)
     .eq("status", "brouillon");
   if (error) throw new Error(error.message);
+
+  // Pour une facture (pas un devis), on genere le lien de paiement et on l'envoie
+  // au client. En best-effort : si Stripe ou l'email echoue, l'emission reste
+  // valide (numero attribue), le lien pourra etre regenere depuis la fiche.
+  if (inv.kind === "facture") {
+    try {
+      await generatePaymentLink(id);
+    } catch {
+      // Silencieux : la facture est emise, le lien se regenere a la main.
+    }
+  }
+
   revalidatePath(`/admin/facturation/${id}`);
 }
 
@@ -241,6 +259,48 @@ export async function setInvoicePaymentMethod(id: string, method: string) {
   if (error) throw new Error(error.message);
   revalidatePath(`/admin/facturation/${id}`);
   revalidatePath("/admin/comptabilite");
+}
+
+/**
+ * Cree (ou reutilise) le lien de paiement Stripe d'une facture et le stocke.
+ * Idempotent : si un lien existe deja, on le renvoie. Renvoie la facture a jour.
+ */
+async function ensurePaymentLink(
+  supabase: Awaited<ReturnType<typeof db>>,
+  id: string,
+): Promise<Invoice | null> {
+  const { data, error } = await supabase
+    .from("invoices")
+    .select(INVOICE_COLUMNS)
+    .eq("id", id)
+    .single();
+  if (error || !data) return null;
+  const invoice = data as Invoice;
+  if (invoice.payment_url) return invoice;
+
+  const origin = (await headers()).get("origin") ?? "";
+  const { url, id: linkId } = await createInvoicePaymentLink(invoice, origin);
+  const { error: upErr } = await supabase
+    .from("invoices")
+    .update({ payment_url: url, stripe_payment_link_id: linkId })
+    .eq("id", id);
+  if (upErr) throw new Error(upErr.message);
+  return { ...invoice, payment_url: url, stripe_payment_link_id: linkId };
+}
+
+/** Genere le lien de paiement d'une facture et l'envoie au client par email. */
+export async function generatePaymentLink(id: string) {
+  const supabase = await db();
+  const invoice = await ensurePaymentLink(supabase, id);
+  if (invoice?.client_email && invoice.payment_url) {
+    await sendInvoicePaymentEmail({
+      to: invoice.client_email,
+      number: invoice.number ?? id,
+      amountLabel: formatEuros(invoice.amount_ttc_cents),
+      paymentUrl: invoice.payment_url,
+    });
+  }
+  revalidatePath(`/admin/facturation/${id}`);
 }
 
 export async function updateInvoiceStatus(id: string, status: InvoiceStatus) {

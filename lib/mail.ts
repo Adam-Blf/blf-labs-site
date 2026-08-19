@@ -152,3 +152,39 @@ export async function sendOrderEmails(order: OrderInput): Promise<boolean> {
     return false;
   }
 }
+
+/**
+ * Envoi au client de sa facture avec un bouton de paiement en ligne. Meme
+ * degradation gracieuse : sans cle Resend, rien n'est envoye et la fonction rend
+ * `false` sans lever. Le lien reste disponible dans le back-office.
+ */
+export async function sendInvoicePaymentEmail(params: {
+  to: string;
+  number: string;
+  amountLabel: string;
+  paymentUrl: string;
+}): Promise<boolean> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return false;
+  const resend = new Resend(apiKey);
+  const { to, number, amountLabel, paymentUrl } = params;
+
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to,
+      subject: `Votre facture ${esc(number)} - ${SITE.brand}`,
+      html: `<div style="font-family:system-ui,sans-serif;line-height:1.6;color:#111016">
+        <h2 style="margin:0 0 8px">Facture ${esc(number)}</h2>
+        <p>Bonjour,</p>
+        <p>Voici votre facture d'un montant de <strong>${esc(amountLabel)}</strong>. Vous pouvez la régler en ligne en toute sécurité :</p>
+        <p><a href="${esc(paymentUrl)}" style="display:inline-block;background:#cb6ce6;color:#111016;padding:12px 24px;border-radius:999px;text-decoration:none;font-weight:bold">Payer ma facture</a></p>
+        <p style="font-size:13px;color:#666">Si le bouton ne fonctionne pas, copiez ce lien : ${esc(paymentUrl)}</p>
+        <p style="font-size:12px;color:#888;margin-top:24px">${esc(SITE.legalMention)} - SIRET ${esc(SITE.siret)} - TVA non applicable, art. 293 B du CGI.</p>
+      </div>`,
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
