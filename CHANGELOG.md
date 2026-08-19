@@ -6,6 +6,25 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.4.0 - 2026-08-19
+
+### Ajoute
+
+- **Un back-office `/admin` pour piloter tout le studio.** Un seul endroit pour
+  suivre les demandes reçues, les projets en cours, la facturation et les tâches,
+  en remplacement d'un suivi éparpillé. Les leads et les projets s'affichent en
+  tableaux Kanban : glisser une carte d'une colonne à l'autre change son statut,
+  et le changement est enregistré tout de suite en base.
+- **Une connexion à double authentification.** L'accès demande d'abord un lien
+  magique reçu par email, puis un code à six chiffres d'une application
+  d'authentification (TOTP). Tant que ce second facteur n'est pas validé, aucune
+  donnée n'est visible : la règle est posée dans la base elle-même (RLS exigeant
+  le niveau `aal2` et un email autorisé), pas seulement dans l'interface. Une clé
+  qui fuite ne suffit donc pas à lire une seule ligne.
+- **Trois nouvelles tables** (`projects`, `invoices`, `project_tasks`) et le
+  suivi commercial des commandes, toutes protégées par la même garde
+  d'administration.
+
 ## 0.3.1 - 2026-08-14
 
 ### Corrige
