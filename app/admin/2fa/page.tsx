@@ -12,7 +12,6 @@ import { supabaseBrowser } from "@/lib/supabase-browser";
  */
 export default function VerifyTotpPage() {
   const router = useRouter();
-  const supabase = supabaseBrowser();
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -21,6 +20,9 @@ export default function VerifyTotpPage() {
     e.preventDefault();
     setBusy(true);
     setError("");
+    // Client construit paresseusement : jamais au prerender, ou la cle publique
+    // peut manquer de l'environnement de build.
+    const supabase = supabaseBrowser();
 
     const { data: factors, error: listErr } =
       await supabase.auth.mfa.listFactors();

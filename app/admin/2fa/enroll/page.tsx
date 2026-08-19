@@ -14,7 +14,6 @@ import { supabaseBrowser } from "@/lib/supabase-browser";
  */
 export default function EnrollTotpPage() {
   const router = useRouter();
-  const supabase = supabaseBrowser();
   const [qr, setQr] = useState<string | null>(null);
   const [secret, setSecret] = useState<string | null>(null);
   const [code, setCode] = useState("");
@@ -24,6 +23,9 @@ export default function EnrollTotpPage() {
   const verifiedRef = useRef(false);
 
   useEffect(() => {
+    // Client construit paresseusement, cote navigateur uniquement (jamais au
+    // prerender, ou la cle publique peut manquer de l'environnement de build).
+    const supabase = supabaseBrowser();
     let active = true;
     (async () => {
       // Un facteur verifie existe deja -> on va directement a la verification.
@@ -54,7 +56,7 @@ export default function EnrollTotpPage() {
         void supabase.auth.mfa.unenroll({ factorId: id });
       }
     };
-  }, [router, supabase]);
+  }, [router]);
 
   async function onVerify(e: React.FormEvent) {
     e.preventDefault();
@@ -63,6 +65,7 @@ export default function EnrollTotpPage() {
     setBusy(true);
     setError("");
 
+    const supabase = supabaseBrowser();
     const challenge = await supabase.auth.mfa.challenge({ factorId });
     if (challenge.error || !challenge.data) {
       setError("Échec du défi. Réessaie.");
