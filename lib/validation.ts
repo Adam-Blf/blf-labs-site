@@ -197,7 +197,9 @@ export type OrderInput = z.infer<typeof orderSchema>;
 
 /** Champs de l'etape courante, pour valider au fil de l'eau. */
 export const STEP_FIELDS = [
-  ["projectType", "budget", "deadline", "options"],
+  ["projectType"],
+  ["budget"],
+  ["deadline", "options"],
   ["message"],
   [
     "customerType",

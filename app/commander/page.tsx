@@ -21,18 +21,18 @@ export default async function CommanderPage({ searchParams }: PageProps) {
     <>
       <Header />
 
-      <main className="pt-28">
+      <main className="pt-24">
         <section>
-          <div className="section mx-auto max-w-3xl px-5">
-            <h1 className="title text-4xl md:text-6xl">Commander un projet</h1>
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
-              Trois étapes, cinq minutes. Vous recevez une réponse avec une
+          <div className="mx-auto max-w-3xl px-5 pt-8 pb-24">
+            <h1 className="title text-3xl md:text-4xl">Commander un projet</h1>
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted">
+              Cinq étapes rapides, cinq minutes. Vous recevez une réponse avec une
               estimation de budget et de délai sous 48 heures ouvrées, ou une
               orientation ailleurs si ce
               n&rsquo;est pas pour nous.
             </p>
 
-            <div className="mt-12">
+            <div className="mt-8">
               <OrderForm defaultOffre={offre ?? ""} />
             </div>
 

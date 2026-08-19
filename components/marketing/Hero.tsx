@@ -1,28 +1,25 @@
 import Link from "next/link";
-import { Graduation } from "@/components/ui/Graduation";
 import { HeroSceneMount } from "@/components/three/HeroSceneMount";
 
 /**
- * Hero pleine hauteur, en direction "laboratoire".
+ * Hero, dimensionne pour tenir dans le premier ecran.
  *
- * Les deux disques flous qui occupaient ce fond ont ete retires. Un halo de
- * couleur diffuse derriere un titre est le decor par defaut des maquettes
- * generees, et c'est exactement ce qui donnait au site son air de gabarit. Ils
- * sont remplaces par la grille millimetree de la paillasse : elle donne de la
- * matiere au fond sans ajouter de couleur, et elle appartient au sujet - un
- * studio qui s'appelle Lab's travaille sur du papier quadrille.
- *
- * Le fond en degrade vers le bas evite que la grille ne coure jusqu'au bord du
- * bloc suivant, ce qui ferait un raccord visible.
- *
- * La scène 3D se pose entre la grille et le texte. Elle rend la fiole du logo
- * en volume, et non une nappe de couleur : c'est ce qui la distingue des
- * disques flous retirés. Elle ne se charge que si la machine et le visiteur
- * l'acceptent, sinon la grille reste le fond complet du bloc.
+ * Le titre etait en `text-8xl` sur cinq lignes : a lui seul il remplissait
+ * l'ecran et poussait le sous-titre, les boutons et toute preuve sous la ligne
+ * de flottaison. On le ramene a une echelle qui laisse voir, sans scroller,
+ * l'action principale et une bande de preuve. Le decor reste la grille de
+ * paillasse et la fiole 3D du logo, pas un halo de couleur (aesthetic generique).
  */
+
+const PREUVES = [
+  "Le code livré à votre nom",
+  "Nom de domaine et accès inclus",
+  "Un seul interlocuteur, du cadrage à la mise en ligne",
+];
+
 export function Hero() {
   return (
-    <section className="relative flex min-h-screen items-center overflow-hidden">
+    <section className="relative flex min-h-[100svh] items-center overflow-hidden">
       {/* Papier quadrille. Decoratif, donc masque aux lecteurs d'ecran. */}
       <span
         aria-hidden="true"
@@ -31,24 +28,21 @@ export function Hero() {
 
       <HeroSceneMount />
 
-      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-32 sm:px-6 lg:px-8">
-        {/* Pas de bandeau d'accroche au-dessus du titre : Adam l'a refuse deux
-            fois. Le hero s'ouvre directement sur la phrase. */}
-        <h1 className="title max-w-4xl text-5xl sm:text-7xl lg:text-8xl">
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-24 sm:px-6 lg:px-8">
+        <h1 className="title max-w-4xl text-4xl sm:text-5xl lg:text-6xl">
           On construit votre logiciel.
           <br />
           <span className="grad-text">Vous en gardez les clés.</span>
         </h1>
 
-        <p className="mt-10 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl">
+        <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
           Sites, applications web et mobiles, outils data et IA. Un seul
           interlocuteur du cadrage à la mise en ligne, et le code, le nom de
           domaine et les accès livrés à votre nom.
         </p>
 
-        <div className="mt-12 flex flex-wrap items-center gap-4">
-          {/* Seul aplat colore de la page : l'action principale. Le violet
-              vient du logo et ne sert qu'ici. */}
+        <div className="mt-8 flex flex-wrap items-center gap-4">
+          {/* Seul aplat colore de la page : l'action principale. */}
           <Link
             href="/commander"
             className="btn-pill bg-accent px-8 py-4 font-bold text-accent-ink"
@@ -63,7 +57,15 @@ export function Hero() {
           </Link>
         </div>
 
-        <Graduation className="mt-24" />
+        {/* Bande de preuve, au-dessus de la ligne de flottaison. */}
+        <ul className="mt-12 flex flex-col gap-3 text-sm text-muted sm:flex-row sm:flex-wrap sm:gap-x-8">
+          {PREUVES.map((p) => (
+            <li key={p} className="flex items-center gap-2">
+              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-accent" />
+              {p}
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

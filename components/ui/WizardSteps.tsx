@@ -182,7 +182,7 @@ export function WizardSteps({
         })}
       </ol>
 
-      <p id={titleId} className="title mt-6 text-xl">
+      <p id={titleId} className="title mt-5 text-lg">
         {step.label}
       </p>
 
@@ -208,7 +208,7 @@ export function WizardSteps({
         </AnimatePresence>
       </div>
 
-      <div className="mt-8 flex items-center gap-3">
+      <div className="mt-6 flex items-center gap-3">
         {!isFirst && (
           <button
             type="button"
@@ -226,9 +226,21 @@ export function WizardSteps({
             next();
           }}
           disabled={submitting}
-          className="blk-sm title ml-auto min-h-[44px] bg-accent px-6 py-3 text-accent-ink disabled:opacity-60"
+          className="blk-sm title ml-auto inline-flex min-h-[44px] items-center gap-2 bg-accent px-6 py-3 text-accent-ink disabled:opacity-60"
         >
-          {submitting ? "Envoi en cours" : isLast ? finishLabel : nextLabel}
+          {submitting ? (
+            <>
+              <span
+                aria-hidden="true"
+                className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+              />
+              Envoi en cours
+            </>
+          ) : isLast ? (
+            finishLabel
+          ) : (
+            nextLabel
+          )}
         </button>
       </div>
     </div>
