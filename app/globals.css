@@ -87,6 +87,19 @@ body {
 }
 
 /*
+  Soulignement marqueur au citron. C'est l'usage prescrit de la couleur de
+  tension (voir themes.css) : un trait pose sous un mot, pas un aplat. Il passe
+  DERRIERE les glyphes (background), donc le texte garde son encre, et le citron
+  etant une teinte claire invariante, il reste lisible en clair comme en sombre.
+*/
+.mark-citron {
+  background-image: linear-gradient(var(--citron), var(--citron));
+  background-repeat: no-repeat;
+  background-position: 0 92%;
+  background-size: 100% 0.16em;
+}
+
+/*
   Etiquette : petites capitales tres espacees, dans la meme Archivo que le
   reste. Il n'y a pas de monospace sur ce site (voir app/fonts.ts).
 */
@@ -193,22 +206,27 @@ body {
   border-radius: 22px;
 }
 
-/* Bouton principal. */
+/*
+  Bouton principal. Angle droit, comme tout le reste du site (seul le bloc de
+  logo est arrondi, voir themes.css). Le nom `btn-pill` est desormais un
+  vestige : la pilule et son survol flottant (translateY + halo violet) etaient
+  la signature d'une interface generee, exactement ce que la DA refuse. Le
+  survol se contente d'un ancrage net, sans levitation ni glow.
+*/
 .btn-pill {
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius);
   transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    background-color 0.18s ease;
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease;
 }
 
 .btn-pill:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--glow);
+  filter: brightness(1.04);
 }
 
 .btn-pill:active {
-  transform: translateY(0);
+  filter: brightness(0.98);
 }
 
 /*

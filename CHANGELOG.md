@@ -6,6 +6,20 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.12.0 - 2026-08-20
+
+### Change
+
+- **Hero remis dans la direction artistique du site.** Le premier ecran ne
+  ressemble plus a une page generee : angles droits partout (les boutons
+  pilule deviennent des rectangles, comme le reste du site trace a la regle),
+  l'accent passe par un soulignement au citron sur un mot plutot que par une
+  ligne de titre coloree, une etiquette de studio coiffe le titre, et le trio
+  de puces sous les boutons disparait (le sous-titre portait deja la promesse).
+- **Boutons a angle droit sur tout le site.** La suppression de la pilule et de
+  son survol flottant (levitation plus halo violet) vaut pour l'ensemble des
+  boutons, pas seulement le hero, pour rester coherent avec l'identite.
+
 ## 0.11.1 - 2026-08-20
 
 ### Améliore
