@@ -6,6 +6,17 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.10.1 - 2026-08-20
+
+### Sécurité
+
+- **En-têtes de sécurité** sur toutes les réponses (HSTS, X-Frame-Options,
+  X-Content-Type-Options, Referrer-Policy, Permissions-Policy, frame-ancestors)
+  et **dépendance vulnérable corrigée** (nanoid). Passage de la checklist de
+  pré-lancement : RLS, secrets hors du code, clés publique/privée séparées,
+  validation serveur, sessions expirantes, message d'erreur unique et
+  console propre étaient déjà en place.
+
 ## 0.10.0 - 2026-08-20
 
 ### Améliore
