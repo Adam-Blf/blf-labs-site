@@ -6,6 +6,18 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.11.0 - 2026-08-20
+
+### Ajoute
+
+- **Paiement en ligne des factures (Stripe).** À l'émission d'une facture, un
+  lien de paiement Stripe est généré et envoyé au client par email (bouton
+  « Payer ma facture ») ; le lien est aussi disponible et regénérable depuis la
+  fiche. Quand le client paie, un **webhook à signature vérifiée** passe la
+  facture en payé, renseigne le mode « Carte » et la fait entrer dans le livre
+  des recettes, automatiquement. Micro-entreprise : le montant encaissé est le
+  TTC (= HT, franchise de TVA). Le webhook doit pointer sur le domaine actif.
+
 ## 0.10.1 - 2026-08-20
 
 ### Sécurité
