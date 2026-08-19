@@ -71,11 +71,9 @@
      arrondi du site est celui du bloc de logo, qui reste donc distinctif. */
   --radius: 4px;
   --radius-sm: 3px;
-  --radius-pill: 999px;
   --border-w: 1px;
   --shadow: 0 24px 60px -34px rgba(17, 16, 22, 0.4);
   --shadow-sm: 0 12px 28px -20px rgba(17, 16, 22, 0.35);
-  --glow: 0 10px 30px -12px rgba(203, 108, 230, 0.55);
 
   --font-title: var(--font-archivo);
   --font-text: var(--font-archivo);
@@ -109,5 +107,4 @@
 
   --shadow: 0 28px 70px -34px rgba(0, 0, 0, 0.9);
   --shadow-sm: 0 14px 34px -20px rgba(0, 0, 0, 0.9);
-  --glow: 0 10px 34px -12px rgba(203, 108, 230, 0.6);
 }

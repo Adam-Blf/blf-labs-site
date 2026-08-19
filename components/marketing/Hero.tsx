@@ -4,19 +4,19 @@ import { HeroSceneMount } from "@/components/three/HeroSceneMount";
 /**
  * Hero, dimensionne pour tenir dans le premier ecran.
  *
- * Le titre etait en `text-8xl` sur cinq lignes : a lui seul il remplissait
- * l'ecran et poussait le sous-titre, les boutons et toute preuve sous la ligne
- * de flottaison. On le ramene a une echelle qui laisse voir, sans scroller,
- * l'action principale et une bande de preuve. Le decor reste la grille de
- * paillasse et la fiole 3D du logo, pas un halo de couleur (aesthetic generique).
+ * Parti pris apres un premier jet juge "trop generique" : on s'en tient a la
+ * direction artistique du site (themes.css) au lieu des reflexes d'une page
+ * generee. Concretement -
+ *  - angles droits partout : le site est "trace a la regle", plus de pilule ;
+ *  - le violet n'est plus pose en ligne de titre coloree (le "payoff" colore
+ *    est la signature des heros generes) ; l'accent passe par un SOULIGNEMENT
+ *    au citron, seul usage prescrit de la couleur de tension ;
+ *  - plus de trio de puces "benefice" sous les boutons : la meme promesse est
+ *    deja portee par le sous-titre, le trio ne faisait que la repeter en gabarit.
+ *
+ * Le decor reste la grille de paillasse et la fiole 3D du logo, pas un halo de
+ * couleur.
  */
-
-const PREUVES = [
-  "Le code livré à votre nom",
-  "Nom de domaine et accès inclus",
-  "Un seul interlocuteur, du cadrage à la mise en ligne",
-];
-
 export function Hero() {
   return (
     <section className="relative flex min-h-[100svh] items-center overflow-hidden">
@@ -29,10 +29,15 @@ export function Hero() {
       <HeroSceneMount />
 
       <div className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-24 sm:px-6 lg:px-8">
-        <h1 className="title max-w-4xl text-4xl sm:text-5xl lg:text-6xl">
+        <p className="mono flex items-center gap-2.5 text-xs text-muted">
+          <span aria-hidden="true" className="h-2 w-2 bg-support" />
+          Studio logiciel indépendant
+        </p>
+
+        <h1 className="title mt-5 max-w-4xl text-4xl sm:text-5xl lg:text-6xl">
           On construit votre logiciel.
           <br />
-          <span className="grad-text">Vous en gardez les clés.</span>
+          Vous en gardez les <span className="mark-citron">clés</span>.
         </h1>
 
         <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted sm:text-lg">
@@ -41,7 +46,7 @@ export function Hero() {
           domaine et les accès livrés à votre nom.
         </p>
 
-        <div className="mt-8 flex flex-wrap items-center gap-4">
+        <div className="mt-9 flex flex-wrap items-center gap-4">
           {/* Seul aplat colore de la page : l'action principale. */}
           <Link
             href="/commander"
@@ -56,16 +61,6 @@ export function Hero() {
             Voir les services
           </Link>
         </div>
-
-        {/* Bande de preuve, au-dessus de la ligne de flottaison. */}
-        <ul className="mt-12 flex flex-col gap-3 text-sm text-muted sm:flex-row sm:flex-wrap sm:gap-x-8">
-          {PREUVES.map((p) => (
-            <li key={p} className="flex items-center gap-2">
-              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-accent" />
-              {p}
-            </li>
-          ))}
-        </ul>
       </div>
     </section>
   );
