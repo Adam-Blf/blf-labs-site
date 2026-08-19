@@ -1,6 +1,6 @@
 # BLF Lab's - site officiel
 
-Version 0.4.0
+Version 0.5.0
 
 <!-- adam-badges:start -->
 [![verification](https://img.shields.io/github/actions/workflow/status/Adam-Blf/blf-labs-site/ci.yml?branch=main&style=flat-square&label=verification)](https://github.com/Adam-Blf/blf-labs-site/actions/workflows/ci.yml)
@@ -48,10 +48,11 @@ flowchart TD
     R -->|"accuse de reception"| C["Client"]
 
     subgraph Admin["Back-office /admin (proxy.ts, matcher /admin/*)"]
-        L["/admin/login<br/>lien magique (facteur 1)"]
-        T["/admin/2fa<br/>code TOTP (facteur 2 -> aal2)"]
+        L["/admin/login<br/>email + mot de passe (facteur 1)"]
+        P["/admin/change-password<br/>mot de passe provisoire<br/>a changer (1re connexion)"]
+        T["/admin/2fa<br/>QR puis code TOTP (facteur 2 -> aal2)"]
         K["Kanban leads + projets<br/>facturation, taches"]
-        L --> T --> K
+        L --> P --> T --> K
     end
 
     K -->|"lecture et ecriture<br/>filtrees par RLS (aal2)"| DB

@@ -48,7 +48,7 @@ export async function updateAdminSession(request: NextRequest): Promise<NextResp
   const pathname = request.nextUrl.pathname;
   const isAuthRoute =
     pathname.startsWith("/admin/login") ||
-    pathname.startsWith("/admin/auth") ||
+    pathname.startsWith("/admin/change-password") ||
     pathname.startsWith("/admin/2fa");
 
   // NE RIEN executer entre createServerClient et getUser().
@@ -64,9 +64,24 @@ export async function updateAdminSession(request: NextRequest): Promise<NextResp
   };
 
   if (!user) {
-    return isAuthRoute && !pathname.startsWith("/admin/2fa")
+    // Sans session, seul l'ecran de connexion est servi. Le changement de mot de
+    // passe et la 2FA exigent une session : on y renvoie via le login.
+    return pathname.startsWith("/admin/login")
       ? response
       : redirectTo("/admin/login");
+  }
+
+  // Mot de passe provisoire : tant qu'il n'est pas change, on n'avance pas, meme
+  // pas vers l'enrolement TOTP. Priorite sur toute autre etape.
+  const mustChangePassword = user.user_metadata?.must_change_password === true;
+  if (mustChangePassword) {
+    return pathname.startsWith("/admin/change-password")
+      ? response
+      : redirectTo("/admin/change-password");
+  }
+  // Une fois le mot de passe defini, cet ecran n'a plus lieu d'etre.
+  if (pathname.startsWith("/admin/change-password")) {
+    return redirectTo("/admin/2fa");
   }
 
   // Niveau d'assurance : aal2 = 2FA validee.

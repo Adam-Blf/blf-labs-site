@@ -6,6 +6,21 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.5.0 - 2026-08-19
+
+### Modifie
+
+- **La connexion au back-office passe par un mot de passe, plus par un lien
+  magique.** L'accès demande désormais l'email et un mot de passe (facteur 1),
+  puis toujours le code d'une application d'authentification (facteur 2, TOTP).
+  À la toute première connexion, le compte est livré avec un mot de passe
+  provisoire qui doit être remplacé avant d'aller plus loin : tant qu'il n'est
+  pas changé, aucun accès, pas même l'écran d'activation du second facteur.
+- **Le second facteur s'active en scannant un QR code** dans l'application
+  d'authentification dès la première connexion, puis le code à six chiffres est
+  demandé à chaque session. La garde en base reste la même (RLS `aal2` + email
+  autorisé) : une clé qui fuite ne lit toujours aucune ligne.
+
 ## 0.4.0 - 2026-08-19
 
 ### Ajoute
