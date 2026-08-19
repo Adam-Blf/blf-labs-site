@@ -70,7 +70,7 @@ export function InvoicesPanel({ invoices }: { invoices: Invoice[] }) {
                 {inv.number ? ` ${inv.number}` : " (brouillon)"}
               </span>
               <span className="block text-xs text-muted">
-                {inv.client_name ?? "Client à renseigner"} ·{" "}
+                {inv.client_name ?? "Client à renseigner"} -{" "}
                 {formatEuros(inv.amount_ttc_cents)}
               </span>
             </Link>

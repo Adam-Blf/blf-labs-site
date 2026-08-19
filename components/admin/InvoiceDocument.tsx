@@ -51,10 +51,10 @@ export function InvoiceDocument({
             {issuer.addressCountry}
           </p>
           <p className="mt-2 text-sm text-muted">
-            SIRET {issuer.siret} · APE {issuer.ape} ({issuer.apeLabel})
+            SIRET {issuer.siret} - APE {issuer.ape} ({issuer.apeLabel})
           </p>
           <p className="text-sm text-muted">
-            {issuer.email} · {issuer.phone}
+            {issuer.email} - {issuer.phone}
           </p>
         </div>
 
@@ -88,7 +88,7 @@ export function InvoiceDocument({
             {invoice.client_address_street}
             {invoice.client_address_street && <br />}
             {invoice.client_postal_code} {invoice.client_city}
-            {invoice.client_country ? ` · ${invoice.client_country}` : ""}
+            {invoice.client_country ? ` - ${invoice.client_country}` : ""}
           </p>
         )}
         {invoice.client_type === "entreprise" &&
@@ -139,7 +139,7 @@ export function InvoiceDocument({
           </div>
           <div className="flex justify-between text-muted">
             <span>TVA</span>
-            <span>—</span>
+            <span>-</span>
           </div>
           <div className="flex justify-between border-t border-line pt-1 font-medium">
             <span>Total à payer</span>
@@ -161,15 +161,15 @@ export function InvoiceDocument({
       {particulier && (
         <p className="mt-3 text-xs text-muted">
           Médiation de la consommation : {SITE.mediator.fullName} (
-          {SITE.mediator.name}), {SITE.mediator.address} — {SITE.mediator.url}
+          {SITE.mediator.name}), {SITE.mediator.address} - {SITE.mediator.url}
         </p>
       )}
 
       <footer className="mt-6 border-t border-line pt-3 text-xs text-muted">
-        {issuer.legalMention} · SIRET {issuer.siret} · {issuer.email}
+        {issuer.legalMention} - SIRET {issuer.siret} - {issuer.email}
         {brouillon && (
           <span className="ml-2 text-support">
-            · Brouillon : identité non figée tant que la pièce n&apos;est pas
+            - Brouillon : identité non figée tant que la pièce n&apos;est pas
             émise.
           </span>
         )}

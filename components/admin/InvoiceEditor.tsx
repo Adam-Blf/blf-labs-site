@@ -76,7 +76,7 @@ export function InvoiceEditor({
                 {line.designation}
                 <span className="text-muted">
                   {" "}
-                  · {line.quantity} × {formatEuros(line.unit_price_cents)}
+                  - {line.quantity} × {formatEuros(line.unit_price_cents)}
                 </span>
               </span>
               <span className="tabular shrink-0">{formatEuros(lineTotalCents(line))}</span>
