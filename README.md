@@ -1,6 +1,6 @@
 # BLF Lab's - site officiel
 
-Version 0.3.1
+Version 0.4.0
 
 <!-- adam-badges:start -->
 [![verification](https://img.shields.io/github/actions/workflow/status/Adam-Blf/blf-labs-site/ci.yml?branch=main&style=flat-square&label=verification)](https://github.com/Adam-Blf/blf-labs-site/actions/workflows/ci.yml)
@@ -41,13 +41,20 @@ flowchart TD
 
     API -->|"1. valide"| Z["Schema Zod partage<br/>lib/validation.ts"]
     API -->|"2. limite le debit"| H["Empreinte SHA-256 de l'IP<br/>3 envois par heure"]
-    API -->|"3. enregistre"| DB[("Supabase<br/>table orders, RLS active")]
+    API -->|"3. enregistre"| DB[("Supabase<br/>orders, projects, invoices, project_tasks<br/>RLS active, is_blf_admin = email + aal2")]
     API -->|"4. notifie"| R["Resend"]
 
     R -->|"notification"| A["adam@beloucif.com"]
     R -->|"accuse de reception"| C["Client"]
 
-    ADM["/admin<br/>authentifie"] -->|"lecture filtree par RLS"| DB
+    subgraph Admin["Back-office /admin (proxy.ts, matcher /admin/*)"]
+        L["/admin/login<br/>lien magique (facteur 1)"]
+        T["/admin/2fa<br/>code TOTP (facteur 2 -> aal2)"]
+        K["Kanban leads + projets<br/>facturation, taches"]
+        L --> T --> K
+    end
+
+    K -->|"lecture et ecriture<br/>filtrees par RLS (aal2)"| DB
 ```
 
 Le point important : l&rsquo;etape 5 ne peut pas faire echouer l&rsquo;etape 3.
