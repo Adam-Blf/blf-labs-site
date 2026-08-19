@@ -36,6 +36,7 @@
     Clair  : #111016 sur #f7f7fa = 17,2:1 | gris #56525e = 6,8:1
              #111016 sur violet  =  8,1:1 | #111016 sur citron = 15,4:1
     Sombre : #edeef1 sur #111016 = 16,3:1 | gris #9a94a6 = 7,4:1
+             --faint #837e91 sur #111016 = 4,8:1 (AA texte)
              #111016 sur violet  =  8,1:1 | #111016 sur citron = 15,4:1 (identiques,
              puisque les aplats et leur encre ne bougent pas)
 */
@@ -94,7 +95,10 @@
   --ink: #edeef1;
   --muted: #9a94a6;
   --muted-strong: #d5d1de;
-  --faint: #4b4657;
+  /* #4b4657 donnait 2,1:1 sur --paper sombre : du texte noir sur fond noir sur
+     les titres du footer et le fil d'Ariane. Remonte a #837e91 = 4,83:1 (WCAG AA
+     texte normal), tout en restant plus discret que --muted (#9a94a6, 6,45:1). */
+  --faint: #837e91;
 
   /* Les quatre couleurs restent identiques : c'est ce qui tient l'identite
      d'un mode a l'autre. Seuls les fonds et l'encre s'inversent. */

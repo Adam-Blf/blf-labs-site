@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import type { KeyboardEvent, ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useWizard, type WizardDirection } from "@/lib/useWizard";
@@ -62,10 +62,25 @@ export function WizardSteps({
   } = useWizard({ total: steps.length, onComplete });
 
   const reduced = useReducedMotion();
-  const listRef = useRef<HTMLOListElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const firstRun = useRef(true);
+
+  // Apres chaque navigation (Continuer / Retour / rail), le focus se pose sur le
+  // panneau de la nouvelle etape : clavier et lecteurs d'ecran suivent la
+  // progression au lieu de rester sur un bouton qui a pu disparaitre. On saute le
+  // tout premier montage pour ne pas voler le focus a l'arrivee sur la page.
+  useEffect(() => {
+    if (firstRun.current) {
+      firstRun.current = false;
+      return;
+    }
+    panelRef.current?.focus();
+  }, [index]);
 
   const step = steps[index];
   if (!step) return null;
+
+  const titleId = "wizard-etape-titre";
 
   const position = `Étape ${index + 1} sur ${total} : ${step.label}`;
 
@@ -98,7 +113,6 @@ export function WizardSteps({
       </p>
 
       <ol
-        ref={listRef}
         aria-label="Étapes de la commande"
         className="flex list-none items-center gap-2 p-0"
       >
@@ -168,9 +182,17 @@ export function WizardSteps({
         })}
       </ol>
 
-      <p className="title mt-6 text-xl">{step.label}</p>
+      <p id={titleId} className="title mt-6 text-xl">
+        {step.label}
+      </p>
 
-      <div className="relative mt-4">
+      <div
+        ref={panelRef}
+        tabIndex={-1}
+        role="group"
+        aria-labelledby={titleId}
+        className="relative mt-4 outline-none"
+      >
         <AnimatePresence initial={false} custom={direction} mode="wait">
           <motion.div
             key={step.id}

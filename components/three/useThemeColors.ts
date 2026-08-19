@@ -46,22 +46,31 @@ const FALLBACK: SceneColors = {
   neige: "#edeef1",
 };
 
+/**
+ * Lit les jetons de theme reels. Cote serveur (pas de `document`), on retombe sur
+ * la palette de secours. Cote client, la classe `.dark` est deja posee sur
+ * `<html>` par le script d'amorcage : lire ici des le premier rendu evite qu'un
+ * visiteur en sombre voie la scene monter en couleurs claires pendant une frame.
+ */
+function readColors(): SceneColors {
+  if (typeof document === "undefined") return FALLBACK;
+  const style = getComputedStyle(document.documentElement);
+  return {
+    violet: pick(style, "--violet", FALLBACK.violet),
+    citron: pick(style, "--citron", FALLBACK.citron),
+    paper: pick(style, "--paper", FALLBACK.paper),
+    ink: pick(style, "--ink", FALLBACK.ink),
+    neige: pick(style, "--neige", FALLBACK.neige),
+  };
+}
+
 export function useThemeColors(): SceneColors {
-  const [colors, setColors] = useState<SceneColors>(FALLBACK);
+  // Initialisation paresseuse : les vraies couleurs des le premier rendu client.
+  const [colors, setColors] = useState<SceneColors>(readColors);
 
   useEffect(() => {
     const root = document.documentElement;
-
-    function read() {
-      const style = getComputedStyle(root);
-      setColors({
-        violet: pick(style, "--violet", FALLBACK.violet),
-        citron: pick(style, "--citron", FALLBACK.citron),
-        paper: pick(style, "--paper", FALLBACK.paper),
-        ink: pick(style, "--ink", FALLBACK.ink),
-        neige: pick(style, "--neige", FALLBACK.neige),
-      });
-    }
+    const read = () => setColors(readColors());
 
     read();
 

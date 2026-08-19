@@ -44,6 +44,12 @@ body {
   color: var(--ink);
   font-family: var(--font-text), system-ui, sans-serif;
   overflow-x: hidden;
+  /* Fondu au basculement clair/sombre plutot qu'une coupure seche. Aucun effet
+     au chargement (pas de valeur precedente), et le bloc prefers-reduced-motion
+     plus bas le ramene a 0 pour qui le demande. */
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
 }
 
 ::selection {
@@ -120,6 +126,11 @@ body {
   background: var(--surface);
   border: var(--border-w) solid var(--line);
   border-radius: var(--radius-sm);
+  /* Meme fondu que le body au changement de theme (neutralise par
+     prefers-reduced-motion). */
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease;
 }
 
 /*
