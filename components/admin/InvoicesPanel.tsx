@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useTransition } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -14,7 +15,8 @@ import { createInvoice, updateInvoiceStatus } from "@/app/admin/actions";
 
 const STATUSES: InvoiceStatus[] = ["brouillon", "envoye", "paye", "annule"];
 
-/** Devis et factures : creation et suivi du statut de paiement. */
+/** Devis et factures : création d'un brouillon puis suivi du statut. Le détail
+ * (lignes, mentions, émission) se fait sur la fiche de chaque document. */
 export function InvoicesPanel({ invoices }: { invoices: Invoice[] }) {
   const [pending, start] = useTransition();
 
@@ -30,29 +32,28 @@ export function InvoicesPanel({ invoices }: { invoices: Invoice[] }) {
             <option value="devis">Devis</option>
             <option value="facture">Facture</option>
           </select>
-          <input
-            name="number"
-            placeholder="Numéro (optionnel)"
-            className="blk-sm bg-paper px-3 py-2 text-ink"
-          />
+          <select name="client_type" className="blk-sm bg-paper px-3 py-2 text-ink">
+            <option value="entreprise">Professionnel</option>
+            <option value="particulier">Particulier</option>
+          </select>
           <input
             name="client_name"
-            placeholder="Client"
+            placeholder="Nom / raison sociale"
             className="blk-sm bg-paper px-3 py-2 text-ink"
           />
           <input
-            name="amount_ttc_euros"
-            inputMode="decimal"
-            placeholder="Montant TTC en euros"
+            name="client_email"
+            type="email"
+            placeholder="Email (optionnel)"
             className="blk-sm bg-paper px-3 py-2 text-ink"
           />
           <Button type="submit" disabled={pending}>
-            {pending ? "Ajout..." : "Créer"}
+            {pending ? "…" : "Créer et composer"}
           </Button>
         </form>
         <p className="mt-4 text-xs text-muted">
-          Micro-entreprise : TVA non applicable, art. 293 B du CGI. Les mentions
-          légales complètes s&apos;ajoutent au rendu de la facture.
+          Micro-entreprise : TVA non applicable, art. 293 B du CGI. La pièce est un
+          brouillon modifiable ; l&apos;émission lui attribue un numéro légal.
         </p>
       </Card>
 
@@ -63,16 +64,16 @@ export function InvoicesPanel({ invoices }: { invoices: Invoice[] }) {
         )}
         {invoices.map((inv) => (
           <Card key={inv.id} className="flex items-center justify-between gap-4 p-4">
-            <div className="flex flex-col">
+            <Link href={`/admin/facturation/${inv.id}`} className="min-w-0 flex-1">
               <span className="title text-sm">
                 {INVOICE_KIND_LABELS[inv.kind]}
-                {inv.number ? ` ${inv.number}` : ""}
+                {inv.number ? ` ${inv.number}` : " (brouillon)"}
               </span>
-              <span className="text-xs text-muted">
-                {inv.client_name ?? "Client inconnu"} -{" "}
+              <span className="block text-xs text-muted">
+                {inv.client_name ?? "Client à renseigner"} ·{" "}
                 {formatEuros(inv.amount_ttc_cents)}
               </span>
-            </div>
+            </Link>
             <select
               value={inv.status}
               onChange={(e) =>
@@ -81,7 +82,7 @@ export function InvoicesPanel({ invoices }: { invoices: Invoice[] }) {
                 )
               }
               disabled={pending}
-              className="blk-sm bg-paper px-3 py-2 text-sm text-ink"
+              className="blk-sm shrink-0 bg-paper px-3 py-2 text-sm text-ink"
             >
               {STATUSES.map((s) => (
                 <option key={s} value={s}>

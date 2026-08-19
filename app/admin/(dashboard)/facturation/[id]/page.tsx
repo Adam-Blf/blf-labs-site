@@ -1,0 +1,60 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { supabaseServer } from "@/lib/supabase-server";
+import {
+  INVOICE_COLUMNS,
+  type Invoice,
+  type InvoiceLine,
+} from "@/lib/admin-types";
+import { InvoiceEditor } from "@/components/admin/InvoiceEditor";
+import { InvoiceDocument } from "@/components/admin/InvoiceDocument";
+
+export const dynamic = "force-dynamic";
+
+/** Fiche d'un devis / d'une facture : edition tant que brouillon, puis document
+ * conforme verrouille. */
+export default async function InvoicePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const supabase = await supabaseServer();
+  if (!supabase) notFound();
+
+  const [{ data: invoiceData }, { data: linesData }] = await Promise.all([
+    supabase.from("invoices").select(INVOICE_COLUMNS).eq("id", id).single(),
+    supabase
+      .from("invoice_lines")
+      .select("id, invoice_id, designation, quantity, unit_price_cents, position")
+      .eq("invoice_id", id)
+      .order("position", { ascending: true }),
+  ]);
+
+  if (!invoiceData) notFound();
+  const invoice = invoiceData as Invoice;
+  const lines = (linesData ?? []) as InvoiceLine[];
+
+  return (
+    <section className="space-y-8">
+      <div>
+        <Link
+          href="/admin/facturation"
+          className="text-sm text-muted hover:text-ink"
+        >
+          ← Facturation
+        </Link>
+        <h1 className="title mt-2 text-2xl">
+          {invoice.number ?? "Nouveau document"}
+        </h1>
+      </div>
+
+      <InvoiceEditor invoice={invoice} lines={lines} />
+
+      <div>
+        <h2 className="title mb-3 text-lg">Aperçu conforme</h2>
+        <InvoiceDocument invoice={invoice} lines={lines} />
+      </div>
+    </section>
+  );
+}

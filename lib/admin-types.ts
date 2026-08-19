@@ -86,18 +86,60 @@ export type ProjectTask = {
   position: number;
 };
 
+/** Identite legale de l'emetteur, figee sur la facture au moment de l'emission. */
+export type IssuerSnapshot = {
+  legalName: string;
+  legalMention: string;
+  legalForm: string;
+  siren: string;
+  siret: string;
+  ape: string;
+  apeLabel: string;
+  addressStreet: string;
+  addressPostalCode: string;
+  addressCity: string;
+  addressCountry: string;
+  email: string;
+  phone: string;
+  vat: string;
+};
+
 export type Invoice = {
   id: string;
   created_at: string;
   kind: InvoiceKind;
   number: string | null;
   status: InvoiceStatus;
+  amount_ht_cents: number;
   amount_ttc_cents: number;
   issued_at: string | null;
+  due_date: string | null;
   paid_at: string | null;
+  payment_terms: string | null;
+  client_type: string;
   client_name: string | null;
+  client_email: string | null;
+  client_siren: string | null;
+  client_address_street: string | null;
+  client_postal_code: string | null;
+  client_city: string | null;
+  client_country: string | null;
+  issuer_snapshot: IssuerSnapshot | null;
   project_id: string | null;
 };
+
+export type InvoiceLine = {
+  id: string;
+  invoice_id: string;
+  designation: string;
+  quantity: number;
+  unit_price_cents: number;
+  position: number;
+};
+
+/** Colonnes lues pour une facture complete (liste + fiche). */
+export const INVOICE_COLUMNS =
+  "id, created_at, kind, number, status, amount_ht_cents, amount_ttc_cents, issued_at, due_date, paid_at, payment_terms, client_type, client_name, client_email, client_siren, client_address_street, client_postal_code, client_city, client_country, issuer_snapshot, project_id";
 
 /** Montant en centimes -> chaine en euros, format francais. */
 export function formatEuros(cents: number | null | undefined): string {
