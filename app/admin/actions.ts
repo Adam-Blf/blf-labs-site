@@ -134,6 +134,23 @@ export async function createInvoice(formData: FormData) {
     .select("id")
     .single();
   if (error) throw new Error(error.message);
+
+  // Montant rapide : si un montant global est saisi a la creation, on pose une
+  // ligne unique "Prestation". L'utilisateur peut ensuite detailler s'il veut.
+  const amountRaw = String(formData.get("amount_euros") ?? "").trim();
+  const amountCents = amountRaw ? Math.round(parseFloat(amountRaw) * 100) : 0;
+  if (amountCents > 0) {
+    const { error: lineErr } = await supabase.from("invoice_lines").insert({
+      invoice_id: data.id,
+      designation: "Prestation",
+      quantity: 1,
+      unit_price_cents: amountCents,
+      position: 0,
+    });
+    if (lineErr) throw new Error(lineErr.message);
+    await recomputeInvoiceTotals(supabase, data.id);
+  }
+
   revalidatePath("/admin/facturation");
   redirect(`/admin/facturation/${data.id}`);
 }

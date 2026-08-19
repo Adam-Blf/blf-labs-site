@@ -6,6 +6,15 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.11.1 - 2026-08-20
+
+### Améliore
+
+- **Montant de facture en une saisie.** À la création d'un devis ou d'une
+  facture, un champ « Montant en € » pose directement une ligne : plus besoin de
+  composer des lignes détaillées pour un montant simple. Le lien de paiement se
+  génère ensuite à l'émission, comme avant.
+
 ## 0.11.0 - 2026-08-20
 
 ### Ajoute
