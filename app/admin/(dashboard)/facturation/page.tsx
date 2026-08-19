@@ -1,5 +1,5 @@
 import { supabaseServer } from "@/lib/supabase-server";
-import type { Invoice } from "@/lib/admin-types";
+import { INVOICE_COLUMNS, type Invoice } from "@/lib/admin-types";
 import { InvoicesPanel } from "@/components/admin/InvoicesPanel";
 
 export const dynamic = "force-dynamic";
@@ -10,9 +10,7 @@ export default async function FacturationPage() {
   const { data } = supabase
     ? await supabase
         .from("invoices")
-        .select(
-          "id, created_at, kind, number, status, amount_ttc_cents, issued_at, paid_at, client_name, project_id",
-        )
+        .select(INVOICE_COLUMNS)
         .order("created_at", { ascending: false })
     : { data: null };
 

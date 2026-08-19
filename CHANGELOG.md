@@ -6,6 +6,26 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.7.0 - 2026-08-19
+
+### Ajoute
+
+- **Facturation conforme dans le back-office (socle).** Chaque devis ou facture
+  se compose avec des lignes de détail (désignation, quantité, prix unitaire),
+  les coordonnées complètes de l'acheteur, et s'affiche en document conforme
+  portant toutes les mentions obligatoires : identité de l'émetteur (SIRET, APE,
+  forme juridique), mention « TVA non applicable, art. 293 B du CGI », conditions
+  et pénalités de paiement, et le médiateur de la consommation face à un
+  particulier.
+- **Numérotation légale, séquentielle et sans trou.** À l'émission, la pièce
+  reçoit un numéro attribué en base de façon atomique (format `F-2026-0001` /
+  `D-2026-0001`, un compteur par année et par type), et l'identité de l'émetteur
+  est figée sur la pièce : une facture émise ne change plus si le SIRET ou
+  l'adresse évoluent ensuite.
+
+Ce socle prépare la génération d'e-factures (Factur-X) et le suivi comptable
+(livre de recettes, URSSAF), livrés dans les étapes suivantes.
+
 ## 0.6.0 - 2026-08-19
 
 ### Corrige
