@@ -6,6 +6,29 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.6.0 - 2026-08-19
+
+### Corrige
+
+- **Texte illisible en thème sombre (noir sur fond noir).** Les titres de colonnes
+  du pied de page, le fil d'Ariane et les sources des chiffres utilisaient une
+  teinte trop sombre (`--faint`) qui disparaissait sur le fond sombre. Remontée à
+  un contraste conforme WCAG AA (4,8:1), lisible sans être criarde.
+
+### Améliore
+
+- **Le basculement clair/sombre se fait en fondu** plutôt qu'en coupure sèche, et
+  le pictogramme du bouton pivote quand on change de thème (animations désactivées
+  pour qui réduit les animations).
+- **Formulaire de commande plus sûr et plus accessible.** Le focus suit chaque
+  étape (utile au clavier et aux lecteurs d'écran), se pose sur le premier champ
+  invalide quand on est bloqué, et sur le message d'erreur en cas d'échec d'envoi.
+  L'email, le SIREN et le numéro de TVA sont vérifiés dès la sortie du champ. Le
+  compteur de caractères annonce le minimum et le maximum. Les cartes de choix
+  répondent au toucher.
+- **Plus de flash de couleurs claires** sur l'animation 3D d'accueil quand on
+  charge le site en thème sombre.
+
 ## 0.5.0 - 2026-08-19
 
 ### Modifie

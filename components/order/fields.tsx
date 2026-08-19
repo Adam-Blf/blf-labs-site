@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 
 /**
  * Primitives de formulaire.
@@ -28,6 +29,7 @@ export function TextField({
   label,
   value,
   onChange,
+  onBlur,
   error,
   type = "text",
   optional = false,
@@ -38,6 +40,8 @@ export function TextField({
   label: string;
   value: string;
   onChange: (value: string) => void;
+  /** Validation au blur, pour surfacer une erreur de format des la sortie du champ. */
+  onBlur?: () => void;
   error?: string;
   type?: string;
   optional?: boolean;
@@ -61,6 +65,7 @@ export function TextField({
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
         onChange={(event) => onChange(event.target.value)}
+        onBlur={onBlur}
         className="blk-flat mt-2 min-h-[44px] w-full bg-surface px-4 py-3 text-ink outline-none"
       />
       <FieldError id={errorId} message={error} />
@@ -76,6 +81,8 @@ export function TextArea({
   error,
   hint,
   rows = 7,
+  min = 30,
+  max = 4000,
 }: {
   id: string;
   label: string;
@@ -84,9 +91,20 @@ export function TextArea({
   error?: string;
   hint?: string;
   rows?: number;
+  /** Seuils affiches dans le compteur, alignes sur le schema Zod. */
+  min?: number;
+  max?: number;
 }) {
   const errorId = `${id}-error`;
   const hintId = `${id}-hint`;
+  const length = value.trim().length;
+  // Le compteur annonce les seuils AVANT le blocage : sous le minimum on rappelle
+  // le minimum, pres du maximum on passe en ton d'alerte.
+  const belowMin = length > 0 && length < min;
+  const nearMax = max - length <= 200;
+  const compteur = belowMin
+    ? `${length} / ${min} caractères minimum`
+    : `${length} / ${max}`;
 
   return (
     <div>
@@ -109,8 +127,12 @@ export function TextArea({
       />
       <div className="mt-2 flex items-baseline justify-between gap-4">
         <FieldError id={errorId} message={error} />
-        <span className="tabular mono ml-auto shrink-0 text-xs text-muted">
-          {value.trim().length} caractères
+        <span
+          className={`tabular mono ml-auto shrink-0 text-xs ${
+            belowMin || nearMax ? "text-support" : "text-muted"
+          }`}
+        >
+          {compteur}
         </span>
       </div>
     </div>
@@ -141,6 +163,7 @@ export function RadioCards<T extends string>({
   columns?: 1 | 2;
 }) {
   const errorId = `${name}-error`;
+  const reduit = useReducedMotion();
 
   return (
     <fieldset>
@@ -152,8 +175,11 @@ export function RadioCards<T extends string>({
         {options.map((option) => {
           const selected = value === option.value;
           return (
-            <label
+            <motion.label
               key={option.value}
+              whileTap={reduit ? undefined : { scale: 0.98 }}
+              animate={reduit ? undefined : { scale: selected ? 1.015 : 1 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
               className={`blk-flat flex min-h-[44px] cursor-pointer items-start gap-3 p-4 transition-colors ${
                 selected ? "bg-accent text-accent-ink" : "bg-surface text-ink"
               }`}
@@ -177,7 +203,7 @@ export function RadioCards<T extends string>({
                   </span>
                 )}
               </span>
-            </label>
+            </motion.label>
           );
         })}
       </div>
@@ -205,6 +231,8 @@ export function CheckboxCards<T extends string>({
   values: string[];
   onToggle: (value: T, checked: boolean) => void;
 }) {
+  const reduit = useReducedMotion();
+
   return (
     <fieldset>
       <legend className="mono text-xs text-muted">{legend}</legend>
@@ -213,8 +241,9 @@ export function CheckboxCards<T extends string>({
         {options.map((option) => {
           const checked = values.includes(option.value);
           return (
-            <label
+            <motion.label
               key={option.value}
+              whileTap={reduit ? undefined : { scale: 0.99 }}
               className={`blk-flat flex min-h-[44px] cursor-pointer items-start gap-4 p-4 transition-colors ${
                 checked ? "border-accent" : ""
               }`}
@@ -233,7 +262,7 @@ export function CheckboxCards<T extends string>({
                   </span>
                 )}
               </span>
-            </label>
+            </motion.label>
           );
         })}
       </div>

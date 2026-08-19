@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Checkbox, CheckboxCards, RadioCards, TextArea, TextField } from "./fields";
@@ -83,8 +83,28 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const router = useRouter();
-  const [sent, setSent] = useState(false);
   const [globalError, setGlobalError] = useState<string | null>(null);
+  const errorRef = useRef<HTMLParagraphElement>(null);
+
+  // Une erreur globale (echec reseau ou serveur) doit etre vue : on y amene le
+  // focus et on la fait defiler a l'ecran, sinon elle reste sous le bouton, hors
+  // champ de vision.
+  useEffect(() => {
+    if (globalError && errorRef.current) {
+      errorRef.current.focus();
+      errorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [globalError]);
+
+  /** Amene le focus et l'ecran sur un champ, par son id ou son name. */
+  function focusField(key: string) {
+    if (typeof document === "undefined") return;
+    const el = (document.getElementById(key) ??
+      document.querySelector(`[name="${key}"]`)) as HTMLElement | null;
+    if (!el) return;
+    el.focus({ preventScroll: true });
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
 
   function set<K extends keyof Values>(key: K, value: Values[K]) {
     setValues((current) => ({ ...current, [key]: value }));
@@ -112,7 +132,31 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
     }
 
     setErrors(stepErrors);
+    // Sur echec, on amene le focus sur le premier champ invalide, dans l'ordre
+    // de l'etape (pas l'ordre arbitraire de l'objet d'erreurs).
+    const firstInvalid = fields.find((field) => stepErrors[String(field)]);
+    if (firstInvalid) {
+      requestAnimationFrame(() => focusField(String(firstInvalid)));
+    }
     return Object.keys(stepErrors).length === 0;
+  }
+
+  /**
+   * Validation d'un seul champ, au blur, pour les formats (email, SIREN, TVA).
+   * Ne touche que ce champ : l'utilisateur voit son erreur de format tout de
+   * suite, sans le mur d'erreurs que produirait une validation globale.
+   */
+  function validateField(key: keyof Values) {
+    const parsed = orderSchemaChecked.safeParse(values);
+    const issue = parsed.success
+      ? undefined
+      : parsed.error.issues.find((i) => String(i.path[0]) === key);
+    setErrors((current) => {
+      const next = { ...current };
+      if (issue) next[key as string] = issue.message;
+      else delete next[key as string];
+      return next;
+    });
   }
 
   async function submit() {
@@ -138,7 +182,6 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
         return;
       }
 
-      setSent(true);
       // Redirection vers une adresse dediee plutot qu'un simple changement
       // d'etat : c'est la seule facon de compter les demandes envoyees, et le
       // bouton retour ramene alors sur un formulaire vierge au lieu d'un
@@ -152,25 +195,6 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
     } finally {
       setSubmitting(false);
     }
-  }
-
-  if (sent) {
-    return (
-      <div className="blk bg-surface p-8 text-center">
-        <h2 className="title text-2xl">Demande envoyée</h2>
-        <p className="mt-4 leading-relaxed text-muted">
-          Un accusé de réception vient de partir vers {values.email}. Vous
-          recevrez une réponse sous 48 heures ouvrées, avec une estimation de
-          budget et de délai.
-        </p>
-        <Link
-          href="/"
-          className="blk-sm title mt-8 inline-block min-h-[44px] bg-accent px-6 py-3 text-accent-ink"
-        >
-          Revenir à l&rsquo;accueil
-        </Link>
-      </div>
-    );
   }
 
   const steps: WizardStep[] = [
@@ -304,6 +328,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
               type="email"
               value={values.email}
               onChange={(value) => set("email", value)}
+              onBlur={() => validateField("email")}
               error={errors.email}
               autoComplete="email"
             />
@@ -359,6 +384,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
                     placeholder="123 456 789"
                     value={values.siren}
                     onChange={(value) => set("siren", value)}
+                    onBlur={() => validateField("siren")}
                     error={errors.siren}
                   />
                   <TextField
@@ -368,6 +394,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
                     optional
                     value={values.vatNumber}
                     onChange={(value) => set("vatNumber", value)}
+                    onBlur={() => validateField("vatNumber")}
                     error={errors.vatNumber}
                   />
                 </div>
@@ -453,7 +480,12 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
       />
 
       {globalError && (
-        <p role="alert" className="blk-sm mt-6 bg-support p-4 text-support-ink">
+        <p
+          ref={errorRef}
+          tabIndex={-1}
+          role="alert"
+          className="blk-sm mt-6 bg-support p-4 text-support-ink outline-none"
+        >
           {globalError}
         </p>
       )}
