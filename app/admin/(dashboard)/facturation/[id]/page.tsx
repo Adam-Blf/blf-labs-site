@@ -52,7 +52,15 @@ export default async function InvoicePage({
       <InvoiceEditor invoice={invoice} lines={lines} />
 
       <div>
-        <h2 className="title mb-3 text-lg">Aperçu conforme</h2>
+        <div className="mb-3 flex items-center justify-between gap-4">
+          <h2 className="title text-lg">Aperçu conforme</h2>
+          <a
+            href={`/admin/facturation/${id}/pdf`}
+            className="blk-sm bg-surface px-4 py-2 text-sm text-ink hover:-translate-y-[1px] transition-transform"
+          >
+            Télécharger le PDF
+          </a>
+        </div>
         <InvoiceDocument invoice={invoice} lines={lines} />
       </div>
     </section>

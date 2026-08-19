@@ -6,6 +6,22 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.8.0 - 2026-08-20
+
+### Ajoute
+
+- **Téléchargement du PDF d'un devis ou d'une facture** depuis sa fiche dans le
+  back-office. Le document reprend toutes les mentions obligatoires (émetteur,
+  numéro, dates, lignes, « TVA non applicable, art. 293 B », conditions de
+  paiement, médiateur pour un particulier) et l'identité figée à l'émission.
+
+### En cours
+
+- La facture **électronique structurée (Factur-X : PDF + XML embarqué)**, exigée
+  du format e-invoicing, n'est pas encore générée : le PDF actuel est un document
+  lisible, pas encore une pièce structurée transmissible via une plateforme
+  agréée. Étape suivante du chantier facturation.
+
 ## 0.7.0 - 2026-08-19
 
 ### Ajoute
