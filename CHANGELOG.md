@@ -6,6 +6,19 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.9.0 - 2026-08-20
+
+### Ajoute
+
+- **Comptabilité dans le back-office.** Une section `/admin/comptabilite` dérive
+  des factures : **trésorerie** (encaissé vs à encaisser), **récap URSSAF** par
+  trimestre ou par mois (CA encaissé + cotisations dues au taux 2026, 25,6 %
+  cotisations sociales BNC + 0,2 % CFP, à revérifier à la source), et **livre des
+  recettes** chronologique avec **export CSV** (séparateur point-virgule, prêt
+  pour un comptable). Le mode de règlement se renseigne sur la fiche de la
+  facture. Aucun montant n'est déclaré automatiquement : les chiffres sont
+  préparés pour être recopiés dans l'espace URSSAF ou la plateforme agréée.
+
 ## 0.8.0 - 2026-08-20
 
 ### Ajoute

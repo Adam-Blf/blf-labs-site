@@ -9,8 +9,11 @@ import {
   addInvoiceLine,
   issueInvoice,
   removeInvoiceLine,
+  setInvoicePaymentMethod,
   updateInvoiceClient,
 } from "@/app/admin/actions";
+
+const MODES = ["Virement", "Carte", "Espèces", "Chèque", "Autre"];
 
 /**
  * Editeur d'un brouillon : coordonnees de l'acheteur, lignes, puis emission.
@@ -28,10 +31,30 @@ export function InvoiceEditor({
 
   if (invoice.status !== "brouillon") {
     return (
-      <Card className="p-4 text-sm text-muted">
-        Pièce émise le {invoice.issued_at} sous le numéro{" "}
-        <span className="mono">{invoice.number}</span>. Elle est verrouillée : son
-        numéro et l&apos;identité de l&apos;émetteur ne changent plus.
+      <Card className="flex flex-wrap items-center justify-between gap-4 p-4 text-sm text-muted">
+        <span>
+          Pièce émise le {invoice.issued_at} sous le numéro{" "}
+          <span className="mono">{invoice.number}</span>. Verrouillée : numéro et
+          identité de l&apos;émetteur figés.
+        </span>
+        <label className="flex items-center gap-2">
+          <span>Mode de règlement</span>
+          <select
+            defaultValue={invoice.payment_method ?? ""}
+            onChange={(e) =>
+              start(() => setInvoicePaymentMethod(invoice.id, e.target.value))
+            }
+            disabled={pending}
+            className="blk-sm bg-paper px-3 py-2 text-ink"
+          >
+            <option value="">-</option>
+            {MODES.map((m) => (
+              <option key={m} value={m}>
+                {m}
+              </option>
+            ))}
+          </select>
+        </label>
       </Card>
     );
   }

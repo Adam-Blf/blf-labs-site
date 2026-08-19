@@ -115,6 +115,7 @@ export type Invoice = {
   issued_at: string | null;
   due_date: string | null;
   paid_at: string | null;
+  payment_method: string | null;
   payment_terms: string | null;
   client_type: string;
   client_name: string | null;
@@ -139,7 +140,7 @@ export type InvoiceLine = {
 
 /** Colonnes lues pour une facture complete (liste + fiche). */
 export const INVOICE_COLUMNS =
-  "id, created_at, kind, number, status, amount_ht_cents, amount_ttc_cents, issued_at, due_date, paid_at, payment_terms, client_type, client_name, client_email, client_siren, client_address_street, client_postal_code, client_city, client_country, issuer_snapshot, project_id";
+  "id, created_at, kind, number, status, amount_ht_cents, amount_ttc_cents, issued_at, due_date, paid_at, payment_method, payment_terms, client_type, client_name, client_email, client_siren, client_address_street, client_postal_code, client_city, client_country, issuer_snapshot, project_id";
 
 /** Montant en centimes -> chaine en euros, format francais. */
 export function formatEuros(cents: number | null | undefined): string {
