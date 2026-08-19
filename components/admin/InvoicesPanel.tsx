@@ -47,6 +47,12 @@ export function InvoicesPanel({ invoices }: { invoices: Invoice[] }) {
             placeholder="Email (optionnel)"
             className="blk-sm bg-paper px-3 py-2 text-ink"
           />
+          <input
+            name="amount_euros"
+            inputMode="decimal"
+            placeholder="Montant en € (optionnel)"
+            className="blk-sm bg-paper px-3 py-2 text-ink"
+          />
           <Button type="submit" disabled={pending}>
             {pending ? "…" : "Créer et composer"}
           </Button>
