@@ -6,6 +6,22 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.21.0 - 2026-08-20
+
+### Reduire l'empreinte de l'adresse de domicile
+
+L'adresse etait repetee bien au-dela du minimum legal. On la reserve aux seuls
+endroits ou la loi l'exige (mentions legales, formulaire de retractation,
+facture) :
+
+- **Pied de page** : "Ile-de-France" au lieu de la commune et du code postal,
+  sur toutes les pages du site.
+- **CGV** : l'adresse complete du corps devient un renvoi vers les mentions
+  legales (le formulaire de retractation garde l'adresse, il l'exige).
+- **Donnees structurees (JSON-LD)** : SIRET et SIREN retires, comme l'adresse et
+  le telephone l'etaient deja, pour ne pas les rendre moissonnables.
+- **Confidentialite** : contact par e-mail seul, sans la rue.
+
 ## 0.20.0 - 2026-08-20
 
 ### N'afficher que le strict minimum legal

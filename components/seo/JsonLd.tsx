@@ -33,10 +33,10 @@ export function JsonLd() {
       "Studio indépendant de développement : sites, applications web et mobiles, outils data et IA. Un seul interlocuteur du cadrage à la mise en ligne.",
     founder: { "@type": "Person", name: "Adam Beloucif" },
     foundingDate: SITE.registeredAt,
-    identifier: [
-      { "@type": "PropertyValue", name: "SIRET", value: SITE.siret },
-      { "@type": "PropertyValue", name: "SIREN", value: SITE.siren },
-    ],
+    // Ni SIRET ni SIREN ici : ces donnees structurees sont concues pour etre
+    // moissonnees par les agregateurs, et le principe pose plus haut (adresse,
+    // telephone tenus hors du JSON-LD) vaut aussi pour les identifiants. La
+    // page mentions legales, lue par un humain, les porte deja.
     // Zone d'intervention, sans adresse : voir la note ci-dessus.
     areaServed: [
       { "@type": "AdministrativeArea", name: "Île-de-France" },

@@ -122,9 +122,7 @@ export function Footer() {
           >
             {SITE.email}
           </a>
-          <p className="mt-2 text-sm text-muted">
-            {SITE.address.postalCode} {SITE.address.city}
-          </p>
+          <p className="mt-2 text-sm text-muted">Île-de-France</p>
 
           <ul className="mt-6 space-y-2">
             {LEGAL.map((item) => (
