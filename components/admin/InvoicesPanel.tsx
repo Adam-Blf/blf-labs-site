@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import {
@@ -11,7 +11,11 @@ import {
   type Invoice,
   type InvoiceStatus,
 } from "@/lib/admin-types";
-import { createInvoice, updateInvoiceStatus } from "@/app/admin/actions";
+import {
+  createInvoice,
+  deleteInvoice,
+  updateInvoiceStatus,
+} from "@/app/admin/actions";
 
 const STATUSES: InvoiceStatus[] = ["brouillon", "envoye", "paye", "annule"];
 
@@ -19,6 +23,10 @@ const STATUSES: InvoiceStatus[] = ["brouillon", "envoye", "paye", "annule"];
  * (lignes, mentions, émission) se fait sur la fiche de chaque document. */
 export function InvoicesPanel({ invoices }: { invoices: Invoice[] }) {
   const [pending, start] = useTransition();
+  // Suppression en deux temps : un premier clic arme la confirmation sur la
+  // ligne, le second supprime. Evite l'effacement accidentel sans recourir a un
+  // dialog bloquant.
+  const [confirmId, setConfirmId] = useState<string | null>(null);
 
   return (
     <div className="grid gap-8 md:grid-cols-[320px_1fr]">
@@ -96,6 +104,40 @@ export function InvoicesPanel({ invoices }: { invoices: Invoice[] }) {
                 </option>
               ))}
             </select>
+
+            {/* Suppression reservee aux brouillons : une piece emise s'annule. */}
+            {inv.status === "brouillon" &&
+              (confirmId === inv.id ? (
+                <span className="flex shrink-0 items-center gap-2 text-xs">
+                  <button
+                    onClick={() =>
+                      start(() => {
+                        deleteInvoice(inv.id);
+                        setConfirmId(null);
+                      })
+                    }
+                    disabled={pending}
+                    className="font-bold text-ink underline"
+                  >
+                    Confirmer
+                  </button>
+                  <button
+                    onClick={() => setConfirmId(null)}
+                    className="text-muted hover:text-ink"
+                  >
+                    Annuler
+                  </button>
+                </span>
+              ) : (
+                <button
+                  onClick={() => setConfirmId(inv.id)}
+                  aria-label={`Supprimer le brouillon ${INVOICE_KIND_LABELS[inv.kind]}`}
+                  title="Supprimer le brouillon"
+                  className="shrink-0 text-muted hover:text-ink"
+                >
+                  ✕
+                </button>
+              ))}
           </Card>
         ))}
       </div>

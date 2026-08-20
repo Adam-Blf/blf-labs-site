@@ -117,7 +117,7 @@ export async function renderInvoicePdf(
     issuer.addressStreet,
     `${issuer.addressPostalCode} ${issuer.addressCity}`,
     issuer.addressCountry,
-    `SIRET ${issuer.siret} - APE ${issuer.ape}`,
+    `SIRET ${issuer.siret}`,
     `${issuer.email} - ${issuer.phone}`,
   ]) {
     text(l, M, y, { size: 9, color: muted });

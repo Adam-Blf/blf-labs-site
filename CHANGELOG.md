@@ -6,6 +6,28 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.14.0 - 2026-08-20
+
+### Ajoute
+
+- **Suppression d'un brouillon** depuis la liste de facturation, avec
+  confirmation en deux temps. Une pièce déjà émise ne se supprime pas : elle
+  porte un numéro légal dont la séquence doit rester continue, on l'annule.
+
+### Change
+
+- **SIREN / SIRET obligatoire pour émettre à un client professionnel**, et nom
+  de client requis dans tous les cas : l'émission est refusée sinon, pour ne pas
+  consommer un numéro légal sur une pièce incomplète.
+- **Pièce émise réellement verrouillée côté serveur.** Le contenu et les lignes
+  d'une facture déjà numérotée ne peuvent plus être modifiés (le verrou ne
+  vivait que dans l'affichage).
+- **Indemnité de recouvrement de 40 € retirée des pièces adressées à un
+  particulier** : ce dispositif est réservé aux transactions entre
+  professionnels (art. L441-10 II du code de commerce).
+- **Code APE retiré des factures et devis** : il n'est pas une mention légale
+  obligatoire. L'identité repose sur le SIRET.
+
 ## 0.13.0 - 2026-08-20
 
 ### Ajoute

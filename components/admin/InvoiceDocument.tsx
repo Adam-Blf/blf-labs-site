@@ -59,9 +59,7 @@ export function InvoiceDocument({
             <br />
             {issuer.addressCountry}
           </p>
-          <p className="mt-2 text-sm text-muted">
-            SIRET {issuer.siret} - APE {issuer.ape} ({issuer.apeLabel})
-          </p>
+          <p className="mt-2 text-sm text-muted">SIRET {issuer.siret}</p>
           <p className="text-sm text-muted">
             {issuer.email} - {issuer.phone}
           </p>
