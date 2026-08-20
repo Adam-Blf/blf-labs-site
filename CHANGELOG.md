@@ -6,6 +6,19 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.16.0 - 2026-08-20
+
+### Change
+
+- **Back-office réagencé.** L'admin ne s'ouvre plus directement sur le pipeline :
+  une page d'**accueil** pose d'abord une vue d'ensemble (CA encaissé du mois,
+  encaissé total, à encaisser, leads en cours, projets actifs) et l'activité
+  récente (pièces et leads). La navigation devient des onglets avec un onglet
+  actif souligné au citron, le logo coiffe la barre, et toutes les pages
+  partagent le même en-tête à filet. Les survols flottants (lévitation) sont
+  retirés au profit de transitions nettes. Le pipeline commercial vit désormais
+  sous l'onglet **Leads**.
+
 ## 0.15.0 - 2026-08-20
 
 ### Ajoute

@@ -7,6 +7,7 @@ import {
 } from "@/lib/admin-types";
 import { InvoicesPanel } from "@/components/admin/InvoicesPanel";
 import { ServiceItemsPanel } from "@/components/admin/ServiceItemsPanel";
+import { PageHeading } from "@/components/admin/PageHeading";
 
 export const dynamic = "force-dynamic";
 
@@ -32,15 +33,17 @@ export default async function FacturationPage() {
 
   return (
     <section className="space-y-10">
-      <div>
-        <div className="mb-6">
-          <h1 className="title text-2xl">Facturation</h1>
-          <p className="text-sm text-muted">
-            {invoices.length} document{invoices.length > 1 ? "s" : ""}.
-          </p>
-        </div>
-        <InvoicesPanel invoices={invoices} />
-      </div>
+      <PageHeading
+        title="Facturation"
+        sub={
+          <>
+            {invoices.length} document{invoices.length > 1 ? "s" : ""}. Devis et
+            factures, du brouillon à l&apos;encaissement.
+          </>
+        }
+      />
+
+      <InvoicesPanel invoices={invoices} />
 
       <div className="max-w-md">
         <ServiceItemsPanel items={items} />
