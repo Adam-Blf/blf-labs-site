@@ -26,11 +26,23 @@ export function issuerSnapshot(): IssuerSnapshot {
 }
 
 /**
- * Conditions de paiement par defaut, avec les mentions legales obligatoires sur
- * une facture : delai, penalites de retard (3x le taux d'interet legal, plancher
- * legal) et indemnite forfaitaire de recouvrement de 40 EUR.
+ * Conditions de paiement par defaut.
+ *
+ * Le regime differe selon l'acheteur, et ce n'est pas un detail : les penalites
+ * de retard et surtout l'indemnite forfaitaire de recouvrement de 40 EUR
+ * (art. L441-10 II du code de commerce) sont un dispositif RESERVE aux
+ * transactions entre professionnels. La reclamer a un consommateur est
+ * inapplicable et s'expose a la clause abusive (art. R212-1 code de la
+ * consommation). Face a un particulier, on s'en tient donc au delai et a
+ * l'absence d'escompte, sans transposer le regime B2B.
  */
-export function defaultPaymentTerms(): string {
+export function defaultPaymentTerms(clientType?: string): string {
+  if (clientType === "particulier") {
+    return (
+      "Paiement à 30 jours à réception. " +
+      "Pas d'escompte pour paiement anticipé."
+    );
+  }
   return (
     "Paiement à 30 jours à réception de la facture. " +
     "En cas de retard, pénalités au taux de trois fois l'intérêt légal et " +

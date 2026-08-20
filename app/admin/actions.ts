@@ -9,6 +9,7 @@ import {
   dueDateFrom,
   issuerSnapshot,
 } from "@/lib/invoice";
+import { isSirenOrSiret } from "@/lib/siren";
 import { createInvoicePaymentLink } from "@/lib/stripe";
 import { sendInvoicePaymentEmail } from "@/lib/mail";
 import {
@@ -170,14 +171,45 @@ export async function updateInvoiceClient(id: string, formData: FormData) {
     client_city: String(formData.get("client_city") ?? "").trim() || null,
     client_country: String(formData.get("client_country") ?? "").trim() || null,
   };
-  const { error } = await supabase.from("invoices").update(patch).eq("id", id);
+  // Le verrou d'une piece emise ne peut pas vivre uniquement dans l'affichage :
+  // on refuse la mutation cote serveur si la piece n'est plus un brouillon.
+  const { data, error } = await supabase
+    .from("invoices")
+    .update(patch)
+    .eq("id", id)
+    .eq("status", "brouillon")
+    .select("id");
   if (error) throw new Error(error.message);
+  if (!data?.length) {
+    throw new Error("Pièce déjà émise : son contenu est figé.");
+  }
   revalidatePath(`/admin/facturation/${id}`);
+}
+
+/**
+ * Verrou d'intangibilite : une piece emise (numerotee) ne se modifie plus. Les
+ * lignes n'ont pas de statut, on controle donc celui de la facture parente avant
+ * toute mutation de ligne.
+ */
+async function assertDraft(
+  supabase: Awaited<ReturnType<typeof db>>,
+  invoiceId: string,
+) {
+  const { data, error } = await supabase
+    .from("invoices")
+    .select("status")
+    .eq("id", invoiceId)
+    .single();
+  if (error) throw new Error(error.message);
+  if (data.status !== "brouillon") {
+    throw new Error("Pièce déjà émise : ses lignes sont figées.");
+  }
 }
 
 /** Ajoute une ligne a un brouillon et recalcule le total. */
 export async function addInvoiceLine(invoiceId: string, formData: FormData) {
   const supabase = await db();
+  await assertDraft(supabase, invoiceId);
   const designation = String(formData.get("designation") ?? "").trim();
   if (!designation) throw new Error("La désignation est obligatoire.");
   const quantity = parseFloat(String(formData.get("quantity") ?? "1")) || 1;
@@ -204,6 +236,7 @@ export async function addInvoiceLine(invoiceId: string, formData: FormData) {
 /** Supprime une ligne d'un brouillon et recalcule le total. */
 export async function removeInvoiceLine(lineId: string, invoiceId: string) {
   const supabase = await db();
+  await assertDraft(supabase, invoiceId);
   const { error } = await supabase
     .from("invoice_lines")
     .delete()
@@ -222,12 +255,32 @@ export async function issueInvoice(id: string) {
   const supabase = await db();
   const { data: inv, error: readErr } = await supabase
     .from("invoices")
-    .select("id, kind, status, payment_terms")
+    .select("id, kind, status, payment_terms, client_type, client_name, client_siren")
     .eq("id", id)
     .single();
   if (readErr) throw new Error(readErr.message);
   if (inv.status !== "brouillon") {
     throw new Error("Cette pièce est déjà émise.");
+  }
+
+  // Garde avant d'attribuer un numero legal : celui-ci est sequentiel et
+  // irreversible, on ne le consomme donc pas pour une piece incomplete. Une
+  // facture doit porter l'identite de l'acheteur ; pour un professionnel, le
+  // SIREN / SIRET est obligatoire (art. 242 nonies A CGI, art. L441-9 c. com.).
+  if (!inv.client_name?.trim()) {
+    throw new Error("Renseignez le client avant d'émettre la pièce.");
+  }
+  if (inv.client_type === "entreprise") {
+    if (!inv.client_siren?.trim()) {
+      throw new Error(
+        "Le SIREN ou le SIRET du client professionnel est obligatoire pour émettre.",
+      );
+    }
+    if (!isSirenOrSiret(inv.client_siren)) {
+      throw new Error(
+        "Le SIREN / SIRET du client est invalide (9 ou 14 chiffres, clé de contrôle).",
+      );
+    }
   }
 
   const today = new Date().toISOString().slice(0, 10);
@@ -245,7 +298,7 @@ export async function issueInvoice(id: string) {
       status: "envoye",
       issued_at: today,
       due_date: dueDateFrom(today),
-      payment_terms: inv.payment_terms ?? defaultPaymentTerms(),
+      payment_terms: inv.payment_terms ?? defaultPaymentTerms(inv.client_type),
       issuer_snapshot: issuerSnapshot(),
     })
     .eq("id", id)
@@ -326,5 +379,29 @@ export async function updateInvoiceStatus(id: string, status: InvoiceStatus) {
   if (status === "paye") patch.paid_at = new Date().toISOString().slice(0, 10);
   const { error } = await supabase.from("invoices").update(patch).eq("id", id);
   if (error) throw new Error(error.message);
+  revalidatePath("/admin/facturation");
+}
+
+/**
+ * Supprime un brouillon ; ses lignes suivent par cascade (FK on delete cascade).
+ * Une piece emise ne se supprime JAMAIS : elle porte un numero legal dont la
+ * sequence doit rester continue, sans trou. Pour la solder, on passe son statut
+ * a "annule", on ne l'efface pas. Le garde `.eq("status", "brouillon")` refuse
+ * donc la suppression de toute piece deja numerotee.
+ */
+export async function deleteInvoice(id: string) {
+  const supabase = await db();
+  const { data, error } = await supabase
+    .from("invoices")
+    .delete()
+    .eq("id", id)
+    .eq("status", "brouillon")
+    .select("id");
+  if (error) throw new Error(error.message);
+  if (!data?.length) {
+    throw new Error(
+      "Seul un brouillon peut être supprimé ; une pièce émise doit être annulée.",
+    );
+  }
   revalidatePath("/admin/facturation");
 }
