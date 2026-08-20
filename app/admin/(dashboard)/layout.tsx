@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { supabaseServer } from "@/lib/supabase-server";
 import { AdminNav } from "@/components/admin/AdminNav";
+import { Logo } from "@/components/brand/Logo";
 import { signOutAdmin } from "../auth-actions";
 
 /**
@@ -31,18 +32,24 @@ export default async function AdminLayout({
   if (aal?.currentLevel !== "aal2") redirect("/admin/login");
 
   return (
-    <div className="min-h-screen bg-paper text-ink">
-      <header className="border-b border-line">
+    <div className="relative min-h-screen overflow-hidden bg-paper text-ink">
+      {/* Grille de paillasse : la matiere du site BLF Lab's, posee en fond pour
+          que le back-office appartienne visiblement a la meme marque. Decorative,
+          donc masquee aux lecteurs d'ecran. */}
+      <span
+        aria-hidden="true"
+        className="grille pointer-events-none absolute inset-0 opacity-30 [mask-image:linear-gradient(to_bottom,black,transparent_80%)]"
+      />
+
+      <header className="relative border-b border-line bg-paper/70 backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-8 gap-y-3 px-6 py-4">
           <div className="flex items-center gap-8">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/brand/logo.png"
-              alt="BLF Lab's"
-              width={92}
-              height={66}
-              className="h-8 w-auto"
-            />
+            <div className="flex items-center gap-3">
+              <Logo className="h-8" />
+              <span className="mono hidden text-[0.7rem] text-muted sm:inline">
+                Back-office
+              </span>
+            </div>
             <AdminNav />
           </div>
           <div className="flex items-center gap-4 text-sm">
@@ -55,7 +62,7 @@ export default async function AdminLayout({
           </div>
         </div>
       </header>
-      <main className="mx-auto max-w-6xl px-6 py-10">{children}</main>
+      <main className="relative mx-auto max-w-6xl px-6 py-10">{children}</main>
     </div>
   );
 }

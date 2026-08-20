@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { AuthShell } from "@/components/admin/AuthShell";
 import { signInAdmin, type LoginState } from "../auth-actions";
 
 /**
@@ -17,9 +18,9 @@ export default function AdminLoginPage() {
   );
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-16">
+    <AuthShell>
       <Card className="p-8">
-        <h1 className="title text-2xl">Back-office BLF Lab&apos;s</h1>
+        <h1 className="title text-2xl">Back-office</h1>
         <p className="mt-2 text-sm text-muted">
           Accès réservé. Email et mot de passe, puis un code de ton application
           d&apos;authentification. À la première connexion, le mot de passe
@@ -59,6 +60,6 @@ export default function AdminLoginPage() {
           </Button>
         </form>
       </Card>
-    </main>
+    </AuthShell>
   );
 }

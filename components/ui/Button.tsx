@@ -17,6 +17,9 @@ const BASE =
 
 // Le texte pose sur un aplat utilise TOUJOURS l'encre invariante de cet aplat,
 // jamais var(--ink) : c'est ce qui evite le quasi-blanc sur jaune en sombre.
+// Les aplats colores l'emportent desormais sur le fond de `blk-sm` grace au
+// passage de `.blk*` en @layer components (voir globals.css) : plus besoin de
+// forcer avec `!`.
 const VARIANTS: Record<Variant, string> = {
   accent: "bg-accent text-accent-ink",
   support: "bg-support text-support-ink",

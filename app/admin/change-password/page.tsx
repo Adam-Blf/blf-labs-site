@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { AuthShell } from "@/components/admin/AuthShell";
 import { changeAdminPassword, type PasswordState } from "../auth-actions";
 
 /**
@@ -17,7 +18,7 @@ export default function ChangePasswordPage() {
   );
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-16">
+    <AuthShell>
       <Card className="p-8">
         <h1 className="title text-2xl">Nouveau mot de passe</h1>
         <p className="mt-2 text-sm text-muted">
@@ -60,6 +61,6 @@ export default function ChangePasswordPage() {
           </Button>
         </form>
       </Card>
-    </main>
+    </AuthShell>
   );
 }
