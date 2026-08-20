@@ -5,6 +5,7 @@ import {
   type InvoiceLine,
 } from "@/lib/admin-types";
 import { issuerSnapshot, lineTotalCents } from "@/lib/invoice";
+import { RETRACTATION_INFO, retractationForm } from "@/lib/retractation";
 import { SITE } from "@/lib/site";
 
 /**
@@ -33,6 +34,7 @@ export function InvoiceDocument({
   const issuer = invoice.issuer_snapshot ?? issuerSnapshot();
   const brouillon = invoice.status === "brouillon";
   const particulier = invoice.client_type === "particulier";
+  const devis = invoice.kind === "devis";
   const kindLabel = INVOICE_KIND_LABELS[invoice.kind];
 
   return (
@@ -76,7 +78,9 @@ export function InvoiceDocument({
             </p>
           )}
           {invoice.due_date && (
-            <p className="text-sm text-muted">Échéance le {invoice.due_date}</p>
+            <p className="text-sm text-muted">
+              {devis ? "Valable jusqu'au" : "Échéance le"} {invoice.due_date}
+            </p>
           )}
         </div>
       </header>
@@ -149,7 +153,7 @@ export function InvoiceDocument({
             <span>-</span>
           </div>
           <div className="flex justify-between border-t border-line pt-1 font-medium">
-            <span>Total à payer</span>
+            <span>{devis ? "Montant du devis" : "Total à payer"}</span>
             <span className="tabular">
               {formatEuros(invoice.amount_ttc_cents)}
             </span>
@@ -170,6 +174,22 @@ export function InvoiceDocument({
           Médiation de la consommation : {SITE.mediator.fullName} (
           {SITE.mediator.name}), {SITE.mediator.address} - {SITE.mediator.url}
         </p>
+      )}
+
+      {/*
+        Droit de retractation : obligatoire sur un DEVIS adresse a un
+        particulier, car le contrat se noue a sa signature. Voir lib/retractation.
+      */}
+      {devis && particulier && (
+        <div className="mt-4 blk-flat bg-paper p-4 text-xs text-muted">
+          <p className="font-medium text-ink">Droit de rétractation</p>
+          <p className="mt-1">{RETRACTATION_INFO}</p>
+          <p className="mt-2">
+            Formulaire type de rétractation (annexe à l&apos;article R. 221-1 du
+            Code de la consommation), à recopier et à envoyer à {SITE.email} :
+          </p>
+          <p className="mt-1 italic">« {retractationForm()} »</p>
+        </div>
       )}
 
       <footer className="mt-6 border-t border-line pt-3 text-xs text-muted">

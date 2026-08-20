@@ -1,6 +1,7 @@
 import { PDFDocument, StandardFonts, rgb, type PDFFont } from "pdf-lib";
 import { SITE } from "@/lib/site";
 import { issuerSnapshot, lineTotalCents } from "@/lib/invoice";
+import { RETRACTATION_INFO, retractationForm } from "@/lib/retractation";
 import { LOGO_PNG_BASE64, LOGO_PNG_WIDTH, LOGO_PNG_HEIGHT } from "@/lib/logo";
 import {
   INVOICE_KIND_LABELS,
@@ -52,6 +53,7 @@ export async function renderInvoicePdf(
 ): Promise<Uint8Array> {
   const issuer = invoice.issuer_snapshot ?? issuerSnapshot();
   const particulier = invoice.client_type === "particulier";
+  const devis = invoice.kind === "devis";
 
   const doc = await PDFDocument.create();
   doc.setTitle(
@@ -131,7 +133,8 @@ export async function renderInvoicePdf(
     yr -= 12;
   }
   if (invoice.due_date) {
-    textRight(`Échéance le ${invoice.due_date}`, right, yr, { size: 9, color: muted });
+    const dueLabel = devis ? "Valable jusqu'au" : "Échéance le";
+    textRight(`${dueLabel} ${invoice.due_date}`, right, yr, { size: 9, color: muted });
   }
 
   // Acheteur.
@@ -190,7 +193,7 @@ export async function renderInvoicePdf(
   text("TVA", colQte, y, { size: 10, color: muted });
   textRight("-", colTot, y, { size: 10, color: muted });
   y -= 16;
-  text("Total à payer", colQte, y, { size: 11, font: bold });
+  text(devis ? "Montant du devis" : "Total à payer", colQte, y, { size: 11, font: bold });
   textRight(euros(invoice.amount_ttc_cents), colTot, y, { size: 11, font: bold });
 
   // Mention TVA (293 B).
@@ -213,6 +216,22 @@ export async function renderInvoicePdf(
     for (const l of wrap(med, font, 8, right - M)) {
       text(l, M, y, { size: 8, color: muted });
       y -= 10;
+    }
+  }
+
+  // Droit de retractation : obligatoire sur un DEVIS adresse a un particulier
+  // (le contrat se noue a la signature du devis). Voir lib/retractation.
+  if (devis && particulier) {
+    y -= 10;
+    text("Droit de rétractation", M, y, { size: 9, font: bold });
+    y -= 12;
+    const intro = `Formulaire type (annexe art. R. 221-1), à recopier et à envoyer à ${issuer.email} :`;
+    for (const block of [RETRACTATION_INFO, intro, retractationForm()]) {
+      for (const l of wrap(block, font, 8, right - M)) {
+        text(l, M, y, { size: 8, color: muted });
+        y -= 10;
+      }
+      y -= 3;
     }
   }
 
