@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import type { Invoice } from "@/lib/admin-types";
+import { SITE } from "@/lib/site";
 
 /**
  * Acces a Stripe, isole ici. On ne depend de Stripe qu'a cet endroit et dans le
@@ -34,13 +35,20 @@ export async function createInvoicePaymentLink(
     product_data: { name: `Facture ${invoice.number ?? invoice.id}` },
   });
 
+  // Stripe exige une URL ABSOLUE pour la redirection de fin. L'origine passee
+  // par la server action peut etre vide (en-tete Origin absent) : dans ce cas la
+  // chaine deviendrait relative et Stripe refuserait tout le lien, ce qui, avale
+  // par le try/catch de l'emission, se traduirait par une facture emise sans
+  // lien ni email. On retombe donc sur le domaine canonique du site.
+  const base = origin.startsWith("http") ? origin : SITE.url;
+
   const link = await stripe.paymentLinks.create({
     line_items: [{ price: price.id, quantity: 1 }],
     metadata: { invoice_id: invoice.id },
     payment_intent_data: { metadata: { invoice_id: invoice.id } },
     after_completion: {
       type: "redirect",
-      redirect: { url: `${origin}/commander/merci` },
+      redirect: { url: `${base}/commander/merci` },
     },
   });
 
