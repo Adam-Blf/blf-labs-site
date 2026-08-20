@@ -6,6 +6,17 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.12.1 - 2026-08-20
+
+### Corrige
+
+- **Lien de paiement Stripe fiabilise.** La redirection de fin de paiement
+  exigee par Stripe doit etre une URL absolue. Quand la server action ne
+  recevait pas d'en-tete d'origine, l'adresse devenait relative et Stripe
+  refusait le lien entier ; l'erreur, avalee a l'emission, laissait une facture
+  emise sans lien ni email. On retombe desormais sur le domaine canonique du
+  site, donc le lien se genere toujours.
+
 ## 0.12.0 - 2026-08-20
 
 ### Change
