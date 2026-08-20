@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { FULL_ADDRESS, SIRET_PRETTY, SITE } from "@/lib/site";
+import { FULL_ADDRESS, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Conditions générales de vente",
@@ -14,8 +14,9 @@ export default function CgvPage() {
       </h1>
       <p>
         Ces conditions s&rsquo;appliquent aux prestations de développement
-        fournies par {SITE.legalMention}, {FULL_ADDRESS}, SIRET {SIRET_PRETTY}.
-        Le formulaire de commande du site constitue une demande de devis : il
+        fournies par {SITE.legalMention}. Les coordonnées complètes figurent
+        dans les <a href="/legal/mentions">mentions légales</a>. Le
+        formulaire de commande du site constitue une demande de devis : il
         n&rsquo;emporte aucun engagement tant qu&rsquo;un devis n&rsquo;a pas été
         signé par les deux parties.
       </p>
