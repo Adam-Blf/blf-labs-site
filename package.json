@@ -1,6 +1,6 @@
 {
   "name": "blf-labs-site",
-  "version": "0.22.1",
+  "version": "0.23.0",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3200",
@@ -9,6 +9,7 @@
     "lint": "eslint app components lib",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
+    "indexnow": "node scripts/soumets-indexnow.mjs",
     "check:encoding": "python scripts/check_encoding.py",
     "check:french": "python scripts/check_french.py"
   },

@@ -68,6 +68,32 @@ affiche sans obligation :
   eloignees. Verifie dans les deux sens - le controle ne signale plus le code,
   et attrape toujours une vraie faute d'accent introduite volontairement.
 
+## 0.20.0 - 2026-08-20
+
+### Ajoute
+
+- **IndexNow.** Le site annonce desormais ses pages a Bing, Yandex, Seznam et
+  Naver en un seul appel, au lieu d'attendre qu'un robot repasse - ce qui prend
+  des jours, parfois des semaines. `npm run indexnow`, a lancer apres un
+  deploiement.
+
+  Le script lit le plan du site et ne tient AUCUNE liste : une seconde liste
+  divergerait de la premiere des la page suivante, et personne ne s'en
+  apercevrait - le plan resterait juste, l'annonce oublierait les nouveautes.
+
+  Il verifie aussi le fichier de cle AVANT d'annoncer, en nommant l'adresse
+  attendue. C'est la seule erreur vraiment frequente du protocole : sans ce
+  fichier servi a la racine, le moteur repond 403 et l'annonce est perdue sans
+  que rien ne l'explique.
+
+  La cle est publique par construction - le moteur la lit a la racine du site
+  pour verifier qu'on controle le domaine. Elle vit dans le code plutot que
+  dans l'environnement pour rester identique au fichier `public/<cle>.txt` :
+  deux sources separees finiraient par diverger.
+
+  Google ne participe pas a IndexNow. Pour lui, le plan du site et la Search
+  Console restent le seul chemin.
+
 ## 0.19.0 - 2026-08-20
 
 ### Corrige
