@@ -144,7 +144,7 @@ export function Footer() {
       <div className="rule-t px-5 py-5">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
           <p className="tabular">
-            {SITE.legalMention} - SIRET {SIRET_PRETTY} - APE {SITE.ape}
+            {SITE.legalMention} - SIRET {SIRET_PRETTY}
           </p>
           <p>{SITE.vat}</p>
         </div>

@@ -24,9 +24,6 @@ export default function MentionsPage() {
         <li>Forme juridique : {SITE.legalForm}</li>
         <li className="tabular">SIREN : {SITE.siren}</li>
         <li className="tabular">SIRET du siège : {SIRET_PRETTY}</li>
-        <li>
-          Code APE : {SITE.ape} ({SITE.apeLabel})
-        </li>
         <li>Siège social : {FULL_ADDRESS}</li>
         <li>
           Courriel : <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
