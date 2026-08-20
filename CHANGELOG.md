@@ -6,6 +6,19 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.22.0 - 2026-08-20
+
+### Logos cliquables et pied de page range
+
+- **Tous les logos ramenent a l'accueil.** Le logo du pied de page, celui du
+  back-office et celui des ecrans de connexion sont desormais des liens vers
+  l'accueil, comme l'etait deja celui de l'en-tete.
+- **Pied de page reorganise.** L'ancienne colonne fourre-tout de douze liens
+  est repartie par intention : les pages du studio d'un cote, les actions
+  (demarrer un projet, prendre rendez-vous, contact) dans la colonne contact.
+  Les liens legaux descendent dans la barre basse, a cote de la denomination et
+  du SIRET. Aucune page n'est perdue.
+
 ## 0.21.0 - 2026-08-20
 
 ### Reduire l'empreinte de l'adresse de domicile
