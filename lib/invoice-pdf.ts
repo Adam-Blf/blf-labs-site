@@ -135,6 +135,13 @@ export async function renderInvoicePdf(
   if (invoice.due_date) {
     const dueLabel = devis ? "Valable jusqu'au" : "Échéance le";
     textRight(`${dueLabel} ${invoice.due_date}`, right, yr, { size: 9, color: muted });
+    yr -= 12;
+  }
+  if (invoice.service_date && invoice.service_date !== invoice.issued_at) {
+    textRight(`Prestation réalisée le ${invoice.service_date}`, right, yr, {
+      size: 9,
+      color: muted,
+    });
   }
 
   // Acheteur.

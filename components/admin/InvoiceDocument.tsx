@@ -82,6 +82,12 @@ export function InvoiceDocument({
               {devis ? "Valable jusqu'au" : "Échéance le"} {invoice.due_date}
             </p>
           )}
+          {invoice.service_date &&
+            invoice.service_date !== invoice.issued_at && (
+              <p className="text-sm text-muted">
+                Prestation réalisée le {invoice.service_date}
+              </p>
+            )}
         </div>
       </header>
 

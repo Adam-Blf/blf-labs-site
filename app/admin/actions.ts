@@ -170,6 +170,9 @@ export async function updateInvoiceClient(id: string, formData: FormData) {
       String(formData.get("client_postal_code") ?? "").trim() || null,
     client_city: String(formData.get("client_city") ?? "").trim() || null,
     client_country: String(formData.get("client_country") ?? "").trim() || null,
+    // Date de realisation de la prestation (art. 242 nonies A, 3° CGI), affichee
+    // seulement si elle differe de la date d'emission.
+    service_date: String(formData.get("service_date") ?? "").trim() || null,
   };
   // Le verrou d'une piece emise ne peut pas vivre uniquement dans l'affichage :
   // on refuse la mutation cote serveur si la piece n'est plus un brouillon.
