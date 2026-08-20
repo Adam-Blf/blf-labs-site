@@ -40,7 +40,16 @@ export function InvoiceDocument({
       {/* En-tete : emetteur + intitule du document. */}
       <header className="flex flex-wrap items-start justify-between gap-6">
         <div>
-          <p className="title text-lg">{SITE.brand}</p>
+          {/* Logo (bitmap servi depuis public/). Le nom commercial reste en
+              alt pour l'accessibilite et l'impression sans images. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/brand/logo.png"
+            alt={SITE.brand}
+            width={168}
+            height={120}
+            className="mb-3 h-auto w-[168px]"
+          />
           <p className="text-sm">{issuer.legalName}</p>
           <p className="text-sm text-muted">{issuer.legalForm}</p>
           <p className="mt-2 text-sm">

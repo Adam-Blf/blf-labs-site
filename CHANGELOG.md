@@ -6,6 +6,16 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.13.0 - 2026-08-20
+
+### Ajoute
+
+- **Logo sur les devis et factures.** Le document portait seulement le nom en
+  texte ; il porte maintenant le logo BLF Lab's, en en-tete du PDF comme de la
+  vue a l'ecran. Le logo est un bitmap embarque en base64 dans le generateur
+  PDF, pour rester disponible cote serveur ou un acces fichier n'est pas
+  garanti.
+
 ## 0.12.1 - 2026-08-20
 
 ### Corrige
