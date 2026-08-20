@@ -1,9 +1,14 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { formatEuros, type Invoice, type InvoiceLine } from "@/lib/admin-types";
+import {
+  formatEuros,
+  type Invoice,
+  type InvoiceLine,
+  type ServiceItem,
+} from "@/lib/admin-types";
 import { lineTotalCents } from "@/lib/invoice";
 import {
   addInvoiceLine,
@@ -24,11 +29,17 @@ const MODES = ["Virement", "Carte", "Espèces", "Chèque", "Autre"];
 export function InvoiceEditor({
   invoice,
   lines,
+  catalog,
 }: {
   invoice: Invoice;
   lines: InvoiceLine[];
+  catalog: ServiceItem[];
 }) {
   const [pending, start] = useTransition();
+  // Champs controles de la ligne en cours de saisie : le selecteur de catalogue
+  // les pre-remplit, et on les vide apres ajout.
+  const [designation, setDesignation] = useState("");
+  const [unitPrice, setUnitPrice] = useState("");
 
   if (invoice.status !== "brouillon") {
     return (
@@ -150,13 +161,53 @@ export function InvoiceEditor({
         </ul>
 
         <form
-          action={(fd) => start(() => addInvoiceLine(invoice.id, fd))}
+          action={(fd) =>
+            start(async () => {
+              await addInvoiceLine(invoice.id, fd);
+              setDesignation("");
+              setUnitPrice("");
+            })
+          }
           className="mt-4 grid gap-2 text-sm"
         >
-          <input name="designation" required placeholder="Désignation de la prestation" className="blk-sm bg-paper px-3 py-2 text-ink" />
+          {catalog.length > 0 && (
+            <select
+              aria-label="Reprendre une prestation enregistrée"
+              value=""
+              onChange={(e) => {
+                const item = catalog.find((c) => c.id === e.target.value);
+                if (!item) return;
+                setDesignation(item.designation);
+                setUnitPrice((item.unit_price_cents / 100).toString());
+              }}
+              className="blk-sm bg-paper px-3 py-2 text-muted"
+            >
+              <option value="">Reprendre une prestation enregistrée…</option>
+              {catalog.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.designation} - {formatEuros(c.unit_price_cents)}
+                </option>
+              ))}
+            </select>
+          )}
+          <input
+            name="designation"
+            required
+            value={designation}
+            onChange={(e) => setDesignation(e.target.value)}
+            placeholder="Désignation de la prestation"
+            className="blk-sm bg-paper px-3 py-2 text-ink"
+          />
           <div className="grid grid-cols-2 gap-2">
             <input name="quantity" inputMode="decimal" defaultValue="1" placeholder="Quantité" className="blk-sm bg-paper px-3 py-2 text-ink" />
-            <input name="unit_price_euros" inputMode="decimal" placeholder="PU HT en €" className="blk-sm bg-paper px-3 py-2 text-ink" />
+            <input
+              name="unit_price_euros"
+              inputMode="decimal"
+              value={unitPrice}
+              onChange={(e) => setUnitPrice(e.target.value)}
+              placeholder="PU HT en €"
+              className="blk-sm bg-paper px-3 py-2 text-ink"
+            />
           </div>
           <Button type="submit" variant="ghost" disabled={pending}>
             Ajouter la ligne

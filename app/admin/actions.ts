@@ -230,6 +230,16 @@ export async function addInvoiceLine(invoiceId: string, formData: FormData) {
   });
   if (error) throw new Error(error.message);
   await recomputeInvoiceTotals(supabase, invoiceId);
+
+  // Auto-save au catalogue : une prestation facturee devient reutilisable pour
+  // aller plus vite la prochaine fois. Best-effort, on ignore une erreur
+  // eventuelle pour ne jamais bloquer l'ajout de la ligne lui-meme.
+  await supabase.rpc("remember_service_item", {
+    p_designation: designation,
+    p_cents: unit_price_cents,
+  });
+
+  revalidatePath("/admin/facturation");
   revalidatePath(`/admin/facturation/${invoiceId}`);
 }
 
@@ -403,5 +413,47 @@ export async function deleteInvoice(id: string) {
       "Seul un brouillon peut être supprimé ; une pièce émise doit être annulée.",
     );
   }
+  revalidatePath("/admin/facturation");
+}
+
+/**
+ * Catalogue de prestations reutilisables. Ajout manuel : on passe par la meme
+ * fonction que l'auto-save (insert ou actualisation sans doublon), pour qu'une
+ * saisie manuelle et une prestation deja apprise ne se dedoublent pas.
+ */
+export async function createServiceItem(formData: FormData) {
+  const supabase = await db();
+  const designation = String(formData.get("designation") ?? "").trim();
+  if (!designation) throw new Error("La désignation est obligatoire.");
+  const priceRaw = String(formData.get("unit_price_euros") ?? "").trim();
+  const cents = priceRaw ? Math.round(parseFloat(priceRaw) * 100) : 0;
+  const { error } = await supabase.rpc("remember_service_item", {
+    p_designation: designation,
+    p_cents: cents,
+  });
+  if (error) throw new Error(error.message);
+  revalidatePath("/admin/facturation");
+}
+
+/** Met a jour la designation et le prix d'une prestation du catalogue. */
+export async function updateServiceItem(id: string, formData: FormData) {
+  const supabase = await db();
+  const designation = String(formData.get("designation") ?? "").trim();
+  if (!designation) throw new Error("La désignation est obligatoire.");
+  const priceRaw = String(formData.get("unit_price_euros") ?? "").trim();
+  const cents = priceRaw ? Math.round(parseFloat(priceRaw) * 100) : 0;
+  const { error } = await supabase
+    .from("service_items")
+    .update({ designation, unit_price_cents: cents, updated_at: new Date().toISOString() })
+    .eq("id", id);
+  if (error) throw new Error(error.message);
+  revalidatePath("/admin/facturation");
+}
+
+/** Retire une prestation du catalogue (n'affecte aucune facture deja emise). */
+export async function deleteServiceItem(id: string) {
+  const supabase = await db();
+  const { error } = await supabase.from("service_items").delete().eq("id", id);
+  if (error) throw new Error(error.message);
   revalidatePath("/admin/facturation");
 }
