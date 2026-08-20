@@ -6,6 +6,20 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.17.0 - 2026-08-20
+
+### Corrige
+
+- **Droit de rétractation sur les devis adressés à un particulier.** Le contrat
+  se noue à la signature du devis : ce document doit donc porter l'information
+  sur le droit de rétractation et le formulaire type (annexe art. R. 221-1),
+  faute de quoi le délai passe de quatorze jours à douze mois. Le devis destiné
+  à un particulier les affiche désormais, sur le PDF comme à l'écran, à partir
+  d'une source unique partagée avec les CGV.
+- **Libellés adaptés au devis.** Un devis n'est pas une demande de paiement :
+  il affiche « Valable jusqu'au » au lieu de « Échéance le » et « Montant du
+  devis » au lieu de « Total à payer ».
+
 ## 0.16.0 - 2026-08-20
 
 ### Change
