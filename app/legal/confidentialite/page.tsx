@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ConsentControls } from "@/components/analytics/ConsentControls";
-import { FULL_ADDRESS, SITE } from "@/lib/site";
+import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Politique de confidentialité",
@@ -56,7 +56,7 @@ export default function ConfidentialitePage() {
 
       <h2 className="title">Responsable du traitement</h2>
       <p>
-        {SITE.legalMention}, {FULL_ADDRESS}. Contact :{" "}
+        {SITE.legalMention}. Contact :{" "}
         <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
       </p>
 

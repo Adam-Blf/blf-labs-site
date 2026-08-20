@@ -94,7 +94,7 @@ function shell(title: string, body: string): string {
     ${body}
   </div>
   <p style="max-width:560px;margin:16px auto 0;font-size:12px;color:#5b6472">
-    ${esc(SITE.legalMention)} - SIRET ${esc(SITE.siret)}
+    ${esc(SITE.legalMention)}
   </p>
 </body></html>`;
 }
@@ -180,7 +180,7 @@ export async function sendInvoicePaymentEmail(params: {
         <p>Voici votre facture d'un montant de <strong>${esc(amountLabel)}</strong>. Vous pouvez la régler en ligne en toute sécurité :</p>
         <p><a href="${esc(paymentUrl)}" style="display:inline-block;background:#cb6ce6;color:#111016;padding:12px 24px;border-radius:999px;text-decoration:none;font-weight:bold">Payer ma facture</a></p>
         <p style="font-size:13px;color:#666">Si le bouton ne fonctionne pas, copiez ce lien : ${esc(paymentUrl)}</p>
-        <p style="font-size:12px;color:#888;margin-top:24px">${esc(SITE.legalMention)} - SIRET ${esc(SITE.siret)} - TVA non applicable, art. 293 B du CGI.</p>
+        <p style="font-size:12px;color:#888;margin-top:24px">${esc(SITE.legalMention)}</p>
       </div>`,
     });
     return true;

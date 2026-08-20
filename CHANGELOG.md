@@ -44,6 +44,93 @@ est dans les messages de commit et les pull requests.
 - La fonction `db()`, recopiee dans les deux fichiers d'actions, vit dans
   `lib/admin-db.ts` : toutes les mutations doivent passer par le client lie a
   la session pour que RLS applique `is_blf_admin()`.
+## 0.22.0 - 2026-08-20
+
+### Logos cliquables et pied de page range
+
+- **Tous les logos ramenent a l'accueil.** Le logo du pied de page, celui du
+  back-office et celui des ecrans de connexion sont desormais des liens vers
+  l'accueil, comme l'etait deja celui de l'en-tete.
+- **Pied de page reorganise.** L'ancienne colonne fourre-tout de douze liens
+  est repartie par intention : les pages du studio d'un cote, les actions
+  (demarrer un projet, prendre rendez-vous, contact) dans la colonne contact.
+  Les liens legaux descendent dans la barre basse, a cote de la denomination et
+  du SIRET. Aucune page n'est perdue.
+
+## 0.21.0 - 2026-08-20
+
+### Reduire l'empreinte de l'adresse de domicile
+
+L'adresse etait repetee bien au-dela du minimum legal. On la reserve aux seuls
+endroits ou la loi l'exige (mentions legales, formulaire de retractation,
+facture) :
+
+- **Pied de page** : "Ile-de-France" au lieu de la commune et du code postal,
+  sur toutes les pages du site.
+- **CGV** : l'adresse complete du corps devient un renvoi vers les mentions
+  legales (le formulaire de retractation garde l'adresse, il l'exige).
+- **Donnees structurees (JSON-LD)** : SIRET et SIREN retires, comme l'adresse et
+  le telephone l'etaient deja, pour ne pas les rendre moissonnables.
+- **Confidentialite** : contact par e-mail seul, sans la rue.
+
+## 0.20.0 - 2026-08-20
+
+### N'afficher que le strict minimum legal
+
+Audit par un sous-agent juridique dedie, puis retrait de tout ce qui etait
+affiche sans obligation :
+
+- **Code APE** retire du pied de page (toutes les pages) et des mentions
+  legales : ce n'est une mention obligatoire ni de la LCEN, ni d'une facture.
+- **SIRET** retire du pied des e-mails (accuse de reception, e-mail de paiement)
+  et du fichier `llms.txt` : il n'est requis que sur la facture et les mentions
+  legales, pas sur une correspondance ordinaire ni un fichier moissonnable.
+- **Telephone personnel** retire des devis et factures : il n'est pas une
+  mention obligatoire de facture, et l'e-mail suffit comme contact. Il reste sur
+  les mentions legales, ou la loi l'impose.
+
+## 0.19.1 - 2026-08-20
+
+### Corrige
+
+- **`npm run lint` analysait tout le disque.** La commande etait `eslint` sans
+  chemin : plus de sept minutes, 116 000 remontees, et donc une commande que
+  personne ne lance. Elle cible desormais `app`, `components` et `lib` - trente
+  secondes, deux avertissements.
+- **Le controle du francais reclamait d'accentuer du CODE.** Il signalait
+  `numero` dans le livre des recettes, c'est-a-dire une propriete TypeScript :
+  l'accentuer aurait casse la compilation, exactement la panne que l'en-tete du
+  script raconte avoir deja subie sur un import. La cause : le filtre
+  `looks_like_code` etait applique aux textes JSX mais pas aux chaines, et
+  l'expression reguliere capturait tout le code separant deux chaines
+  eloignees. Verifie dans les deux sens - le controle ne signale plus le code,
+  et attrape toujours une vraie faute d'accent introduite volontairement.
+
+## 0.20.0 - 2026-08-20
+
+### Ajoute
+
+- **IndexNow.** Le site annonce desormais ses pages a Bing, Yandex, Seznam et
+  Naver en un seul appel, au lieu d'attendre qu'un robot repasse - ce qui prend
+  des jours, parfois des semaines. `npm run indexnow`, a lancer apres un
+  deploiement.
+
+  Le script lit le plan du site et ne tient AUCUNE liste : une seconde liste
+  divergerait de la premiere des la page suivante, et personne ne s'en
+  apercevrait - le plan resterait juste, l'annonce oublierait les nouveautes.
+
+  Il verifie aussi le fichier de cle AVANT d'annoncer, en nommant l'adresse
+  attendue. C'est la seule erreur vraiment frequente du protocole : sans ce
+  fichier servi a la racine, le moteur repond 403 et l'annonce est perdue sans
+  que rien ne l'explique.
+
+  La cle est publique par construction - le moteur la lit a la racine du site
+  pour verifier qu'on controle le domaine. Elle vit dans le code plutot que
+  dans l'environnement pour rester identique au fichier `public/<cle>.txt` :
+  deux sources separees finiraient par diverger.
+
+  Google ne participe pas a IndexNow. Pour lui, le plan du site et la Search
+  Console restent le seul chemin.
 
 ## 0.19.0 - 2026-08-20
 

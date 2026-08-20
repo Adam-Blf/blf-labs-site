@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
 
 /**
@@ -14,7 +15,13 @@ export function AuthShell({ children }: { children: ReactNode }) {
         className="grille pointer-events-none absolute inset-0 opacity-30 [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]"
       />
       <main className="relative w-full max-w-md">
-        <Logo className="mb-6 h-12" />
+        <Link
+          href="/"
+          aria-label="BLF Lab's - retour à l'accueil"
+          className="mb-6 inline-block"
+        >
+          <Logo className="h-12" />
+        </Link>
         {children}
       </main>
     </div>
