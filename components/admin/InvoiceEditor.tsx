@@ -126,6 +126,15 @@ export function InvoiceEditor({
             <input name="client_city" defaultValue={invoice.client_city ?? ""} placeholder="Ville" className="blk-sm bg-paper px-3 py-2 text-ink" />
           </div>
           <input name="client_country" defaultValue={invoice.client_country ?? "France"} placeholder="Pays" className="blk-sm bg-paper px-3 py-2 text-ink" />
+          <label className="mt-1 flex flex-col gap-1 text-xs text-muted">
+            Date de la prestation (si différente de l&apos;émission)
+            <input
+              type="date"
+              name="service_date"
+              defaultValue={invoice.service_date ?? ""}
+              className="blk-sm bg-paper px-3 py-2 text-sm text-ink"
+            />
+          </label>
           <Button type="submit" variant="ghost" disabled={pending}>
             Enregistrer l&apos;acheteur
           </Button>

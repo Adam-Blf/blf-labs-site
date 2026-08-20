@@ -6,6 +6,15 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.18.0 - 2026-08-20
+
+### Ajoute
+
+- **Date de la prestation** sur les devis et factures. Un champ facultatif
+  permet d'indiquer quand la prestation a réellement été réalisée ; il ne
+  s'affiche que s'il diffère de la date d'émission, comme l'exige l'article
+  242 nonies A, 3° du CGI pour une facture émise après l'achèvement.
+
 ## 0.17.0 - 2026-08-20
 
 ### Corrige
