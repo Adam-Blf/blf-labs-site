@@ -6,6 +6,17 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.15.0 - 2026-08-20
+
+### Ajoute
+
+- **Catalogue de prestations réutilisables.** Pour facturer plus vite, chaque
+  prestation se retient : un sélecteur pré-remplit désignation et prix à la
+  composition d'une ligne. Le catalogue se remplit tout seul (toute ligne
+  facturée y est enregistrée, sans doublon) et se gère à la main depuis la page
+  de facturation (ajouter, corriger un prix, retirer). Les prestations les plus
+  facturées remontent en tête du sélecteur.
+
 ## 0.14.0 - 2026-08-20
 
 ### Ajoute

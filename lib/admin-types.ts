@@ -141,6 +141,18 @@ export type InvoiceLine = {
   position: number;
 };
 
+/** Prestation enregistree au catalogue, reutilisable a la composition. */
+export type ServiceItem = {
+  id: string;
+  designation: string;
+  unit_price_cents: number;
+  times_used: number;
+};
+
+/** Colonnes lues pour une prestation du catalogue. */
+export const SERVICE_ITEM_COLUMNS =
+  "id, designation, unit_price_cents, times_used";
+
 /** Colonnes lues pour une facture complete (liste + fiche). */
 export const INVOICE_COLUMNS =
   "id, created_at, kind, number, status, amount_ht_cents, amount_ttc_cents, issued_at, due_date, paid_at, payment_method, payment_terms, client_type, client_name, client_email, client_siren, client_address_street, client_postal_code, client_city, client_country, issuer_snapshot, payment_url, stripe_payment_link_id, stripe_ref, project_id";
