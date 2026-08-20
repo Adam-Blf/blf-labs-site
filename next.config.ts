@@ -32,6 +32,34 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
+
+  async redirects() {
+    /*
+     * LES ANCIENNES ADRESSES DU BACK-OFFICE.
+     *
+     * Le regroupement en poles a fait disparaitre quatre adresses. Les laisser
+     * tomber en 404 serait une faute : elles sont dans les favoris, et rien ne
+     * previendrait qu'elles ont bouge. Une redirection coute une ligne.
+     *
+     * `permanent: false` volontairement : ces chemins peuvent encore bouger, et
+     * une 308 se met en cache dans le navigateur pour toujours - y compris
+     * quand elle devient fausse.
+     *
+     * `/admin/facturation/[id]` n'est PAS capture : une source exacte ne
+     * s'applique pas aux sous-chemins, et la fiche d'une facture reste ou elle
+     * est.
+     */
+    return [
+      ["/admin/leads", "/admin/activite?onglet=leads"],
+      ["/admin/projets", "/admin/activite?onglet=projets"],
+      ["/admin/facturation", "/admin/argent?onglet=facturation"],
+      ["/admin/comptabilite", "/admin/argent?onglet=comptabilite"],
+    ].map(([source, destination]) => ({
+      source,
+      destination,
+      permanent: false,
+    }));
+  },
 };
 
 export default nextConfig;

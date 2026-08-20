@@ -7,14 +7,11 @@ import {
 } from "@/lib/admin-types";
 import { KanbanBoard, type KanbanItem } from "@/components/admin/KanbanBoard";
 import { ProjectsPanel } from "@/components/admin/ProjectsPanel";
-import { PageHeading } from "@/components/admin/PageHeading";
-import { updateProjectStatus } from "../../actions";
-
-export const dynamic = "force-dynamic";
+import { updateProjectStatus } from "@/app/admin/actions";
 
 /** Suivi de livraison des projets clients. Kanban pour l'avancement, checklist
  * de taches en dessous. */
-export default async function ProjetsPage() {
+export async function SectionProjets() {
   const supabase = await supabaseServer();
 
   const [{ data: projectsData }, { data: tasksData }] = supabase
@@ -67,15 +64,6 @@ export default async function ProjetsPage() {
 
   return (
     <section className="space-y-8">
-      <PageHeading
-        title="Projets"
-        sub={
-          <>
-            {projects.length} projet{projects.length > 1 ? "s" : ""}. Glisse une
-            carte pour changer l&apos;étape.
-          </>
-        }
-      />
 
       <KanbanBoard
         columns={PROJECT_COLUMNS}

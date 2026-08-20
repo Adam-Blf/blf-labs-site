@@ -15,7 +15,7 @@ import {
   createInvoice,
   deleteInvoice,
   updateInvoiceStatus,
-} from "@/app/admin/actions";
+} from "@/app/admin/actions-facturation";
 
 const STATUSES: InvoiceStatus[] = ["brouillon", "envoye", "paye", "annule"];
 

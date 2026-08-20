@@ -1,14 +1,11 @@
 import { supabaseServer } from "@/lib/supabase-server";
 import { ORDER_COLUMNS, type Lead } from "@/lib/admin-types";
 import { KanbanBoard, type KanbanItem } from "@/components/admin/KanbanBoard";
-import { PageHeading } from "@/components/admin/PageHeading";
-import { updateLeadStatus } from "../../actions";
-
-export const dynamic = "force-dynamic";
+import { updateLeadStatus } from "@/app/admin/actions";
 
 /** Pipeline commercial : chaque demande recue via le site, du premier contact
  * au gain ou a la perte. Glisser une carte change son statut en base. */
-export default async function LeadsPage() {
+export async function SectionLeads() {
   const supabase = await supabaseServer();
   const { data, error } = supabase
     ? await supabase
@@ -45,15 +42,6 @@ export default async function LeadsPage() {
 
   return (
     <section className="space-y-8">
-      <PageHeading
-        title="Leads"
-        sub={
-          <>
-            {leads.length} demande{leads.length > 1 ? "s" : ""}. Glisse une carte
-            pour changer son statut.
-          </>
-        }
-      />
 
       {error && (
         <p className="blk-sm bg-accent px-3 py-2 text-sm text-accent-ink">

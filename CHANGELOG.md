@@ -6,6 +6,44 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.20.0 - 2026-08-20
+
+### Modifie
+
+- **Le back-office se lit en deux poles au lieu de cinq entrees.** Demandes et
+  Projets sont deux moments du meme fil : une demande gagnee devient un projet.
+  Devis et Comptabilite lisent la meme table de factures, l'un pour suivre les
+  paiements, l'autre pour en tirer le recapitulatif URSSAF. Ils vivent
+  desormais sous « Activite » et « Argent », avec des onglets qui vivent dans
+  l'URL - un onglet garde en memoire ne se met pas en favori et se perd a chaque
+  rechargement, or on recharge beaucoup un back-office.
+- **Les quatre anciennes adresses redirigent** (`/admin/leads`,
+  `/admin/projets`, `/admin/facturation`, `/admin/comptabilite`). La fiche
+  d'une facture, elle, ne bouge pas.
+- **La bascule clair/sombre est enfin dans le back-office.** Elle existait
+  depuis longtemps, mais seulement dans l'en-tete du site public - alors que
+  c'est l'ecran qui se tient le plus tard et le plus longtemps.
+
+### Ajoute
+
+- **Un etat vide partage.** Le back-office portait cinq formulations de la meme
+  chose, toutes en petit gris sans cadre : une page qui se contente d'une ligne
+  grise se lit comme une panne.
+- **`npm run verifie:admin`** - garde d'architecture : une seule largeur, un
+  seul en-tete (`PageHeading`), une seule source de navigation, aucune adresse
+  perdue, aucun fichier au-dela de quatre cents lignes. Le depot etait deja
+  sain ; c'est justement pour cela qu'il vaut la peine d'etre garde, car un
+  ecart arrive toujours par un ecran ajoute un soir.
+
+### Interne
+
+- `app/admin/actions.ts` (462 lignes) est scinde : l'activite commerciale d'un
+  cote, la facturation de l'autre. Emettre une facture - numerotation continue,
+  instantane de l'emetteur, lien de paiement, courriel - se relit ligne a
+  ligne, et se relisait mal au milieu des deplacements de cartes.
+- La fonction `db()`, recopiee dans les deux fichiers d'actions, vit dans
+  `lib/admin-db.ts` : toutes les mutations doivent passer par le client lie a
+  la session pour que RLS applique `is_blf_admin()`.
 ## 0.22.0 - 2026-08-20
 
 ### Logos cliquables et pied de page range

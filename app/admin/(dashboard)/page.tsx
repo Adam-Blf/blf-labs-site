@@ -10,6 +10,7 @@ import {
 } from "@/lib/admin-types";
 import { tresorerie } from "@/lib/urssaf";
 import { PageHeading } from "@/components/admin/PageHeading";
+import { Vide } from "@/components/admin/Vide";
 
 export const dynamic = "force-dynamic";
 
@@ -104,12 +105,15 @@ export default async function OverviewPage() {
         <div className="space-y-3">
           <div className="flex items-baseline justify-between border-b border-line pb-2">
             <h2 className="title text-lg">Pièces récentes</h2>
-            <Link href="/admin/facturation" className="text-sm text-muted hover:text-ink">
+            <Link href="/admin/argent?onglet=facturation" className="text-sm text-muted hover:text-ink">
               Facturation
             </Link>
           </div>
           {recentInvoices.length === 0 && (
-            <p className="text-sm text-muted">Aucune pièce pour l&apos;instant.</p>
+            <Vide
+              titre="Aucune pièce émise"
+              aide="Les devis et factures apparaîtront ici dès la première émission."
+            />
           )}
           <ul className="divide-y divide-line">
             {recentInvoices.map((inv) => (
@@ -141,12 +145,15 @@ export default async function OverviewPage() {
         <div className="space-y-3">
           <div className="flex items-baseline justify-between border-b border-line pb-2">
             <h2 className="title text-lg">Leads récents</h2>
-            <Link href="/admin/leads" className="text-sm text-muted hover:text-ink">
+            <Link href="/admin/activite?onglet=leads" className="text-sm text-muted hover:text-ink">
               Pipeline
             </Link>
           </div>
           {recentLeads.length === 0 && (
-            <p className="text-sm text-muted">Aucune demande pour l&apos;instant.</p>
+            <Vide
+              titre="Aucune demande reçue"
+              aide="Les demandes envoyées depuis le site arrivent ici, dans la colonne « Nouveau »."
+            />
           )}
           <ul className="divide-y divide-line">
             {recentLeads.map((lead) => (
