@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { AuthShell } from "@/components/admin/AuthShell";
 import { supabaseBrowser } from "@/lib/supabase-browser";
 
 /**
@@ -87,7 +88,7 @@ export default function EnrollTotpPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-16">
+    <AuthShell>
       <Card className="p-8">
         <h1 className="title text-2xl">Activer la double authentification</h1>
         <p className="mt-2 text-sm text-muted">
@@ -138,6 +139,6 @@ export default function EnrollTotpPage() {
           </Button>
         </form>
       </Card>
-    </main>
+    </AuthShell>
   );
 }

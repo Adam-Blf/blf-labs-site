@@ -131,19 +131,30 @@ body {
   Surfaces. Un cadre net, pas de flou : le verre depoli est le decor par defaut
   des maquettes generees, et il coute cher a l'affichage.
 */
-.blk,
-.blk-sm,
-.blk-flat,
-.glass,
-.glass-sm {
-  background: var(--surface);
-  border: var(--border-w) solid var(--line);
-  border-radius: var(--radius-sm);
-  /* Meme fondu que le body au changement de theme (neutralise par
-     prefers-reduced-motion). */
-  transition:
-    background-color 0.25s ease,
-    border-color 0.25s ease;
+/*
+  Dans @layer components, et NON en regle nue : sans cela, `background:
+  var(--surface)` l'emportait sur tout utilitaire `bg-accent` / `bg-support`
+  pose sur le meme element (une regle non layered bat les utilitaires Tailwind).
+  Consequence en sombre : un badge ou un bouton cense etre un aplat colore
+  restait sur la surface sombre, avec une encre sombre par-dessus - le texte noir
+  sur fond noir. En passant ces classes dans le layer components, l'utilitaire
+  reprend la main quand il est present, et la surface reste le defaut sinon.
+*/
+@layer components {
+  .blk,
+  .blk-sm,
+  .blk-flat,
+  .glass,
+  .glass-sm {
+    background: var(--surface);
+    border: var(--border-w) solid var(--line);
+    border-radius: var(--radius-sm);
+    /* Meme fondu que le body au changement de theme (neutralise par
+       prefers-reduced-motion). */
+    transition:
+      background-color 0.25s ease,
+      border-color 0.25s ease;
+  }
 }
 
 /*

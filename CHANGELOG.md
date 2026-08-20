@@ -6,6 +6,24 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.19.0 - 2026-08-20
+
+### Corrige
+
+- **Texte sombre sur fond sombre supprimé partout.** Un aplat coloré posé sur
+  une classe `blk` (badges, alertes, bascules, boutons du back-office et du
+  formulaire) restait en réalité sur la surface : en clair ça passait par
+  accident, en sombre le texte devenait illisible. Les classes `blk` passent
+  dans `@layer components`, si bien qu'un `bg-accent` reprend la main quand il
+  est présent, sur tout le site.
+
+### Change
+
+- **Back-office aux couleurs de BLF Lab's.** La grille de paillasse du site
+  habille le fond du dashboard et des écrans de connexion, le logo s'affiche en
+  tête (et bascule sur sa version claire en thème sombre), et les écrans
+  d'authentification partagent un gabarit commun.
+
 ## 0.18.0 - 2026-08-20
 
 ### Ajoute
