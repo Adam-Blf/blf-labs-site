@@ -30,20 +30,25 @@ import { Wordmark } from "./Wordmark";
 
 // Le pied de page porte TOUTES les entrees, y compris celles qui ne tiennent
 // pas dans la barre du haut : c'est lui qui garantit qu'aucune page n'est
-// orpheline, donc atteignable ni par un visiteur ni par un moteur.
-const NAVIGATION = [
+// orpheline, donc atteignable ni par un visiteur ni par un moteur. On les range
+// par intention : les pages du studio d'un cote, les actions de l'autre, plutot
+// qu'une seule colonne fourre-tout.
+const STUDIO = [
   { href: "/services", label: "Services" },
   { href: "/tarifs", label: "Budgets et délais" },
   { href: "/methode", label: "Méthode" },
   { href: "/references", label: "Réalisations" },
-  { href: "/questions", label: "Questions" },
   { href: "/a-propos", label: "À propos" },
-  { href: "/maintenance", label: "Maintenance" },
+  { href: "/questions", label: "Questions" },
   { href: "/studio-ou-agence", label: "Studio ou agence" },
+  { href: "/maintenance", label: "Maintenance" },
   { href: "/developpement-web-ile-de-france", label: "Île-de-France" },
-  { href: "/contact", label: "Contact" },
-  { href: "/rendez-vous", label: "Prendre rendez-vous" },
+];
+
+const ACTIONS = [
   { href: "/commander", label: "Démarrer un projet" },
+  { href: "/rendez-vous", label: "Prendre rendez-vous" },
+  { href: "/contact", label: "Contact" },
 ];
 
 const LEGAL = [
@@ -90,7 +95,9 @@ export function Footer() {
 
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div className="sm:col-span-2 lg:col-span-1">
-          <Wordmark />
+          <Link href="/" aria-label="BLF Lab's - retour à l'accueil" className="inline-block">
+            <Wordmark />
+          </Link>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
             Studio indépendant de développement d&rsquo;applications, basé en
             Île-de-France. Le code, le nom de domaine et les accès sont livrés à
@@ -107,7 +114,7 @@ export function Footer() {
         </Colonne>
 
         <Colonne titre="Le studio">
-          {NAVIGATION.map((item) => (
+          {STUDIO.map((item) => (
             <Lien key={item.href} href={item.href}>
               {item.label}
             </Lien>
@@ -122,10 +129,10 @@ export function Footer() {
           >
             {SITE.email}
           </a>
-          <p className="mt-2 text-sm text-muted">Île-de-France</p>
+          <p className="mt-1 text-sm text-muted">Île-de-France</p>
 
           <ul className="mt-6 space-y-2">
-            {LEGAL.map((item) => (
+            {ACTIONS.map((item) => (
               <Lien key={item.href} href={item.href}>
                 {item.label}
               </Lien>
@@ -135,16 +142,29 @@ export function Footer() {
       </div>
 
       {/*
-        Barre d'identification legale. Elle est volontairement dense et en
-        petits caracteres : elle doit etre presente et lisible, sans devenir
-        l'element dominant du pied de page.
+        Barre d'identification legale : denomination et SIRET a gauche (LCEN,
+        atteignables depuis n'importe quelle page), liens legaux a droite. Dense
+        et en petits caracteres, presente sans dominer le pied de page.
       */}
       <div className="rule-t px-5 py-5">
-        <div className="mx-auto flex max-w-6xl flex-col gap-2 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
           <p className="tabular">
-            {SITE.legalMention} - SIRET {SIRET_PRETTY}
+            {SITE.legalMention} - SIRET {SIRET_PRETTY} - {SITE.vat}
           </p>
-          <p>{SITE.vat}</p>
+          <nav
+            aria-label="Informations légales"
+            className="flex flex-wrap gap-x-4 gap-y-1"
+          >
+            {LEGAL.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="underline-offset-4 transition-colors hover:text-ink hover:underline"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
         </div>
       </div>
     </footer>

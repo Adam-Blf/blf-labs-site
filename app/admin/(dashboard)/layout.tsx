@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { supabaseServer } from "@/lib/supabase-server";
 import { AdminNav } from "@/components/admin/AdminNav";
@@ -45,7 +46,9 @@ export default async function AdminLayout({
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-8 gap-y-3 px-6 py-4">
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-3">
-              <Logo className="h-8" />
+              <Link href="/" aria-label="BLF Lab's - retour à l'accueil">
+                <Logo className="h-8" />
+              </Link>
               <span className="mono hidden text-[0.7rem] text-muted sm:inline">
                 Back-office
               </span>
