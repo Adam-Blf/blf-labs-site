@@ -1,6 +1,6 @@
 # BLF Lab's - site officiel
 
-Version 0.19.0
+Version 0.19.1
 
 <!-- adam-badges:start -->
 [![verification](https://img.shields.io/github/actions/workflow/status/Adam-Blf/blf-labs-site/ci.yml?branch=main&style=flat-square&label=verification)](https://github.com/Adam-Blf/blf-labs-site/actions/workflows/ci.yml)

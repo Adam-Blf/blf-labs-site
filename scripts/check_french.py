@@ -309,6 +309,20 @@ def visible_strings(text: str) -> list[tuple[int, int, str]]:
     for match in re.finditer(r'^.*\bfrom\s+["\'].*$', text, flags=re.M):
         forbidden.append((match.start(), match.end()))
 
+    # ACCES DE PROPRIETE : `r.numero`, `invoice.mode`, `SITE.vat`.
+    #
+    # Un nom de propriete est un identifiant, pas un mot francais : l'accentuer
+    # casse la compilation, ce que l'en-tete de ce fichier raconte avoir deja
+    # subi sur un import. Le cas manquait, et il a fait remonter `r.numero` du
+    # livre des recettes comme une faute d'accent a corriger - un vert menteur
+    # dans l'autre sens : un rapport qui designe du code fait douter de tout ce
+    # qu'il designe.
+    #
+    # Le motif exige un identifiant DE PART ET D'AUTRE du point. Une phrase
+    # francaise met une espace apres le point, elle n'est donc jamais touchee.
+    for match in re.finditer(r"\w+\.\w+", text):
+        forbidden.append((match.start(), match.end()))
+
     # Commentaires : ce n'est pas du texte affiche. Les corriger fait du bruit
     # dans le rapport et masque les vraies fautes, visibles par un lecteur.
     for match in re.finditer(r"//[^\n]*|/\*[\s\S]*?\*/|^\s*\*[^\n]*", text, flags=re.M):
@@ -352,7 +366,15 @@ def visible_strings(text: str) -> list[tuple[int, int, str]]:
     # Chaines de caracteres en francais, sur une ou plusieurs lignes.
     for match in re.finditer(r'"([^"]{6,}?)"', text, flags=re.S):
         value = match.group(1)
-        if is_forbidden(match.start(1), match.end(1)):
+        # `looks_like_code` MANQUAIT ICI, alors qu'il filtre deja la source
+        # JSX juste au-dessus. Consequence mesuree le 20/08/2026 : entre deux
+        # chaines eloignees, l'expression reguliere capture tout le code qui les
+        # separe, et ce bloc - `const rows = recettes.map((r) => [r.date,
+        # r.numero, ...]` - etait analyse comme du texte affiche. Le rapport
+        # demandait alors d'accentuer `numero`, c'est-a-dire de renommer une
+        # propriete TypeScript : exactement la panne que l'en-tete de ce
+        # fichier raconte avoir deja subie sur un import.
+        if is_forbidden(match.start(1), match.end(1)) or looks_like_code(value):
             continue
         # Un chemin, une URL ou un identifiant technique n'est pas du texte.
         if re.search(r"(https?:|/|@|^\w+-\w+$|\bpx\b|\brem\b|_)", value):

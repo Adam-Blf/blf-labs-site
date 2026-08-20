@@ -6,6 +6,23 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.19.1 - 2026-08-20
+
+### Corrige
+
+- **`npm run lint` analysait tout le disque.** La commande etait `eslint` sans
+  chemin : plus de sept minutes, 116 000 remontees, et donc une commande que
+  personne ne lance. Elle cible desormais `app`, `components` et `lib` - trente
+  secondes, deux avertissements.
+- **Le controle du francais reclamait d'accentuer du CODE.** Il signalait
+  `numero` dans le livre des recettes, c'est-a-dire une propriete TypeScript :
+  l'accentuer aurait casse la compilation, exactement la panne que l'en-tete du
+  script raconte avoir deja subie sur un import. La cause : le filtre
+  `looks_like_code` etait applique aux textes JSX mais pas aux chaines, et
+  l'expression reguliere capturait tout le code separant deux chaines
+  eloignees. Verifie dans les deux sens - le controle ne signale plus le code,
+  et attrape toujours une vraie faute d'accent introduite volontairement.
+
 ## 0.19.0 - 2026-08-20
 
 ### Corrige
