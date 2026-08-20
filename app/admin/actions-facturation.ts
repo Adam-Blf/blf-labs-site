@@ -18,8 +18,6 @@ import {
   type Invoice,
   type InvoiceKind,
   type InvoiceStatus,
-  type OrderStatus,
-  type ProjectStatus,
 } from "@/lib/admin-types";
 
 
