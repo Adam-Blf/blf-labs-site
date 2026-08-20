@@ -9,13 +9,10 @@ import {
   tresorerie,
   type Granularite,
 } from "@/lib/urssaf";
-import { PageHeading } from "@/components/admin/PageHeading";
-
-export const dynamic = "force-dynamic";
 
 /** Comptabilite : tresorerie, recap URSSAF et livre des recettes, derives des
  * factures. Prepare les montants a declarer ; ne soumet rien a l'URSSAF. */
-export default async function ComptabilitePage({
+export async function SectionComptabilite({
   searchParams,
 }: {
   searchParams: Promise<{ p?: string }>;
@@ -36,10 +33,6 @@ export default async function ComptabilitePage({
 
   return (
     <section className="space-y-10">
-      <PageHeading
-        title="Comptabilité"
-        sub="Montants dérivés des factures. À recopier dans ton espace URSSAF ou ta plateforme agréée : rien n'est déclaré automatiquement ici."
-      />
 
       {/* Tresorerie. */}
       <div className="grid gap-4 sm:grid-cols-2">

@@ -7,12 +7,9 @@ import {
 } from "@/lib/admin-types";
 import { InvoicesPanel } from "@/components/admin/InvoicesPanel";
 import { ServiceItemsPanel } from "@/components/admin/ServiceItemsPanel";
-import { PageHeading } from "@/components/admin/PageHeading";
-
-export const dynamic = "force-dynamic";
 
 /** Devis et factures BLF Lab's, avec suivi du statut de paiement. */
-export default async function FacturationPage() {
+export async function SectionFacturation() {
   const supabase = await supabaseServer();
   const [{ data }, { data: catalog }] = supabase
     ? await Promise.all([
@@ -33,15 +30,6 @@ export default async function FacturationPage() {
 
   return (
     <section className="space-y-10">
-      <PageHeading
-        title="Facturation"
-        sub={
-          <>
-            {invoices.length} document{invoices.length > 1 ? "s" : ""}. Devis et
-            factures, du brouillon à l&apos;encaissement.
-          </>
-        }
-      />
 
       <InvoicesPanel invoices={invoices} />
 

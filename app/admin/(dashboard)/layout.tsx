@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { supabaseServer } from "@/lib/supabase-server";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { Logo } from "@/components/brand/Logo";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { signOutAdmin } from "../auth-actions";
 
 /**
@@ -53,6 +54,13 @@ export default async function AdminLayout({
             <AdminNav />
           </div>
           <div className="flex items-center gap-4 text-sm">
+            {/*
+              LA BASCULE DE THEME EXISTAIT MAIS N'ETAIT PAS ICI. Elle vivait
+              dans l'en-tete du site public seulement, alors qu'un back-office
+              se tient souvent tard et longtemps - c'est l'ecran qui en a le
+              plus besoin, et c'etait le seul a ne pas l'avoir.
+            */}
+            <ThemeToggle />
             <span className="hidden text-muted sm:inline">{user.email}</span>
             <form action={signOutAdmin}>
               <button className="text-muted transition-colors hover:text-ink">

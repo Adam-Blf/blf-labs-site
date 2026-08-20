@@ -17,7 +17,7 @@ import {
   removeInvoiceLine,
   setInvoicePaymentMethod,
   updateInvoiceClient,
-} from "@/app/admin/actions";
+} from "@/app/admin/actions-facturation";
 
 const MODES = ["Virement", "Carte", "Espèces", "Chèque", "Autre"];
 

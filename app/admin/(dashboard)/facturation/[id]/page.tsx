@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageHeading } from "@/components/admin/PageHeading";
 import { notFound } from "next/navigation";
 import { supabaseServer } from "@/lib/supabase-server";
 import {
@@ -48,14 +49,17 @@ export default async function InvoicePage({
     <section className="space-y-8">
       <div>
         <Link
-          href="/admin/facturation"
+          href="/admin/argent?onglet=facturation"
           className="text-sm text-muted hover:text-ink"
         >
           ← Facturation
         </Link>
-        <h1 className="title mt-2 text-2xl">
-          {invoice.number ?? "Nouveau document"}
-        </h1>
+        {/*
+          Le titre passe par `PageHeading` comme les autres ecrans : le filet
+          sous le titre donne la meme assise partout, et un `<h1>` pose a la
+          main derive au premier changement de charte.
+        */}
+        <PageHeading title={invoice.number ?? "Nouveau document"} />
       </div>
 
       <InvoiceEditor invoice={invoice} lines={lines} catalog={catalog} />
