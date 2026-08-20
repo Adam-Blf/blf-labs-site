@@ -7,6 +7,7 @@ import {
 } from "@/lib/admin-types";
 import { KanbanBoard, type KanbanItem } from "@/components/admin/KanbanBoard";
 import { ProjectsPanel } from "@/components/admin/ProjectsPanel";
+import { PageHeading } from "@/components/admin/PageHeading";
 import { updateProjectStatus } from "../../actions";
 
 export const dynamic = "force-dynamic";
@@ -65,14 +66,16 @@ export default async function ProjetsPage() {
   });
 
   return (
-    <section>
-      <div className="mb-6">
-        <h1 className="title text-2xl">Projets</h1>
-        <p className="text-sm text-muted">
-          {projects.length} projet{projects.length > 1 ? "s" : ""}. Glisse une
-          carte pour changer l&apos;etape.
-        </p>
-      </div>
+    <section className="space-y-8">
+      <PageHeading
+        title="Projets"
+        sub={
+          <>
+            {projects.length} projet{projects.length > 1 ? "s" : ""}. Glisse une
+            carte pour changer l&apos;étape.
+          </>
+        }
+      />
 
       <KanbanBoard
         columns={PROJECT_COLUMNS}

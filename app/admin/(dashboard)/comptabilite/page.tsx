@@ -9,6 +9,7 @@ import {
   tresorerie,
   type Granularite,
 } from "@/lib/urssaf";
+import { PageHeading } from "@/components/admin/PageHeading";
 
 export const dynamic = "force-dynamic";
 
@@ -35,13 +36,10 @@ export default async function ComptabilitePage({
 
   return (
     <section className="space-y-10">
-      <div>
-        <h1 className="title text-2xl">Comptabilité</h1>
-        <p className="text-sm text-muted">
-          Montants dérivés des factures. À recopier dans ton espace URSSAF ou ta
-          plateforme agréée : rien n&apos;est déclaré automatiquement ici.
-        </p>
-      </div>
+      <PageHeading
+        title="Comptabilité"
+        sub="Montants dérivés des factures. À recopier dans ton espace URSSAF ou ta plateforme agréée : rien n'est déclaré automatiquement ici."
+      />
 
       {/* Tresorerie. */}
       <div className="grid gap-4 sm:grid-cols-2">
@@ -117,7 +115,7 @@ export default async function ComptabilitePage({
           <h2 className="title text-lg">Livre des recettes</h2>
           <a
             href="/admin/comptabilite/recettes.csv"
-            className="blk-sm bg-surface px-4 py-2 text-sm text-ink hover:-translate-y-[1px] transition-transform"
+            className="blk-sm bg-surface px-4 py-2 text-sm text-ink transition-colors hover:bg-surface-strong"
           >
             Export CSV
           </a>

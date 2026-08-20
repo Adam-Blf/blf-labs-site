@@ -65,7 +65,7 @@ export default async function InvoicePage({
           <h2 className="title text-lg">Aperçu conforme</h2>
           <a
             href={`/admin/facturation/${id}/pdf`}
-            className="blk-sm bg-surface px-4 py-2 text-sm text-ink hover:-translate-y-[1px] transition-transform"
+            className="blk-sm bg-surface px-4 py-2 text-sm text-ink transition-colors hover:bg-surface-strong"
           >
             Télécharger le PDF
           </a>
