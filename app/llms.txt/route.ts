@@ -31,7 +31,6 @@ export function GET() {
     "",
     `Nom commercial : ${SITE.brand}`,
     `Exploitant : ${SITE.legalMention}`,
-    `SIRET : ${SITE.siret}`,
     `Zone d'intervention : France entière, entièrement à distance. Le studio est basé en Île-de-France, ne se déplace pas et ne reçoit pas ; tous les rendez-vous se tiennent en visioconférence.`,
     `Contact : ${SITE.email}`,
     `Site : ${SITE.url}`,

@@ -6,6 +6,22 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.20.0 - 2026-08-20
+
+### N'afficher que le strict minimum legal
+
+Audit par un sous-agent juridique dedie, puis retrait de tout ce qui etait
+affiche sans obligation :
+
+- **Code APE** retire du pied de page (toutes les pages) et des mentions
+  legales : ce n'est une mention obligatoire ni de la LCEN, ni d'une facture.
+- **SIRET** retire du pied des e-mails (accuse de reception, e-mail de paiement)
+  et du fichier `llms.txt` : il n'est requis que sur la facture et les mentions
+  legales, pas sur une correspondance ordinaire ni un fichier moissonnable.
+- **Telephone personnel** retire des devis et factures : il n'est pas une
+  mention obligatoire de facture, et l'e-mail suffit comme contact. Il reste sur
+  les mentions legales, ou la loi l'impose.
+
 ## 0.19.1 - 2026-08-20
 
 ### Corrige
