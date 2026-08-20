@@ -1,6 +1,7 @@
 import { PDFDocument, StandardFonts, rgb, type PDFFont } from "pdf-lib";
 import { SITE } from "@/lib/site";
 import { issuerSnapshot, lineTotalCents } from "@/lib/invoice";
+import { LOGO_PNG_BASE64, LOGO_PNG_WIDTH, LOGO_PNG_HEIGHT } from "@/lib/logo";
 import {
   INVOICE_KIND_LABELS,
   type Invoice,
@@ -92,8 +93,12 @@ export async function renderInvoicePdf(
     text(s, xRight - f.widthOfTextAtSize(s, size), yy, opts);
   };
 
-  // En-tete emetteur.
-  text(SITE.brand, M, y, { size: 16, font: bold });
+  // En-tete emetteur : logo a gauche, type de piece a droite.
+  const logo = await doc.embedPng(LOGO_PNG_BASE64);
+  const logoW = 108;
+  const logoH = (logoW * LOGO_PNG_HEIGHT) / LOGO_PNG_WIDTH;
+  page.drawImage(logo, { x: M, y: y - logoH, width: logoW, height: logoH });
+
   textRight(INVOICE_KIND_LABELS[invoice.kind].toUpperCase(), right, y, {
     size: 18,
     font: bold,
@@ -103,7 +108,9 @@ export async function renderInvoicePdf(
     size: 10,
     color: muted,
   });
-  y -= 16;
+
+  // L'identite legale de l'emetteur se pose sous le logo.
+  y -= logoH - 18 + 14;
   for (const l of [
     issuer.legalName,
     issuer.legalForm,
