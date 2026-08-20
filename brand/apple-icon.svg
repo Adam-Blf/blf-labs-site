@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <!--
+    Icone d'ecran d'accueil iOS. Servie par Next.js depuis app/apple-icon.svg.
+
+    Le fond est plein et deborde jusqu'aux bords : iOS applique son propre
+    masque arrondi, et une icone deja arrondie se retrouverait avec un double
+    arrondi et un lisere disgracieux.
+  -->
+  <rect width="180" height="180" fill="#d6401f"/>
+  <g fill="#ffffff" transform="translate(-38.6 39.4) scale(1.02)">
+    <path d="M44 24H53V68H44Z"/>
+    <path d="M53 24H77V33H53Z"/>
+    <path d="M53 42H73V51H53Z"/>
+    <path d="M53 59H77V68H53Z"/>
+    <path d="M68 33H77V42H68Z"/>
+    <path d="M68 51H77V59H68Z"/>
+    <path d="M88 24H97V68H88Z"/>
+    <path d="M97 59H114V68H97Z"/>
+    <path d="M125 24H134V68H125Z"/>
+    <path d="M134 24H156V33H134Z"/>
+    <path d="M134 42H149V51H134Z"/>
+  </g>
+</svg>
