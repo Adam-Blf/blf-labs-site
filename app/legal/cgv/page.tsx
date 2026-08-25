@@ -65,9 +65,32 @@ export default function CgvPage() {
 
       <h2 className="title">6. Garantie et maintenance</h2>
       <p>
-        Les non-conformités au devis signalées après la livraison sont corrigées
-        sans supplément. Les évolutions fonctionnelles, la maintenance et
-        l&rsquo;hébergement font l&rsquo;objet d&rsquo;un accord distinct.
+        Est une non-conformité un écart entre la prestation livrée et ce que le
+        devis signé décrit. Un besoin qui n&rsquo;y figurait pas, un changement
+        d&rsquo;avis sur une fonctionnalité validée, une modification faite par
+        le client ou par un tiers, et une panne provenant d&rsquo;un service
+        extérieur ne sont pas des non-conformités.
+      </p>
+      <p>
+        Le prestataire corrige sans supplément les non-conformités signalées par
+        écrit dans les <strong>trente jours</strong> suivant la livraison. Cette
+        garantie commerciale couvre la correction, non la reprise d&rsquo;un
+        périmètre que le client souhaite faire évoluer.
+      </p>
+      <p>
+        Passé ce délai, les corrections, les évolutions fonctionnelles, les mises
+        à jour techniques, la maintenance et l&rsquo;hébergement font
+        l&rsquo;objet d&rsquo;un devis distinct ou d&rsquo;un contrat de
+        maintenance.
+      </p>
+      <p>
+        Cette garantie commerciale s&rsquo;ajoute aux garanties légales et ne les
+        remplace pas. Le client consommateur conserve la garantie légale de
+        conformité des articles L. 224-25-12 et suivants du Code de la
+        consommation ainsi que la garantie contre les vices cachés des articles
+        1641 et suivants du Code civil. Ces garanties légales s&rsquo;appliquent
+        quelle que soit la durée de la garantie commerciale, sans frais, et
+        aucune stipulation des présentes ne les réduit ni ne les écarte.
       </p>
 
       <h2 className="title">7. Droit de rétractation</h2>
