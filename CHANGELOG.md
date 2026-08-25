@@ -6,6 +6,52 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.27.0 - 2026-08-25
+
+### Corrige
+
+- **Aucune piece comptable ne pouvait plus etre emise depuis le back-office.**
+  Regression introduite le jour meme par la version 0.26.0. `create or replace
+  function` ne remplace que si la signature est identique : en ajoutant un
+  troisieme parametre, la migration 0018 n'a rien remplace, elle a cree une
+  SURCHARGE a cote de la fonction d'origine. Le back-office appelant avec deux
+  arguments, les deux candidates convenaient et Postgres refusait d'arbitrer
+  (`42725: function is not unique`). Le bouton Emettre echouait donc a chaque
+  fois, et sans rien afficher. Verifie en production avant et apres correctif.
+  La lecon depasse ce depot : ajouter un parametre avec valeur par defaut a une
+  fonction existante est une creation, pas une modification.
+- **Un refus d'emission se voit enfin.** Emettre une facture a un professionnel
+  sans SIREN valide est refuse, article 242 nonies A du CGI, et le message
+  existait, bien redige, mais restait inatteignable : aucune frontiere d'erreur
+  n'existait dans `app/`, et les exceptions des actions serveur remontaient dans
+  le vide depuis des `useTransition` sans rattrapage. On cliquait, il ne se
+  passait rien. Les refus attendus sont desormais rendus comme un etat et
+  affiches a cote du bouton ; un `app/admin/error.tsx` attrape le reste.
+- **La date d'encaissement se corrige.** Elle etait figee a la date du CLIC,
+  alors que le recapitulatif URSSAF et le livre des recettes se calculent
+  exclusivement dessus : un reglement recu le 30 juin et pointe le 2 juillet
+  basculait de trimestre, sans recours. Un champ de date apparait sur la fiche
+  d'une piece pointee payee. La date future est refusee, la date anterieure a
+  l'emission reste acceptee, parce qu'une piece etablie apres coup pour un
+  travail deja regle en a legitimement besoin.
+- **Le repli du consentement tient enfin sa promesse.** Le commentaire annoncait
+  que le choix valait « au moins pour la session en cours » quand le stockage
+  local est inaccessible, alors que rien ne le retenait. Un repli en memoire le
+  porte desormais. Precision utile : le bandeau et la mesure fonctionnaient
+  correctement en production, ce qu'une verification au navigateur a etabli.
+
+### Modifie
+
+- **`actions-facturation.ts` est scinde en trois.** Il depassait le seuil de 400
+  lignes que `verifie:admin` fait respecter. Le catalogue de prestations part
+  dans `actions-catalogue.ts` et le lien de paiement dans `actions-paiement.ts`,
+  seul module du pole a dependre de Stripe et de l'envoi d'email.
+- **La validation de date d'encaissement vit dans `lib/invoice.ts`**, pas dans
+  l'action serveur, parce que celle-ci importe Stripe et l'email : une garde
+  qu'on ne peut pas executer dans un test est une garde qu'on n'a jamais vue
+  rouge. Six tests la couvrent, dont le 31 fevrier, que `new Date` accepte en
+  glissant au 3 mars.
+
 ## 0.26.0 - 2026-08-25
 
 ### Corrige

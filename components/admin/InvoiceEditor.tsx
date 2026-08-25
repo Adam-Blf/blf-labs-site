@@ -10,11 +10,12 @@ import {
   type ServiceItem,
 } from "@/lib/admin-types";
 import { lineTotalCents } from "@/lib/invoice";
+import { generatePaymentLink } from "@/app/admin/actions-paiement";
 import {
   addInvoiceLine,
-  generatePaymentLink,
   issueInvoice,
   removeInvoiceLine,
+  setInvoicePaidAt,
   setInvoicePaymentMethod,
   updateInvoiceClient,
 } from "@/app/admin/actions-facturation";
@@ -36,6 +37,11 @@ export function InvoiceEditor({
   catalog: ServiceItem[];
 }) {
   const [pending, start] = useTransition();
+  // Refus d'emission renvoye par le serveur. Ce n'est pas une panne : c'est une
+  // reponse a laquelle on peut remedier en remplissant un champ, donc elle
+  // s'affiche a cote du bouton qui l'a declenchee plutot que de faire
+  // disparaitre l'ecran.
+  const [refus, setRefus] = useState<string | null>(null);
   // Champs controles de la ligne en cours de saisie : le selecteur de catalogue
   // les pre-remplit, et on les vide apres ajout.
   const [designation, setDesignation] = useState("");
@@ -68,7 +74,40 @@ export function InvoiceEditor({
               ))}
             </select>
           </label>
+
+          {/* La date d'encaissement n'apparait que sur une piece pointee payee :
+              c'est la seule ou elle a un sens, et c'est elle qui commande le
+              trimestre declare. Bornee a aujourd'hui, jamais au futur. */}
+          {invoice.status === "paye" && (
+            <label className="flex items-center gap-2">
+              <span>Encaissée le</span>
+              <input
+                type="date"
+                defaultValue={invoice.paid_at ?? ""}
+                max={new Date().toISOString().slice(0, 10)}
+                onChange={(e) => {
+                  const valeur = e.target.value;
+                  if (!valeur) return;
+                  start(async () => {
+                    const resultat = await setInvoicePaidAt(invoice.id, valeur);
+                    setRefus(resultat.ok ? null : resultat.message);
+                  });
+                }}
+                disabled={pending}
+                className="blk-sm bg-paper px-3 py-2 text-ink"
+              />
+            </label>
+          )}
         </div>
+
+        {refus && (
+          <p
+            role="alert"
+            className="blk-sm self-start bg-support px-3 py-1.5 text-sm font-medium text-support-ink"
+          >
+            {refus}
+          </p>
+        )}
 
         {invoice.kind === "facture" && (
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4">
@@ -223,16 +262,34 @@ export function InvoiceEditor({
           </Button>
         </form>
 
-        <div className="mt-6 flex items-center justify-between border-t border-line pt-4">
-          <span className="text-sm text-muted">
-            Total : <span className="tabular text-ink">{formatEuros(invoice.amount_ttc_cents)}</span>
-          </span>
-          <Button
-            onClick={() => start(() => issueInvoice(invoice.id))}
-            disabled={pending || lines.length === 0}
-          >
-            {pending ? "…" : "Émettre (attribuer le numéro)"}
-          </Button>
+        <div className="mt-6 flex flex-col gap-3 border-t border-line pt-4">
+          {refus ? (
+            // Meme langage visuel que `FieldError` du tunnel public : bloc plein
+            // sur la couleur de support, lisible dans les deux modes, distinct
+            // d'un simple texte gris.
+            <p
+              role="alert"
+              className="blk-sm bg-support px-3 py-1.5 text-sm font-medium text-support-ink"
+            >
+              {refus}
+            </p>
+          ) : null}
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted">
+              Total : <span className="tabular text-ink">{formatEuros(invoice.amount_ttc_cents)}</span>
+            </span>
+            <Button
+              onClick={() =>
+                start(async () => {
+                  const resultat = await issueInvoice(invoice.id);
+                  setRefus(resultat.ok ? null : resultat.message);
+                })
+              }
+              disabled={pending || lines.length === 0}
+            >
+              {pending ? "…" : "Émettre (attribuer le numéro)"}
+            </Button>
+          </div>
         </div>
       </Card>
     </div>
