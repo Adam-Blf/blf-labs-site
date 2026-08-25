@@ -14,12 +14,20 @@ elle n'arrive nulle part, et rien ne le dit a l'expediteur.
 
 CE QUI EST POSE, ET POURQUOI DANS CET ORDRE.
 
-  p=none          On observe avant de sanctionner. Une politique stricte posee
-                  d'emblee sur un domaine qui envoie deja des factures et des
-                  accuses de reception ferait disparaitre les messages
-                  legitimes qu'on aurait mal configures, sans preavis.
-                  Passage a p=quarantine apres deux semaines de rapports
-                  propres, une seule ligne a changer ici.
+  p=quarantine    Applique depuis le 2026-08-25, sans passer deux semaines en
+                  `p=none`. A volume quasi nul, ces deux semaines n'auraient
+                  produit presque aucun rapport, donc aucune information : on
+                  aurait attendu pour rien.
+                  Ce qui remplace les rapports, ce n'est pas la foi, ce sont des
+                  tests d'envoi actifs. Mesure du jour, flux de prospection
+                  envoye a mail-tester : note 10 sur 10, `dmarc=pass`, DKIM
+                  `d=beloucif.com` selecteur `resend`, SPF `Pass`.
+                  L'argument qui autorise a durcir tout de suite : `quarantine`
+                  ne bloque QUE ce qui echoue deja l'alignement. Un message
+                  correctement aligne passe a l'identique en `none` et en
+                  `quarantine`, donc le test prouve l'absence de regression en
+                  quelques minutes plutot qu'en quinze jours.
+                  Passage a `p=reject` a reevaluer le 2026-09-22.
 
   rua=adam@       Les rapports agreges vont a une adresse DU MEME DOMAINE. Une
                   adresse externe, gmail par exemple, exigerait un
@@ -55,12 +63,46 @@ from ovh_dns import ZONE, call, load_credentials, resolve_env_file  # noqa: E402
 # l'absence d'enregistrement propre, mais on les declare explicitement : un
 # heritage implicite se perd au premier ajout de sous-domaine, et personne ne
 # s'en apercoit avant de lire des rapports qui n'arrivent plus.
-POLITIQUE = "v=DMARC1; p=none; rua=mailto:adam@beloucif.com; fo=1; adkim=r; aspf=r"
+# Les rapports partent vers une adresse DEDIEE, pas vers la boite principale.
+# Ils arrivent en XML compresse, plusieurs par jour des qu'il y a du volume, et
+# noyes dans le courrier courant ils cessent d'etre lus au bout de trois jours.
+# `dmarc@beloucif.com` redirige vers la meme boite, mais se filtre.
+#
+# L'adresse est sur le MEME domaine, et ce n'est pas un detail : un `rua` vers
+# un domaine tiers exige un enregistrement d'autorisation dans la zone du
+# destinataire, faute de quoi les rapports ne partent jamais. Le silence
+# ressemblerait alors a un domaine parfaitement propre.
+RAPPORTS = "mailto:dmarc@beloucif.com"
+
+# PAS DE `fo=1`. Ce tag ne gouverne QUE les rapports d'echec detailles, qui
+# n'existent pas sans un tag `ruf`. Pose seul, il est purement decoratif. Il
+# etait la depuis ce matin, il degage.
+#
+# PAS DE `ruf` NON PLUS. Presque aucun fournisseur n'en emet, ni Google, ni
+# Microsoft, ni Yahoo, donc l'information attendue n'arriverait pas. Ceux qui
+# en emettent joignent des en-tetes et parfois le corps du message, soit des
+# donnees personnelles de tiers qu'on recevrait sans besoin reel.
+#
+# PAS DE `pct=` intermediaire. A ce volume il echantillonne quelques messages au
+# hasard, n'apporte aucun signal statistique, et ajoute une variable au
+# diagnostic : un message passe, etait-ce l'alignement ou le tirage. Il se
+# justifie a des dizaines de milliers de messages sur des flux inconnus. Ici
+# l'inventaire tient en trois lignes.
+#
+# ALIGNEMENT RELACHE, et definitivement. Mesure du 2026-08-25 : le DKIM signe
+# `d=beloucif.com` et s'aligne donc strictement, mais l'enveloppe SPF part de
+# `send.beloucif.com`. Un `aspf=s` ferait echouer SPF sur tout le courrier
+# Resend, factures comprises, pour se premunir d'un attaquant capable de publier
+# du DNS sous le domaine - or s'il en est la, DMARC n'est plus le probleme.
+POLITIQUE = f"v=DMARC1; p=quarantine; sp=quarantine; rua={RAPPORTS}; adkim=r; aspf=r"
+
+# Le sous-domaine n'a pas besoin de `sp`, il n'a pas de sous-domaine a lui.
+POLITIQUE_SOUS_DOMAINE = f"v=DMARC1; p=quarantine; rua={RAPPORTS}; adkim=r; aspf=r"
 
 # Sous-domaine OVH -> valeur attendue. La chaine vide designe la racine.
 ATTENDU: dict[str, str] = {
     "_dmarc": POLITIQUE,
-    "_dmarc.send": POLITIQUE,
+    "_dmarc.send": POLITIQUE_SOUS_DOMAINE,
 }
 
 
