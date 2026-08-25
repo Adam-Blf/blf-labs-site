@@ -6,6 +6,24 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.27.1 - 2026-08-25
+
+### Corrige
+
+- **Cinq libelles du tunnel de commande portaient des fautes d'accent**, et ils
+  sont lus par le client a deux endroits : les listes de l'etape 2 de
+  `/commander`, et le recapitulatif des emails. « 2 000 a 5 000 euros »,
+  « A definir ensemble », « Des que possible », « Pas de date imposee ».
+  Seules les valeurs affichees changent ; les cles restent intactes, ce sont
+  des identifiants stockes en base que les commandes existantes referencent.
+
+  Ce n'est pas un defaut de `check:french` : son dictionnaire ecarte
+  deliberement « a », « des » et « ou », qui sont aussi des mots corrects, et
+  les y ajouter casserait du texte juste ailleurs. La relecture reste humaine
+  sur ces trois mots-la, et c'est le bon arbitrage. Un commentaire le dit
+  desormais dans `lib/validation.ts`, pour que personne n'elargisse la garde en
+  croyant bien faire.
+
 ## 0.27.0 - 2026-08-25
 
 ### Corrige

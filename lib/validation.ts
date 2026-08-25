@@ -33,20 +33,33 @@ export const DEADLINES = [
   "pas-presse",
 ] as const;
 
-/** Libelles affiches. Les valeurs stockees restent des identifiants stables. */
+/**
+ * Libelles affiches. Les valeurs stockees restent des identifiants stables.
+ *
+ * ATTENTION - ces chaines sont vues par le client A DEUX ENDROITS : les listes
+ * de l'etape 2 du tunnel (components/order/OrderForm.tsx) et le recapitulatif
+ * des emails (lib/mail.ts). Une faute ici se lit deux fois.
+ *
+ * Elles ont porte « 2 000 a 5 000 », « A definir » et « Des que possible »
+ * jusqu'au 25/08/2026, sans que `check:french` proteste. Ce n'est pas un defaut
+ * de la garde : son dictionnaire ecarte deliberement « a », « des » et « ou »,
+ * qui sont aussi des mots corrects. Elargir le dictionnaire a ces mots-la
+ * casserait du texte juste ailleurs. La relecture reste donc humaine sur ces
+ * trois mots, et c'est le bon arbitrage.
+ */
 export const BUDGET_LABELS: Record<(typeof BUDGET_RANGES)[number], string> = {
   "moins-de-2000": "Moins de 2 000 euros",
-  "2000-5000": "2 000 a 5 000 euros",
-  "5000-10000": "5 000 a 10 000 euros",
+  "2000-5000": "2 000 à 5 000 euros",
+  "5000-10000": "5 000 à 10 000 euros",
   "plus-de-10000": "Plus de 10 000 euros",
-  "a-definir": "A definir ensemble",
+  "a-definir": "À définir ensemble",
 };
 
 export const DEADLINE_LABELS: Record<(typeof DEADLINES)[number], string> = {
-  "des-que-possible": "Des que possible",
+  "des-que-possible": "Dès que possible",
   "sous-1-mois": "Sous un mois",
   "sous-3-mois": "Sous trois mois",
-  "pas-presse": "Pas de date imposee",
+  "pas-presse": "Pas de date imposée",
 };
 
 export const PROJECT_TYPE_LABELS: Record<string, string> = {
