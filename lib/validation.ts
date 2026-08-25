@@ -65,12 +65,13 @@ export const CUSTOMER_TYPE_LABELS: Record<
 };
 
 /**
- * Champs de facturation exiges d'un client professionnel.
+ * Champs de facturation, TOUS FACULTATIFS a la prise de contact.
  *
- * Ils ne sont pas du confort : une facture entre professionnels doit porter
- * l'identite complete de l'acheteur, et le format de facture electronique
- * impose son numero SIREN. Les demander au moment de la commande evite de
- * courir apres au moment d'encaisser.
+ * Ils restent dans le schema parce qu'un professionnel qui les a sous la main
+ * fait gagner un aller-retour, et parce qu'un appel d'API peut les fournir. Ce
+ * qui a change, c'est qu'aucun n'est exige pour envoyer une demande : ils sont
+ * reclames a l'emission de la piece comptable, la ou la loi les impose
+ * vraiment.
  */
 const billingFields = {
   companyName: z.string().trim().max(200).optional(),
@@ -167,35 +168,28 @@ export const orderSchema = z.object({
 });
 
 /**
- * Les exigences de facturation ne s'appliquent qu'aux professionnels : imposer
- * un SIREN a un particulier serait absurde, et l'omettre pour une entreprise
- * rendrait la facture non conforme. D'ou une validation conditionnelle plutot
- * que deux schemas separes, qui divergeraient a la premiere retouche.
+ * CE QUI EST EXIGE D'UN PROFESSIONNEL, ET CE QUI NE L'EST PLUS.
+ *
+ * La version precedente reclamait raison sociale, SIREN et adresse de
+ * facturation complete AVANT tout engagement, sur un formulaire de PRISE DE
+ * CONTACT. C'etait un formulaire de facturation deguise, et la friction la plus
+ * couteuse du site : personne ne va chercher son numero SIREN pour demander un
+ * devis qu'il n'a pas encore vu.
+ *
+ * Ces informations sont desormais demandees LA OU ELLES SERVENT, a l'emission
+ * du devis ou de la facture. La garde n'a pas disparu, elle a bouge : voir
+ * `issueInvoice` dans app/admin/actions-facturation.ts, qui refuse d'emettre a
+ * un professionnel sans SIREN valide. Une piece legale ne peut toujours pas
+ * partir incomplete.
+ *
+ * Ce qui reste verifie ici : le FORMAT, quand la valeur est fournie. Un SIREN
+ * faux saisi spontanement doit etre signale tout de suite, pas trois semaines
+ * plus tard sur une facture.
  */
 export const orderSchemaChecked = orderSchema.superRefine((data, ctx) => {
   if (data.customerType !== "entreprise") return;
 
-  const required: [keyof typeof data, string][] = [
-    ["companyName", "Indiquez la raison sociale."],
-    ["billingStreet", "Indiquez l'adresse de facturation."],
-    ["billingPostalCode", "Indiquez le code postal."],
-    ["billingCity", "Indiquez la ville."],
-    ["billingCountry", "Indiquez le pays."],
-  ];
-
-  for (const [field, message] of required) {
-    if (!data[field]) {
-      ctx.addIssue({ code: "custom", path: [field], message });
-    }
-  }
-
-  if (!data.siren) {
-    ctx.addIssue({
-      code: "custom",
-      path: ["siren"],
-      message: "Le SIREN ou le SIRET est obligatoire pour facturer une entreprise.",
-    });
-  } else if (!isSirenOrSiret(data.siren)) {
+  if (data.siren && !isSirenOrSiret(data.siren)) {
     ctx.addIssue({
       code: "custom",
       path: ["siren"],
@@ -231,11 +225,6 @@ export const STEP_FIELDS = [
     "company",
     "companyName",
     "siren",
-    "vatNumber",
-    "billingStreet",
-    "billingPostalCode",
-    "billingCity",
-    "billingCountry",
     "consent",
     "prospectionConsent",
   ],

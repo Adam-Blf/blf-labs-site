@@ -59,6 +59,13 @@ est dans les messages de commit et les pull requests.
   repetee a quatre endroits du site. Une section « Prospection commerciale »
   complete la remplace, et le suivi automatise d'une demande de devis y est
   annonce noir sur blanc, avec son plafond de trois messages.
+- **L'etape 5 du tunnel ne demande plus de quoi facturer.** Elle reclamait
+  raison sociale, SIREN et adresse de facturation complete, tous obligatoires,
+  sur un formulaire de PRISE DE CONTACT : personne ne va chercher son numero
+  SIREN pour demander un devis qu'il n'a pas encore vu. La garde n'a pas
+  disparu, elle a bouge la ou elle a du sens : `issueInvoice` refuse toujours
+  d'emettre une piece a un professionnel sans SIREN valide. Seul le SIREN reste
+  propose, facultatif, avec sa verification de format des la saisie.
 - **La politique cookies decrivait une carte Google Maps retiree le 2026-08-12**,
   et les mentions legales citaient deux polices non utilisees. Une politique qui
   decrit un traitement inexistant est une politique fausse.
