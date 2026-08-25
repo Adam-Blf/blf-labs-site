@@ -3,6 +3,7 @@ import { z } from "zod";
 import { clientIp, hashIp } from "@/lib/rate-limit";
 import { serviceClient } from "@/lib/supabase";
 import { inscrire } from "@/lib/prospection/inscription";
+import { TEXTES_CONSENTEMENT } from "@/content/consentement";
 
 export const runtime = "nodejs";
 
@@ -25,7 +26,15 @@ const schema = z.object({
   email: z.email({ message: "Adresse email invalide." }).max(180),
   nom: z.string().trim().max(120).optional(),
   organisation: z.string().trim().max(160).optional(),
-  source: z.string().trim().max(60).default("pied_de_page"),
+  /**
+   * La source designe le texte de consentement qui a ete affiche, donc ce qui
+   * sera recopie dans la preuve. Une chaine libre laisserait un appelant
+   * declarer une origine qui ne correspond a aucun ecran, et la preuve
+   * porterait alors un texte que personne n'a jamais vu.
+   */
+  source: z
+    .enum(Object.keys(TEXTES_CONSENTEMENT) as ["formulaire_commande", "pied_de_page"])
+    .default("pied_de_page"),
   pageOrigine: z.string().trim().max(200).default("/"),
   /**
    * Piege a robots : un humain ne le voit pas, donc ne le remplit pas.

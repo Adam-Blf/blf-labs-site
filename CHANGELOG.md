@@ -84,6 +84,48 @@ est dans les messages de commit et les pull requests.
 
 ### Corrige
 
+- **Une panne passagere arretait DEFINITIVEMENT des sequences.** L'appel a la
+  garde `peut_recevoir` ne distinguait pas un refus d'un echec : sur coupure
+  reseau ou rechargement du cache de schema, la reponse etait nulle, le moteur
+  concluait « envoi non autorise » et arretait tout le lot, avec un motif
+  parfaitement credible dans le back-office. Un echec libere maintenant le
+  verrou et retente au tour suivant.
+- **Le suivi de devis relancait des clients qui venaient de signer.**
+  `orders.email` etait en `text`, sensible a la casse, et l'adresse y est
+  inseree telle qu'elle a ete tapee ; `contacts.email` est en minuscules. Pour
+  quelqu'un ayant tape « Jean@Exemple.fr », la comparaison ne trouvait rien et
+  la sequence continuait. Colonne passee en `citext`, migration `0016`.
+- **Une cle Resend momentanement absente FAISAIT PERDRE le message** au lieu de
+  le retenter : la ligne restait verrouillee sans avancer, et au tour suivant
+  l'unicite du journal faisait sauter l'etape pour toujours. Le moteur ne
+  reserve plus rien sans cle.
+- **Toute erreur d'insertion au journal valait « deja envoye ».** Seul le code
+  `23505`, la violation d'unicite, le signifie desormais.
+- **Le formulaire de commande inscrivait un tiers sans verification.** Cocher la
+  case facultative avec l'adresse de quelqu'un d'autre l'inscrivait en
+  `confirme`, et le premier message partait au battement suivant. Le double
+  opt-in s'applique maintenant a ce chemin comme au pied de page.
+- **La preuve de consentement enregistrait un texte que personne n'avait vu.**
+  Une constante unique servait pour deux formulaires aux libelles differents.
+  Les textes vivent dans `content/consentement.ts`, lus par l'ecran ET par la
+  route, et la politique affiche desormais sa version pour qu'une preuve puisse
+  y etre rattachee.
+- **Le retrait automatique apres trois ans etait promis sans etre implemente.**
+  `last_engagement_at` etait alimente mais jamais lu. Fonction
+  `purge_consentements_caducs`, migration `0017`, appelee a chaque battement.
+- **Une etape affirmait un fait que le moteur ne verifiait pas.** « Le devis
+  envoye la semaine derniere » partait sur un simple minuteur, y compris a des
+  gens n'ayant jamais recu de devis. Les etapes portent une condition d'etat.
+- **Le nom et l'organisation etaient injectes bruts dans le HTML des messages**,
+  alors que la coquille echappe tout le reste. Ils viennent d'un formulaire.
+- **Un evenement Resend en retard faisait regresser un statut** de « Cliqué » a
+  « Délivré ». Les statuts ont un rang, il ne descend plus.
+- **Le piege a robots du formulaire du pied de page n'existait pas** : la route
+  le validait, le composant ne le rendait jamais.
+- **La notification de commande affirmait « TVA non applicable »** pour tout
+  professionnel, deduit d'un champ que le formulaire ne collecte plus.
+- **Deux homoglyphes cyrilliques** U+0435 dans du code, invisibles a l'oeil et
+  a la garde d'encodage, qui cassaient toute recherche sur le mot.
 - **Securite : une fonction de la base etait appelable par n'importe qui.**
   Toute fonction du schema `public` est exposee par PostgREST a
   `/rest/v1/rpc/<nom>`, et PostgreSQL accorde l'execution a tous par defaut.

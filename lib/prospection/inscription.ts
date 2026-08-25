@@ -4,6 +4,11 @@ import { SITE } from "@/lib/site";
 import { creeJeton, litJeton } from "@/lib/prospection/jeton";
 import { corpsConfirmation, SUJET_CONFIRMATION } from "@/content/emails/confirmation";
 import { SEQUENCE_CARNET, SEQUENCE_DEVIS, trouveSequence } from "@/content/emails/sequences";
+import {
+  TEXTES_CONSENTEMENT,
+  VERSION_POLITIQUE,
+  type SourceConsentement,
+} from "@/content/consentement";
 
 /**
  * L'entree dans la liste, et rien d'autre.
@@ -18,24 +23,6 @@ import { SEQUENCE_CARNET, SEQUENCE_DEVIS, trouveSequence } from "@/content/email
  * exactement ce qu'on veut.
  */
 
-/**
- * Version de la politique de confidentialite en vigueur, recopiee dans chaque
- * preuve de consentement. Elle doit changer a chaque modification du texte de
- * la politique, sinon la preuve renvoie a un document qui n'est plus celui qui
- * a ete montre.
- */
-export const VERSION_POLITIQUE = "2026-08-25";
-
-/**
- * Le texte EXACT affiche a cote de la case. Il est recopie dans la preuve de
- * consentement, pas reference : quand ce libelle changera, les consentements
- * deja donnes doivent continuer a porter celui qui a ete lu.
- */
-export const TEXTE_CONSENTEMENT =
-  "J'accepte de recevoir par email des informations et propositions commerciales de BLF Lab's. " +
-  "Ce consentement est distinct de ma demande, je peux le retirer a tout moment par le lien " +
-  "present dans chaque email.";
-
 export type ResultatInscription =
   | "confirmation_envoyee"
   | "deja_inscrit"
@@ -46,8 +33,11 @@ export type DemandeInscription = {
   email: string;
   nom?: string | null;
   organisation?: string | null;
-  /** D'ou vient l'inscription. Recopie dans la fiche et dans la preuve. */
-  source: string;
+  /**
+   * D'ou vient l'inscription. Designe AUSSI le texte de consentement affiche :
+   * c'est ce qui garantit que la preuve enregistree correspond a l'ecran.
+   */
+  source: SourceConsentement;
   pageOrigine: string;
   ipHash?: string | null;
   userAgent?: string | null;
@@ -111,7 +101,7 @@ export async function inscrire(demande: DemandeInscription): Promise<ResultatIns
 
   const { error: erreurPreuve } = await db.from("contact_consents").insert({
     contact_id: contactId,
-    texte_affiche: TEXTE_CONSENTEMENT,
+    texte_affiche: TEXTES_CONSENTEMENT[demande.source],
     version_politique: VERSION_POLITIQUE,
     page_origine: demande.pageOrigine,
     ip_hash: demande.ipHash ?? null,
@@ -213,16 +203,23 @@ export async function confirme(jeton: string | null): Promise<boolean> {
  *    aucune case cochee. C'est aussi, de loin, la sequence qui rapporte le
  *    plus tot.
  *
- * 2. LE CARNET, seulement si la seconde case a ete cochee. Article 6.1.a.
+ * 2. LE CARNET, seulement si la seconde case a ete cochee, et seulement APRES
+ *    confirmation par clic. Article 6.1.a.
  *
- * POURQUOI PAS DE DOUBLE OPT-IN SUR CE CHEMIN, contrairement au pied de page.
- * La preuve est deja bien plus solide ici qu'un email tape seul dans un champ :
- * un formulaire complet, une description de projet, une empreinte d'adresse IP,
- * un horodatage, le texte exact affiche, et un accuse de reception qui part
- * dans la foulee vers cette adresse. Si elle n'appartient pas a la personne, le
- * rebond arrive avant le premier message du carnet et la retire. Ajouter une
- * troisieme demande de clic apres tout cela ferait perdre des inscriptions
- * sans rien prouver de plus.
+ * POURQUOI LE DOUBLE OPT-IN VAUT AUSSI ICI, contrairement a ce que cette
+ * fonction faisait d'abord. Le raisonnement ecarte etait : le formulaire est
+ * long, l'empreinte d'IP est la, l'accuse de reception part vers cette adresse,
+ * donc un rebond retirera une adresse qui n'appartient pas a la personne.
+ *
+ * Il ne tient pas. Rien n'oblige a saisir SA propre adresse dans le champ. Une
+ * adresse de tiers VALIDE ne rebondit pas : elle recoit. Le premier message du
+ * carnet ayant un delai nul, il partait au battement suivant, soit dans les
+ * quinze minutes, vers quelqu'un qui n'avait rien demande. C'est precisement le
+ * scenario que le double opt-in du pied de page existe pour empecher, et il n'y
+ * avait aucune raison que ce chemin en soit dispense.
+ *
+ * Le cout reel est un clic de plus pour ceux qui cochent la case. Le cout de
+ * l'autre option est d'ecrire a des gens qui n'ont rien demande.
  *
  * Jamais bloquant : la commande est deja enregistree quand cette fonction est
  * appelee, et rien de ce qui se passe ici ne doit pouvoir la faire echouer.
@@ -266,32 +263,41 @@ export async function raccordeCommande(params: {
         nom: params.nom,
         organisation: params.organisation,
         regime: "optin",
-        statut: params.prospection ? "confirme" : "en_attente",
+        // JAMAIS confirme d'office. Le statut ne passe a `confirme` que par le
+        // clic dans l'email de confirmation, une seule porte pour tout le site.
+        statut: "en_attente",
         source: "formulaire_commande",
       })
       .select("id")
       .single();
     if (!cree) return;
     contactId = cree.id as string;
-  } else if (params.prospection && existant?.statut !== "confirme") {
-    await db.from("contacts").update({ statut: "confirme" }).eq("id", contactId);
   }
 
-  if (params.prospection) {
-    const maintenant = new Date().toISOString();
-    await db.from("contact_consents").insert({
-      contact_id: contactId,
-      texte_affiche: TEXTE_CONSENTEMENT,
-      version_politique: VERSION_POLITIQUE,
-      page_origine: "/commander",
-      ip_hash: params.ipHash,
-      user_agent: params.userAgent,
-      confirme_at: maintenant,
-    });
-    await inscritASequence(db, contactId, SEQUENCE_CARNET);
-  }
-
+  // Le suivi de la demande ne depend d'aucune case : il part dans tous les cas.
   await inscritASequence(db, contactId, SEQUENCE_DEVIS);
+
+  if (!params.prospection) return;
+
+  // Deja confirme par un passage precedent : inutile de redemander un clic.
+  if (existant?.statut === "confirme") {
+    await inscritASequence(db, contactId, SEQUENCE_CARNET);
+    return;
+  }
+
+  const jeton = creeJeton("confirmation", email);
+  const { error } = await db.from("contact_consents").insert({
+    contact_id: contactId,
+    texte_affiche: TEXTES_CONSENTEMENT.formulaire_commande,
+    version_politique: VERSION_POLITIQUE,
+    page_origine: "/commander",
+    ip_hash: params.ipHash,
+    user_agent: params.userAgent,
+    jeton_confirmation: jeton,
+  });
+  if (error) return;
+
+  await envoieConfirmation(email, jeton);
 }
 
 /**

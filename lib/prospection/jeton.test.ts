@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { creeJeton, litJeton } from "./jeton";
 import { prepare } from "./gabarit";
+import { SEQUENCES } from "@/content/emails/sequences";
+import { TEXTES_CONSENTEMENT, VERSION_POLITIQUE } from "@/content/consentement";
+
+const SUIVI_DEVIS = SEQUENCES.find((s) => s.slug === "devis")!;
 
 // Pose AVANT toute collecte, pas dans un `beforeAll` : le corps d'un `describe`
 // s'evalue a la collecte, donc avant les crochets, et l'appel a `prepare`
@@ -108,5 +112,56 @@ describe("coquille des messages", () => {
   it("produit une version texte lisible, liens compris", () => {
     expect(message.texte).toContain("Bonjour ici (https://exemple.fr)");
     expect(message.texte).not.toContain("<p>");
+  });
+});
+
+describe("contenu des sequences", () => {
+  it("echappe le nom venu du formulaire", () => {
+    // Le nom n'est valide que par une longueur maximale. Sans echappement, il
+    // injecte ce qu'il veut dans le message sortant.
+    const message = SUIVI_DEVIS.messages[0].corps({
+      nom: '<img src=x onerror="alert(1)">',
+      organisation: null,
+      url: "https://beloucif.com",
+    });
+    expect(message).not.toContain("<img");
+    expect(message).toContain("&lt;img");
+  });
+
+  it("echappe l'organisation venue du formulaire", () => {
+    const message = SUIVI_DEVIS.messages[0].corps({
+      nom: "Test",
+      organisation: '"><b>',
+      url: "https://beloucif.com",
+    });
+    expect(message).not.toContain('"><b>');
+    expect(message).toContain("&quot;&gt;&lt;b&gt;");
+  });
+
+  it("ne relance sur un devis que si un devis a ete emis", () => {
+    // Ce message affirme « le devis envoye la semaine derniere ». L'envoyer a
+    // quelqu'un qui n'en a jamais recu serait une affirmation fausse.
+    const relance = SUIVI_DEVIS.messages.find((m) => m.slug === "relance-devis");
+    expect(relance?.siStatutCommande).toEqual(["devis_envoye"]);
+  });
+
+  it("laisse partir les autres etapes sans condition d'etat", () => {
+    const sansCondition = SUIVI_DEVIS.messages.filter((m) => !m.siStatutCommande);
+    expect(sansCondition.map((m) => m.slug)).toEqual(["precision", "cloture"]);
+  });
+});
+
+describe("preuve de consentement", () => {
+  it("porte un texte distinct par formulaire", () => {
+    // Une constante unique pour deux ecrans rendait la preuve fausse pour l'un
+    // des deux, ce qui est pire qu'une absence de preuve.
+    const { formulaire_commande: commande, pied_de_page: pied } = TEXTES_CONSENTEMENT;
+    expect(commande).not.toBe(pied);
+    expect(commande.length).toBeGreaterThan(40);
+    expect(pied.length).toBeGreaterThan(20);
+  });
+
+  it("porte une version de politique datee", () => {
+    expect(VERSION_POLITIQUE).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 });

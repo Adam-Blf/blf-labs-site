@@ -1,4 +1,5 @@
 import { SITE } from "@/lib/site";
+import { esc } from "@/lib/prospection/gabarit";
 
 /**
  * LE CONTENU DES SEQUENCES D'EMAIL.
@@ -49,6 +50,16 @@ export type MessageSequence = {
   delaiHeures: number;
   sujet: string;
   corps: (v: VariablesEmail) => string;
+  /**
+   * Statuts de commande dans lesquels cette etape a un sens. Absent : l'etape
+   * part quel que soit l'etat du dossier.
+   *
+   * Sert aux messages qui AFFIRMENT quelque chose sur le dossier. Dire « le
+   * devis envoye la semaine derniere » a quelqu'un qui n'a jamais recu de
+   * devis est une affirmation fausse, et un prospect qui verifie une
+   * affirmation fausse ne revient pas. Le moteur saute l'etape sans l'envoyer.
+   */
+  siStatutCommande?: string[];
 };
 
 export type Sequence = {
@@ -60,9 +71,17 @@ export type Sequence = {
   messages: MessageSequence[];
 };
 
-/** Salutation qui ne laisse pas de trou quand le nom est inconnu. */
+/**
+ * Salutation qui ne laisse pas de trou quand le nom est inconnu.
+ *
+ * ECHAPPE, comme toute valeur venue d'un formulaire. Le nom arrive de la
+ * commande sans autre controle qu'une longueur maximale : un nom contenant un
+ * chevron casse le balisage du message, et un nom fabrique y injecte ce qu'il
+ * veut. La coquille echappe tout le reste, ce serait absurde de laisser passer
+ * la seule valeur reellement fournie par un tiers.
+ */
 function bonjour(nom: string | null): string {
-  return nom ? `Bonjour ${nom},` : "Bonjour,";
+  return nom ? `Bonjour ${esc(nom)},` : "Bonjour,";
 }
 
 function p(texte: string): string {
@@ -186,7 +205,7 @@ const SUIVI_DEVIS: Sequence = {
       corps: (v) =>
         p(bonjour(v.nom)) +
         p(
-          `Votre demande${v.organisation ? ` pour ${v.organisation}` : ""} est bien arrivée, et je l'ai lue.`,
+          `Votre demande${v.organisation ? ` pour ${esc(v.organisation)}` : ""} est bien arrivée, et je l'ai lue.`,
         ) +
         p(
           "Avant de vous envoyer une estimation qui tienne debout, une seule question : y a-t-il une date à laquelle le site ou l'application doit être en ligne ? Un lancement, un salon, une rentrée. C'est ce qui change le plus le chiffrage, bien plus que le nombre de pages.",
@@ -197,6 +216,7 @@ const SUIVI_DEVIS: Sequence = {
     {
       slug: "relance-devis",
       delaiHeures: 120,
+      siStatutCommande: ["devis_envoye"],
       sujet: "Le devis vous convient-il",
       corps: (v) =>
         p(bonjour(v.nom)) +
@@ -252,7 +272,7 @@ const PREMIER_CONTACT: Sequence = {
       corps: (v) =>
         p("Bonjour,") +
         p(
-          `Je suis Adam Beloucif, développeur indépendant en Île-de-France. Je m'adresse à ${v.organisation ?? "votre établissement"} au sujet d'un point précis, pas pour vous présenter un catalogue.`,
+          `Je suis Adam Beloucif, développeur indépendant en Île-de-France. Je m'adresse à ${v.organisation ? esc(v.organisation) : "votre établissement"} au sujet d'un point précis, pas pour vous présenter un catalogue.`,
         ) +
         p(
           "Beaucoup de structures de votre taille ont un site qui informe correctement, mais sur lequel un client ne peut rien faire : ni prendre rendez-vous, ni demander un devis, ni payer. Le contact se fait alors par téléphone, aux heures d'ouverture, et ce qui arrive en dehors est perdu.",

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Checkbox, CheckboxCards, RadioCards, TextArea, TextField } from "./fields";
 import { OPTIONS, OPTION_GROUPS } from "@/content/options";
+import { TEXTES_CONSENTEMENT } from "@/content/consentement";
 import { WizardSteps, type WizardStep } from "@/components/ui/WizardSteps";
 import {
   BUDGET_LABELS,
@@ -352,7 +353,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
             />
           </div>
 
-          {/* CE BLOC NE DEMANDE PLUS DE QUOI FACTURER, et c'est deliberе.
+          {/* CE BLOC NE DEMANDE PLUS DE QUOI FACTURER, et c'est delibere.
 
               Il reclamait raison sociale, SIREN et adresse de facturation
               complete, tous obligatoires, sur un formulaire de PRISE DE
@@ -447,12 +448,13 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
               onChange={(checked) => set("prospectionConsent", checked)}
               error={errors.prospectionConsent}
             >
-              <span className="mono text-xs text-muted">Facultatif</span>
-              <br />
-              J&rsquo;accepte de recevoir par email des informations et
-              propositions commerciales de BLF Lab&rsquo;s. Ce consentement est
-              distinct de ma demande ci-dessus, et je peux le retirer à tout
-              moment par le lien présent dans chaque email.
+              {/*
+                Le libelle vient de content/consentement.ts, le MEME objet que
+                la route recopie dans la preuve de consentement. Ecrire la
+                phrase ici en dur laissait les deux diverger, et c'est la preuve
+                qui devenait fausse.
+              */}
+              {TEXTES_CONSENTEMENT.formulaire_commande}
             </Checkbox>
           </div>
         </div>

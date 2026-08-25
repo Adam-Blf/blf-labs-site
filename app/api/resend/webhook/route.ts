@@ -36,13 +36,35 @@ type EvenementResend = {
   };
 };
 
-/** Statut de journal correspondant a un type d'evenement Resend. */
-const STATUTS: Record<string, string> = {
-  "email.delivered": "delivre",
-  "email.opened": "ouvert",
-  "email.clicked": "clic",
-  "email.bounced": "bounce",
-  "email.complained": "plainte",
+/**
+ * Statut de journal correspondant a un type d'evenement Resend, avec son RANG.
+ *
+ * Resend ne garantit aucun ordre de livraison des evenements. Un
+ * `email.delivered` qui arrive apres un `email.clicked` faisait regresser le
+ * journal de « Cliqué » a « Délivré », et l'ecran des envois sous-estimait
+ * l'engagement sans que rien ne le signale.
+ *
+ * Le rang ne descend jamais, sauf pour un rebond ou une plainte : ceux-la sont
+ * des verdicts, pas des etapes, et doivent s'imposer quel que soit l'ordre.
+ */
+const STATUTS: Record<string, { nom: string; rang: number }> = {
+  "email.delivered": { nom: "delivre", rang: 2 },
+  "email.opened": { nom: "ouvert", rang: 3 },
+  "email.clicked": { nom: "clic", rang: 4 },
+  "email.bounced": { nom: "bounce", rang: 9 },
+  "email.complained": { nom: "plainte", rang: 9 },
+};
+
+/** Rang courant d'un statut deja enregistre. */
+const RANGS: Record<string, number> = {
+  file: 0,
+  envoye: 1,
+  delivre: 2,
+  ouvert: 3,
+  clic: 4,
+  echec: 9,
+  bounce: 9,
+  plainte: 9,
 };
 
 /**
@@ -101,10 +123,16 @@ export async function POST(request: Request) {
 
   const statut = STATUTS[type];
   if (statut && evenement.data?.email_id) {
-    await db
+    const { data: ligne } = await db
       .from("email_sends")
-      .update({ statut })
-      .eq("resend_id", evenement.data.email_id);
+      .select("id, statut")
+      .eq("resend_id", evenement.data.email_id)
+      .maybeSingle();
+
+    const rangActuel = RANGS[ligne?.statut as string] ?? -1;
+    if (ligne && statut.rang >= rangActuel) {
+      await db.from("email_sends").update({ statut: statut.nom }).eq("id", ligne.id);
+    }
   }
 
   if (email) {

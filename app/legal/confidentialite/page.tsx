@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ConsentControls } from "@/components/analytics/ConsentControls";
 import { SITE } from "@/lib/site";
+import { VERSION_POLITIQUE } from "@/content/consentement";
 
 export const metadata: Metadata = {
   title: "Politique de confidentialité",
@@ -236,6 +237,16 @@ export default function ConfidentialitePage() {
         d&rsquo;accès interdisent toute lecture anonyme. L&rsquo;accès est
         réservé à l&rsquo;éditeur, après authentification. Les échanges avec le
         site sont chiffrés par TLS.
+      </p>
+
+      {/*
+        La version est affichée parce que chaque preuve de consentement
+        enregistre celle qui était en vigueur au moment du recueil. Sans
+        version visible, cette preuve renvoie à un document impossible à
+        retrouver, et elle ne prouve plus rien.
+      */}
+      <p className="mono text-sm text-muted">
+        Version de ce document : {VERSION_POLITIQUE}.
       </p>
     </article>
   );

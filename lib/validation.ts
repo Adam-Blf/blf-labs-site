@@ -157,7 +157,7 @@ export const orderSchema = z.object({
 
   // Piege a robots : un champ invisible que seul un automate remplit.
   //
-  // Le schema l'ACCEPTE, quelle que soit sa valeur, et c'est deliberе. La
+  // Le schema l'ACCEPTE, quelle que soit sa valeur, et c'est delibere. La
   // version precedente imposait `max(0)`, ce qui faisait echouer la validation
   // : la route repondait alors 400 « Formulaire invalide » et son garde-fou
   // `if (order.website) return ok:true`, ecrit precisement pour ne rien

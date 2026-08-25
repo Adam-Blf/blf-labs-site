@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { TEXTES_CONSENTEMENT, type SourceConsentement } from "@/content/consentement";
 
 /**
  * L'INSCRIPTION AU CARNET DU STUDIO.
@@ -23,11 +24,13 @@ import { useState } from "react";
 
 type Etat = "repos" | "envoi" | "succes" | "erreur";
 
-export function Carnet({ source = "pied_de_page" }: { source?: string }) {
+export function Carnet({ source = "pied_de_page" }: { source?: SourceConsentement }) {
   const [email, setEmail] = useState("");
   const [accord, setAccord] = useState(false);
   const [etat, setEtat] = useState<Etat>("repos");
   const [message, setMessage] = useState("");
+  // Piege a robots : un humain ne le voit pas, donc ne le remplit jamais.
+  const [website, setWebsite] = useState("");
 
   async function envoie(evenement: React.FormEvent) {
     evenement.preventDefault();
@@ -42,6 +45,7 @@ export function Carnet({ source = "pied_de_page" }: { source?: string }) {
           email,
           source,
           pageOrigine: window.location.pathname,
+          website,
         }),
       });
 
@@ -97,15 +101,31 @@ export function Carnet({ source = "pied_de_page" }: { source?: string }) {
           onChange={(evenement) => setAccord(evenement.target.checked)}
           className="mt-0.5 shrink-0"
         />
+        {/*
+          Le libelle vient de content/consentement.ts, le MEME objet que la
+          route recopie dans la preuve. Ecrire la phrase ici en dur laissait
+          les deux diverger, et c'est la preuve qui devenait fausse.
+        */}
         <span>
-          J&rsquo;accepte de recevoir ces messages et je peux me désinscrire en
-          un clic depuis chacun d&rsquo;eux.{" "}
+          {TEXTES_CONSENTEMENT[source]}{" "}
           <Link href="/legal/confidentialite" className="underline">
             Politique de confidentialité
           </Link>
           .
         </span>
       </label>
+
+      {/* Hors flux, masque aux lecteurs d'ecran, exclu de la tabulation. */}
+      <div aria-hidden="true" className="absolute left-[-9999px] top-0">
+        <label htmlFor="carnet-website">Ne pas remplir</label>
+        <input
+          id="carnet-website"
+          tabIndex={-1}
+          autoComplete="off"
+          value={website}
+          onChange={(evenement) => setWebsite(evenement.target.value)}
+        />
+      </div>
 
       <button
         type="submit"

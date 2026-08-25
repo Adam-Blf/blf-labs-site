@@ -49,6 +49,8 @@ export type Rapport = {
   envoyes: number;
   ignores: number;
   echecs: number;
+  /** Fiches retirees pour consentement caduc, trois ans sans interaction. */
+  purges: number;
   /** Une ligne par decision, pour que le back-office puisse expliquer un silence. */
   journal: string[];
 };
@@ -119,7 +121,7 @@ async function reserve(db: SupabaseClient, lot: number): Promise<Inscription[]> 
   return (reserves ?? []) as Inscription[];
 }
 
-/** Arrete une inscription et libere son verrou. */
+/** Arrete une inscription et libere son verrou. DEFINITIF. */
 async function arrete(db: SupabaseClient, id: string, raison: string): Promise<void> {
   await db
     .from("enrollments")
@@ -127,17 +129,32 @@ async function arrete(db: SupabaseClient, id: string, raison: string): Promise<v
     .eq("id", id);
 }
 
-/** Marque une inscription terminee : toutes les messages ont ete envoyees. */
+/**
+ * Rend la ligne au tour suivant, sans rien decider.
+ *
+ * C'est la difference entre « je ne sais pas » et « non ». Une panne
+ * passagere, un rechargement du cache de schema apres une migration, une
+ * coupure reseau : rien de tout cela ne doit se transformer en arret
+ * definitif d'une sequence. On libere, on retentera dans quinze minutes.
+ */
+async function libere(db: SupabaseClient, id: string): Promise<void> {
+  await db.from("enrollments").update({ verrou_at: null }).eq("id", id);
+}
+
+/** Marque une inscription terminee : tous les messages ont ete envoyes. */
 async function termine(db: SupabaseClient, id: string): Promise<void> {
   await db.from("enrollments").update({ statut: "termine", verrou_at: null }).eq("id", id);
 }
 
 /**
- * Le suivi d'une demande de devis s'arrete des que le dossier est tranche.
- * Relancer quelqu'un qui vient de signer le fait douter, et relancer un dossier
- * perdu est du harcelement.
+ * Statut de la demande la plus recente de cette adresse, ou `null`.
+ *
+ * La comparaison ne se soucie pas de la casse depuis la migration `0016` :
+ * `orders.email` est en `citext`. Avant elle, une adresse tapee
+ * « Jean@Exemple.fr » ne correspondait a rien et le suivi continuait de
+ * relancer un client qui venait de signer.
  */
-async function dossierTranche(db: SupabaseClient, email: string): Promise<boolean> {
+async function statutCommande(db: SupabaseClient, email: string): Promise<string | null> {
   const { data } = await db
     .from("orders")
     .select("status")
@@ -145,12 +162,19 @@ async function dossierTranche(db: SupabaseClient, email: string): Promise<boolea
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
-  return data?.status === "gagnee" || data?.status === "perdue";
+  return (data?.status as string | undefined) ?? null;
 }
+
+/**
+ * Le suivi d'une demande s'arrete des que le dossier est tranche. Relancer
+ * quelqu'un qui vient de signer le fait douter, et relancer un dossier perdu
+ * est du harcelement.
+ */
+const STATUTS_TRANCHES = new Set(["gagnee", "perdue"]);
 
 async function traiteUne(
   db: SupabaseClient,
-  resend: Resend | null,
+  resend: Resend,
   inscription: Inscription,
   rapport: Rapport,
 ): Promise<void> {
@@ -181,10 +205,22 @@ async function traiteUne(
     return;
   }
 
-  const { data: autorise } = await db.rpc("peut_recevoir", {
+  const { data: autorise, error: erreurGarde } = await db.rpc("peut_recevoir", {
     cible: contact.email,
     audience: sequence.audience,
   });
+
+  // UN APPEL QUI ECHOUE N'EST PAS UN REFUS. Sans cette distinction, une
+  // coupure reseau ou un rechargement du cache de schema apres migration
+  // rendait `data` nul, le test tombait dans la branche « non autorise », et
+  // toutes les inscriptions du lot etaient arretees DEFINITIVEMENT. Le
+  // back-office affichait alors un motif parfaitement credible.
+  if (erreurGarde) {
+    await libere(db, inscription.id);
+    rapport.ignores += 1;
+    rapport.journal.push("garde injoignable, reessai au prochain tour");
+    return;
+  }
 
   if (autorise !== true) {
     await arrete(db, inscription.id, "envoi non autorise");
@@ -193,9 +229,26 @@ async function traiteUne(
     return;
   }
 
-  if (sequence.audience === "devis" && (await dossierTranche(db, contact.email))) {
+  // Le statut de la demande sert deux fois : pour arreter un dossier tranche,
+  // et pour les etapes qui n'ont de sens que dans un etat precis.
+  const besoinStatut =
+    sequence.audience === "devis" || etape.siStatutCommande !== undefined;
+  const statut = besoinStatut ? await statutCommande(db, contact.email) : null;
+
+  if (sequence.audience === "devis" && statut !== null && STATUTS_TRANCHES.has(statut)) {
     await arrete(db, inscription.id, "dossier tranche");
     rapport.ignores += 1;
+    return;
+  }
+
+  // Une etape peut exiger un etat precis. Le message de relance de devis dit
+  // « le devis envoye la semaine derniere » : l'envoyer a quelqu'un dont la
+  // demande n'a jamais donne lieu a un devis serait une affirmation fausse.
+  // On saute l'etape sans l'envoyer, la suivante reste programmee.
+  if (etape.siStatutCommande && (statut === null || !etape.siStatutCommande.includes(statut))) {
+    rapport.ignores += 1;
+    rapport.journal.push(`etape ${etape.slug} sans objet, statut ${statut ?? "inconnu"}`);
+    await avance(db, sequence, inscription);
     return;
   }
 
@@ -216,9 +269,20 @@ async function traiteUne(
     .single();
 
   if (conflit || !ligne) {
-    await avance(db, sequence, inscription);
-    rapport.ignores += 1;
-    rapport.journal.push(`etape deja journalisee pour ${contact.email}`);
+    // SEUL 23505, la violation d'unicite, veut dire « deja parti ». Traiter
+    // toute erreur d'insertion comme un doublon faisait avancer l'etape sans
+    // qu'aucun message ne soit envoye : une coupure reseau ou une course sur
+    // la cle etrangere suffisait a perdre le message pour toujours, avec un
+    // journal qui affirmait le contraire.
+    if (conflit?.code === "23505") {
+      await avance(db, sequence, inscription);
+      rapport.ignores += 1;
+      rapport.journal.push(`etape deja journalisee pour ${contact.email}`);
+      return;
+    }
+    await libere(db, inscription.id);
+    rapport.echecs += 1;
+    rapport.journal.push("journal indisponible, reessai au prochain tour");
     return;
   }
 
@@ -232,15 +296,6 @@ async function traiteUne(
     email: contact.email,
     base: SITE.url,
   });
-
-  if (!resend) {
-    await db
-      .from("email_sends")
-      .update({ statut: "echec", erreur: "cle Resend absente" })
-      .eq("id", ligne.id);
-    rapport.echecs += 1;
-    return;
-  }
 
   try {
     const retour = await resend.emails.send({
@@ -306,12 +361,42 @@ async function avance(
 }
 
 export async function traiteEcheances(): Promise<Rapport> {
-  const rapport: Rapport = { candidats: 0, envoyes: 0, ignores: 0, echecs: 0, journal: [] };
+  const rapport: Rapport = {
+    candidats: 0,
+    envoyes: 0,
+    ignores: 0,
+    echecs: 0,
+    purges: 0,
+    journal: [],
+  };
 
   const db = serviceClient();
   if (!db) {
     rapport.journal.push("base indisponible");
     return rapport;
+  }
+
+  // SANS CLE, ON NE RESERVE MEME PAS. La version precedente reservait la ligne,
+  // ecrivait un echec dans le journal, puis rendait la main sans liberer le
+  // verrou ni avancer. Quinze minutes plus tard la ligne repassait, l'insertion
+  // au journal butait sur l'unicite, et l'etape etait consideree comme deja
+  // partie : une cle momentanement absente ou en cours de rotation faisait
+  // PERDRE le message au lieu de le retenter.
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    rapport.journal.push("cle Resend absente, aucune echeance touchee");
+    return rapport;
+  }
+  const resend = new Resend(apiKey);
+
+  // LA PROMESSE DE PURGE, TENUE. La politique de confidentialite annonce le
+  // retrait automatique apres trois ans sans interaction. Sans cet appel,
+  // l'engagement etait publie sans rien derriere. Il tourne avant les envois :
+  // une fiche caduque ne doit pas recevoir un message de plus.
+  const { data: purges } = await db.rpc("purge_consentements_caducs");
+  if (typeof purges === "number" && purges > 0) {
+    rapport.purges = purges;
+    rapport.journal.push(`${purges} fiche(s) retiree(s) pour consentement caduc`);
   }
 
   const deja = await envoyesAujourdhui(db);
@@ -324,9 +409,6 @@ export async function traiteEcheances(): Promise<Rapport> {
   const inscriptions = await reserve(db, Math.min(LOT, reste));
   rapport.candidats = inscriptions.length;
   if (!inscriptions.length) return rapport;
-
-  const apiKey = process.env.RESEND_API_KEY;
-  const resend = apiKey ? new Resend(apiKey) : null;
 
   for (const inscription of inscriptions) {
     await traiteUne(db, resend, inscription, rapport);

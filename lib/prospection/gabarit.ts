@@ -26,7 +26,15 @@ import { creeJeton } from "@/lib/prospection/jeton";
 const COULEUR_TEXTE = "#0d1117";
 const COULEUR_DISCRETE = "#5b6472";
 
-function esc(valeur: string): string {
+/**
+ * Neutralise le HTML avant injection dans un message.
+ *
+ * Exporte parce que les gabarits de content/emails/ interpolent des valeurs
+ * venues d'un formulaire, nom et organisation. Une seule implementation, ici :
+ * deux fonctions d'echappement recopiees divergent au premier correctif, et
+ * c'est celle qu'on a oublie de corriger qui laisse passer.
+ */
+export function esc(valeur: string): string {
   return valeur
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")

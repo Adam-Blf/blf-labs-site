@@ -7,7 +7,7 @@
  * encaisse. Les tenir separes obligeait a traverser la barre de navigation pour
  * passer d'un devis a la recette qui en decoule.
  *
- * IL N'Y A PAS DE POLE « REGLAGES », et c'est deliberе : les deux ecrans qui y
+ * IL N'Y A PAS DE POLE « REGLAGES », et c'est delibere : les deux ecrans qui y
  * seraient (verification en deux etapes, changement de mot de passe) vivent
  * hors de cette coquille, en pleine page, parce qu'on y accede AVANT d'etre
  * pleinement authentifie. Un pole qui ne contiendrait que des liens vers
