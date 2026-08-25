@@ -33,14 +33,16 @@ Derniere mise a jour : 2026-08-25.
 | | |
 |---|---|
 | Finalite | Adresser des informations et propositions commerciales par email. |
-| Base legale | Deux regimes, jamais melanges. Consentement, article 6.1.a du RGPD et article L.34-5 I du CPCE, pour toute personne physique. Interet legitime, article 6.1.f, combine a l'article L.34-5 alinea consacre aux professionnels, pour les seules adresses generiques de personnes morales immatriculees. |
+| Base legale | Deux regimes, jamais melanges. **Interet legitime, article 6.1.f du RGPD**, pour toute adresse PROFESSIONNELLE dont la fonction est liee a l'offre proposee : l'article L.34-5 du CPCE n'exige le consentement prealable que pour les coordonnees d'une personne physique, et la doctrine de la CNIL admet l'interet legitime des lors que l'objet de la sollicitation est en rapport avec la profession de la personne demarchee. **Consentement, article 6.1.a**, pour toute adresse non professionnelle. La nature juridique de la structure est relevee et conservee (colonne `nature_juridique`), parce qu'un SIREN seul ne dit pas si l'on ecrit a une personne morale ou a une entreprise individuelle, qui est une personne physique. |
 | Personnes concernees | Personnes ayant coche la case dediee, et representants de structures dont l'adresse generique est publique. |
-| Donnees | Adresse email, nom et organisation si fournis, SIREN pour le regime professionnel, horodatage du consentement, texte exact affiche, version de la politique de confidentialite, page d'origine, empreinte d'adresse IP, agent utilisateur, date de derniere interaction. |
+| Donnees | Adresse email, nom et organisation si fournis, SIREN, nature juridique INSEE et statut de diffusion Sirene pour le regime professionnel, horodatage du consentement, texte exact affiche, version de la politique de confidentialite, page d'origine, empreinte d'adresse IP, agent utilisateur, date de derniere interaction. |
 | Preuve de consentement | Table `public.contact_consents`, en ajout seul. Un declencheur en base refuse toute modification d'une preuve enregistree. |
 | Destinataires | Le responsable de traitement seul. Aucune cession, aucune location de fichier. |
 | Sous-traitant | Resend, article 28 du RGPD. |
 | Conservation | Trois ans a compter de la derniere interaction, ouverture ou clic. Au-dela, le consentement est repute caduc et l'adresse est retiree. |
-| Droit d'opposition | Lien de retrait en un clic dans chaque message, plus en-tetes `List-Unsubscribe` et `List-Unsubscribe-Post` conformes a la RFC 8058. Traitement immediat. |
+| Droit d'opposition | Lien de retrait en un clic dans chaque message, plus en-tetes `List-Unsubscribe` et `List-Unsubscribe-Post` conformes a la RFC 8058. Traitement immediat. Le droit est en outre annonce dans un paragraphe DISTINCT du premier message, comme l'exige l'article 21.4. |
+| Opposition deja exercee en amont | Le statut de diffusion Sirene est releve a la collecte et conserve. Une unite en diffusion partielle (`P`) s'est opposee aupres de l'INSEE a la publication de ses donnees : la contrainte `contacts_b2b_strict` refuse en base son enregistrement sous le regime sans consentement prealable. Il n'existe plus de statut `N` : toutes les unites anciennement non diffusibles ont ete basculees en `P`, donc le test est `= 'O'` et jamais `<> 'N'`. Le statut se rafraichit avant chaque campagne. |
+| Information article 14 | Delivree dans le PREMIER message, comme l'impose l'article 14.3.b lorsque la donnee sert a communiquer avec la personne : origine de l'adresse, finalite, base legale, duree de conservation, droits, et lien vers la politique de confidentialite. |
 | Tables | `public.contacts`, `public.contact_consents`, `public.enrollments`, `public.email_sends`, `public.email_events` |
 
 ## Fiche 3 - Liste de suppression

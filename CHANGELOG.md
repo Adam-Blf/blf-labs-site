@@ -6,6 +6,44 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.28.0 - 2026-08-25
+
+### Corrige
+
+- **La garde qui manquait vraiment : le statut de diffusion Sirene.** Toute
+  personne inscrite au repertoire peut demander a l'INSEE que ses donnees ne
+  soient pas publiees, et plus d'un million d'etablissements l'ont fait. Rien ne
+  le verifiait. Tout le reste du dispositif - double opt-in, jeton signe, lien de
+  retrait - protege des gens qui n'ont encore rien demande ; cette garde-ci
+  respecte une opposition DEJA EXERCEE, explicitement, par une personne
+  identifiee. Piege de valeur a connaitre : il n'existe plus de statut « N »,
+  toutes les unites anciennement non diffusibles ont ete basculees en « P ».
+  Le test correct est donc `= 'O'`, jamais `<> 'N'`.
+- **L'etiquette `b2b_generique` mentait sur son fondement.** Elle exigeait un
+  SIREN, en s'appuyant sur la position de la CNIL selon laquelle les adresses
+  `contact@` ou `info@` « concernent des personnes morales ». Or un SIREN ne dit
+  rien de la nature juridique : une entreprise individuelle en a un, et c'est une
+  personne physique. Le correctif n'exclut pas les entreprises individuelles,
+  ce serait plus strict que le droit ; il oblige a SAVOIR a qui l'on ecrit, la
+  nature juridique devenant obligatoire pour ce regime.
+- **L'information de l'article 14 du RGPD etait incomplete.** Le premier message
+  donnait l'origine de l'adresse et les droits, mais ni la finalite, ni la base
+  legale, ni la duree de conservation, ni le lien vers la politique. Et le droit
+  d'opposition, que l'article 21.4 impose de mentionner « explicitement et de
+  facon distincte », etait noye dans la meme ligne que les autres droits. Il a
+  desormais son propre paragraphe.
+
+### Ajoute
+
+- **`scripts/prospects.py`**, qui constitue une base de prospects qualifies
+  depuis l'annuaire public des entreprises (API Recherche d'entreprises, service
+  public gratuit, sans cle). Il ecarte les unites opposees a la diffusion, les
+  structures de vingt salaries et plus, et par defaut les entreprises
+  individuelles - cette derniere exclusion etant un choix de prudence levable,
+  pas une obligation, et l'entete dit pourquoi. Il n'ecrit rien en base,
+  n'envoie rien, et refuse d'ecrire sa sortie dans le depot : un fichier de
+  prospects porte des donnees relatives a des personnes.
+
 ## 0.27.1 - 2026-08-25
 
 ### Corrige
