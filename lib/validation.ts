@@ -138,10 +138,32 @@ export const orderSchema = z.object({
     message: "Votre accord est nécessaire pour traiter la demande.",
   }),
 
-  // Piege a robots : un champ invisible que seul un automate remplit. Il doit
-  // rester vide. On ne renvoie pas d'erreur explicite pour ne pas renseigner
-  // l'attaquant, la route repond simplement un succes factice.
-  website: z.string().max(0).optional().or(z.literal("")),
+  /**
+   * Consentement a la prospection commerciale. RIEN A VOIR avec le precedent,
+   * et c'est tout l'enjeu.
+   *
+   * `consent` couvre l'article 6.1.b du RGPD, les mesures precontractuelles
+   * prises a la demande de la personne. Il est obligatoire, d'ou le
+   * `z.literal(true)` : sans lui, il n'y a pas de demande a traiter.
+   *
+   * `prospectionConsent` couvre l'article 6.1.a, le consentement. Il est
+   * FACULTATIF, d'ou le `z.boolean()`. Un consentement dont le refus
+   * empecherait d'obtenir le service ne serait pas libre au sens de l'article
+   * 7.4, donc nul. La difference entre les deux types Zod n'est pas un detail
+   * de style : c'est la difference entre une option et une condition.
+   */
+  prospectionConsent: z.boolean().optional().default(false),
+
+  // Piege a robots : un champ invisible que seul un automate remplit.
+  //
+  // Le schema l'ACCEPTE, quelle que soit sa valeur, et c'est deliberе. La
+  // version precedente imposait `max(0)`, ce qui faisait echouer la validation
+  // : la route repondait alors 400 « Formulaire invalide » et son garde-fou
+  // `if (order.website) return ok:true`, ecrit precisement pour ne rien
+  // apprendre a l'automate, n'etait jamais atteint. Le piege fonctionnait, mais
+  // il annoncait a l'automate qu'il avait ete repere, ce qui est exactement ce
+  // qu'on voulait eviter. Le tri se fait donc dans la route, pas ici.
+  website: z.string().optional(),
 });
 
 /**
@@ -215,5 +237,6 @@ export const STEP_FIELDS = [
     "billingCity",
     "billingCountry",
     "consent",
+    "prospectionConsent",
   ],
 ] as const;

@@ -38,6 +38,7 @@ type Values = {
   billingCity: string;
   billingCountry: string;
   consent: boolean;
+  prospectionConsent: boolean;
   website: string;
 };
 
@@ -62,6 +63,9 @@ const EMPTY: Values = {
   // un gain de saisie, pas une contrainte, le champ reste modifiable.
   billingCountry: "France",
   consent: false,
+  // Jamais pre-coche. Une case cochee par defaut n'est pas un consentement,
+  // c'est un piege, et elle est nulle en droit.
+  prospectionConsent: false,
   website: "",
 };
 
@@ -465,13 +469,36 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
             error={errors.consent}
           >
             J&rsquo;accepte que ces informations soient utilisées pour répondre à
-            ma demande. Elles ne sont ni revendues ni utilisées pour de la
-            prospection. Voir la{" "}
+            ma demande. Elles ne sont ni revendues, ni transmises à des tiers à
+            des fins commerciales. Voir la{" "}
             <Link href="/legal/confidentialite" className="underline">
               politique de confidentialité
             </Link>
             .
           </Checkbox>
+
+          {/* SECONDE case, distincte de la premiere, et facultative.
+              La premiere autorise a traiter la demande, article 6.1.b du RGPD.
+              Celle-ci autorise la prospection, article 6.1.a. Les confondre
+              serait un detournement de finalite, article 5.1.b, et un
+              consentement dont le refus bloquerait l'envoi de la demande ne
+              serait pas libre, article 7.4, donc nul. La refuser n'empeche
+              rien du tout. */}
+          <div className="mt-5">
+            <Checkbox
+              id="prospectionConsent"
+              checked={values.prospectionConsent}
+              onChange={(checked) => set("prospectionConsent", checked)}
+              error={errors.prospectionConsent}
+            >
+              <span className="mono text-xs text-muted">Facultatif</span>
+              <br />
+              J&rsquo;accepte de recevoir par email des informations et
+              propositions commerciales de BLF Lab&rsquo;s. Ce consentement est
+              distinct de ma demande ci-dessus, et je peux le retirer à tout
+              moment par le lien présent dans chaque email.
+            </Checkbox>
+          </div>
         </div>
       ),
     },

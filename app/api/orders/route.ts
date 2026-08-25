@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { sendOrderEmails } from "@/lib/mail";
+import { raccordeCommande } from "@/lib/prospection/inscription";
 import { clientIp, hashIp, isRateLimited } from "@/lib/rate-limit";
 import { serviceClient } from "@/lib/supabase";
 import { orderSchemaChecked } from "@/lib/validation";
@@ -63,6 +64,7 @@ export async function POST(request: Request) {
   }
 
   const ipHash = hashIp(clientIp(request.headers));
+  const userAgent = request.headers.get("user-agent")?.slice(0, 400) ?? null;
 
   if (await isRateLimited(supabase, ipHash)) {
     return NextResponse.json(
@@ -97,7 +99,7 @@ export async function POST(request: Request) {
       billing_country: order.billingCountry ?? null,
       consent_at: new Date().toISOString(),
       ip_hash: ipHash,
-      user_agent: request.headers.get("user-agent")?.slice(0, 400) ?? null,
+      user_agent: userAgent,
     })
     .select("id")
     .single();
@@ -123,6 +125,23 @@ export async function POST(request: Request) {
   // sans redemander l'information au client.
   if (mailed) {
     await supabase.from("orders").update({ mail_sent: true }).eq("id", data.id);
+  }
+
+  // Raccordement au suivi automatise : relance de la demande dans tous les cas,
+  // article 6.1.b, et inscription au carnet uniquement si la seconde case a ete
+  // cochee, article 6.1.a. Jamais bloquant : la demande est deja enregistree, et
+  // un incident sur cette partie ne doit pas la faire echouer.
+  try {
+    await raccordeCommande({
+      email: order.email,
+      nom: order.name,
+      organisation: order.companyName ?? order.company ?? null,
+      prospection: order.prospectionConsent === true,
+      ipHash,
+      userAgent,
+    });
+  } catch (erreur) {
+    console.error("Echec du raccordement au suivi automatise", erreur);
   }
 
   return NextResponse.json({ ok: true, stored: true, mailed });

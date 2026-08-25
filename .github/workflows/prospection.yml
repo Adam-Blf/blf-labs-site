@@ -1,0 +1,61 @@
+# Le battement du moteur d'envoi.
+#
+# POURQUOI ICI ET PAS DANS vercel.json. Le plan Hobby de Vercel limite une tache
+# planifiee a une execution par jour, alors qu'une sequence a des echeances a
+# l'heure. Un workflow planifie est gratuit, independant du plan d'hebergement,
+# et se relit dans le depot.
+#
+# GitHub ne garantit pas l'heure exacte de declenchement : sous forte charge, un
+# cron peut glisser de plusieurs minutes. Cela n'a aucune importance ici, le
+# moteur traite ce qui est du, pas ce qui est du a la minute pres.
+#
+# Le secret vaut declenchement d'envois d'email. Il vit dans les secrets du
+# depot, jamais dans un fichier.
+
+name: prospection
+
+on:
+  schedule:
+    # Toutes les quinze minutes.
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  # Deux executions simultanees ne casseraient rien, le verrou en base et
+  # l'unicite du journal les arbitrent. On les evite quand meme : deux appels
+  # concurrents consomment deux fois le quota d'API pour le meme travail.
+  group: prospection
+  cancel-in-progress: false
+
+jobs:
+  battement:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Traiter les echeances dues
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "CRON_SECRET absent des secrets du depot, rien a faire."
+            exit 0
+          fi
+
+          code=$(curl --silent --show-error --location \
+            --output rapport.json --write-out '%{http_code}' \
+            --max-time 120 \
+            --request POST \
+            --header "Authorization: Bearer $CRON_SECRET" \
+            https://beloucif.com/api/cron/sequences)
+
+          echo "Code HTTP : $code"
+          cat rapport.json || true
+          echo
+
+          # Un 401 signifie que le secret du depot et celui de Vercel ont
+          # diverge. Echouer bruyamment : le mode silencieux ferait croire que
+          # les sequences tournent alors que plus rien ne part.
+          if [ "$code" != "200" ]; then
+            echo "::error::Le moteur d'envoi a repondu $code"
+            exit 1
+          fi

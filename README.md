@@ -1,6 +1,6 @@
 # BLF Lab's - site officiel
 
-Version 0.20.0
+Version 0.25.0
 
 <!-- adam-badges:start -->
 [![verification](https://img.shields.io/github/actions/workflow/status/Adam-Blf/blf-labs-site/ci.yml?branch=main&style=flat-square&label=verification)](https://github.com/Adam-Blf/blf-labs-site/actions/workflows/ci.yml)
@@ -22,6 +22,7 @@ notifiee par email au studio, et confirmee au client par un accuse de reception.
 - [Demarrer](#demarrer)
 - [Variables d'environnement](#variables-denvironnement)
 - [Emails et DNS](#emails-et-dns)
+- [Prospection par email](#prospection-par-email)
 - [Scripts](#scripts)
 - [Verification](#verification)
 - [Choix structurants](#choix-structurants)
@@ -140,6 +141,14 @@ degrade, et le formulaire indique une alternative par email.
 | `ADMIN_EMAILS` | Liste blanche du back-office | Personne n&rsquo;entre |
 | `IP_HASH_SALT` | Sel de l&rsquo;empreinte d&rsquo;IP | Sel par defaut, a definir en production |
 | `NEXT_PUBLIC_GA_ID` | Mesure d&rsquo;audience GA4 | Aucune mesure, et **aucun bandeau de consentement** |
+| `STRIPE_SECRET_KEY` | Liens de paiement des factures | Facture emise sans lien de paiement |
+| `STRIPE_WEBHOOK_SECRET` | Verification de la signature Stripe | Le webhook refuse tout |
+| `INDEXNOW_KEY` | Annonce des pages aux moteurs | Repli sur une cle en dur, publique par conception |
+| `CRON_SECRET` | Garde de `/api/cron/sequences` | La route repond 401, **aucune sequence ne part** |
+| `UNSUBSCRIBE_SECRET` | Signature des liens de retrait et de confirmation | Le moteur **leve** : mieux vaut ne rien envoyer que des liens falsifiables |
+| `RESEND_WEBHOOK_SECRET` | Verification de la signature Resend | Plaintes et rebonds non traites, la liste ne se nettoie plus |
+| `RESEND_FROM_PROSPECTION` | Expedition des sequences | Valeur par defaut `carnet@send.beloucif.com` |
+| `PROSPECTION_PLAFOND_JOUR` | Plafond d&rsquo;envois par jour | 50, valeur volontairement basse au demarrage |
 
 ## Emails et DNS
 
@@ -154,6 +163,60 @@ Ce point compte : Resend place son SPF sur `send`, pas sur la racine. Les
 enregistrements MX de `beloucif.com` restent donc intacts et la boite
 `adam@beloucif.com` continue de fonctionner. Le script refuse d&rsquo;ecrire un
 MX a la racine, precisement pour eviter cet accident.
+
+## Prospection par email
+
+Deux regimes juridiques cohabitent, et **c'est la base qui les empeche de se
+melanger**, pas la vigilance de celui qui importe un fichier.
+
+| Regime | Qui | Fondement | Ce que la base exige |
+|---|---|---|---|
+| `optin` | Toute personne physique | Consentement, article 6.1.a du RGPD | Statut `confirme`, donc une case cochee et, depuis le pied de page, un clic de confirmation |
+| `b2b_generique` | Adresse generique d'une personne morale immatriculee | Article L.34-5 du CPCE | SIREN present ET partie locale dans une liste blanche (`contact`, `info`...). Une adresse `prenom.nom@` est **refusee par la contrainte `contacts_b2b_strict`** |
+
+Un independant ou une profession liberale est une personne physique : il releve
+du premier regime, jamais du second. C'est la nuance qui coute le plus cher
+quand on la rate, d'ou une contrainte en base plutot qu'une note dans un
+document.
+
+```mermaid
+flowchart LR
+  F1[Formulaire commande<br/>case facultative] --> C[(contacts)]
+  F2[Pied de page] --> DOI[Double opt-in] --> C
+  IMP[Import professionnel<br/>SIREN + adresse generique] --> C
+  C --> E[(enrollments)]
+  CRON[GitHub Actions<br/>15 min] -->|Bearer CRON_SECRET| API[/api/cron/sequences/]
+  API --> E
+  API --> G{peut_recevoir}
+  G -->|autorise| SEND[Resend<br/>List-Unsubscribe RFC 8058]
+  SEND --> LOG[(email_sends)]
+  WH[/api/resend/webhook/] -->|plainte, rebond dur| SUP[(suppression_list)]
+  UNSUB[/desinscription/] --> SUP
+  SUP --> G
+```
+
+**Ou vit quoi.** Le contenu des messages est en TypeScript dans
+`content/emails/sequences.ts`, pas en base : il passe ainsi la garde
+typographique et `check:french` de l'integration continue, et se relit dans une
+revue de code. La base ne garde qu'un slug de sequence et un numero d'etape.
+
+**Trois invariants du moteur**, `lib/prospection/moteur.ts` :
+
+1. la ligne de journal est ecrite **avant** l'appel a Resend, et l'unicite
+   `(enrollment_id, etape)` empeche le doublon si le processus meurt entre les
+   deux ;
+2. la regle d'autorisation vit dans la fonction SQL `peut_recevoir`, une seule
+   fois. Le moteur l'appelle, il ne la reimplemente pas ;
+3. un plafond quotidien, bas au demarrage. Un domaine neuf qui envoie plusieurs
+   centaines de messages le premier jour se fait classer en indesirable, et il
+   emporte avec lui les factures qui partent du meme domaine.
+
+**Le battement** vient de `.github/workflows/prospection.yml`, pas de Vercel
+Cron : le plan Hobby limite une tache planifiee a une execution par jour, alors
+qu'une sequence a des echeances a l'heure.
+
+Registre des traitements et regle sur l'origine des adresses :
+[`docs/registre-traitements.md`](docs/registre-traitements.md).
 
 ## Scripts
 
