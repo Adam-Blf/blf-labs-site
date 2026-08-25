@@ -133,7 +133,7 @@ degrade, et le formulaire indique une alternative par email.
 | Variable | Role | Sans elle |
 |---|---|---|
 | `RESEND_API_KEY` | Envoi des emails | Aucun email, la demande reste en base |
-| `RESEND_FROM` | Adresse d&rsquo;expedition | Valeur par defaut `contact@send.beloucif.com` |
+| `RESEND_FROM` | Adresse d&rsquo;expedition | Valeur par defaut `contact@beloucif.com`. **Doit appartenir a un domaine VERIFIE chez Resend**, sinon 403 |
 | `SUPABASE_URL` | Base de donnees | Aucune ecriture, seul l&rsquo;email part |
 | `SUPABASE_SERVICE_ROLE_KEY` | Ecriture serveur | Idem. **Jamais cote client** |
 | `NEXT_PUBLIC_SUPABASE_URL` | Authentification admin | `/admin` inaccessible |
@@ -147,7 +147,7 @@ degrade, et le formulaire indique une alternative par email.
 | `CRON_SECRET` | Garde de `/api/cron/sequences` | La route repond 401, **aucune sequence ne part** |
 | `UNSUBSCRIBE_SECRET` | Signature des liens de retrait et de confirmation | Le moteur **leve** : mieux vaut ne rien envoyer que des liens falsifiables |
 | `RESEND_WEBHOOK_SECRET` | Verification de la signature Resend | Plaintes et rebonds non traites, la liste ne se nettoie plus |
-| `RESEND_FROM_PROSPECTION` | Expedition des sequences | Valeur par defaut `carnet@send.beloucif.com` |
+| `RESEND_FROM_PROSPECTION` | Expedition des sequences | Valeur par defaut `carnet@beloucif.com` |
 | `PROSPECTION_PLAFOND_JOUR` | Plafond d&rsquo;envois par jour | 50, valeur volontairement basse au demarrage |
 
 ## Emails et DNS

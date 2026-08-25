@@ -43,7 +43,8 @@ export type DemandeInscription = {
   userAgent?: string | null;
 };
 
-const FROM = process.env.RESEND_FROM ?? `BLF Lab's <contact@send.beloucif.com>`;
+// Domaine verifie chez Resend, sinon l'API refuse en 403. Voir lib/mail.ts.
+const FROM = process.env.RESEND_FROM ?? `BLF Lab's <contact@beloucif.com>`;
 
 /**
  * Enregistre une demande d'inscription et envoie le message de confirmation.

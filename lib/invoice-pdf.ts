@@ -20,6 +20,22 @@ import {
  */
 
 /** "1 234,56 EUR" avec des espaces normales, sans caractere hors WinAnsi. */
+/**
+ * Date au format francais, JJ/MM/AAAA.
+ *
+ * Les dates sortaient en ISO, `2026-08-25`, sur un document francais adresse a
+ * un client francais. Techniquement lisible, commercialement bancal, et le 03/04
+ * contre le 04/03 n'a pas le meme sens des deux cotes de la Manche.
+ *
+ * Formatage manuel plutot que `toLocaleDateString` : la locale du serveur qui
+ * genere le PDF n'est pas garantie, et une facture ne doit pas dependre de la
+ * region ou tourne la fonction.
+ */
+function dateFr(iso: string): string {
+  const [annee, mois, jour] = iso.slice(0, 10).split("-");
+  return `${jour}/${mois}/${annee}`;
+}
+
 function euros(cents: number): string {
   const sign = cents < 0 ? "-" : "";
   const n = Math.abs(cents);
@@ -129,16 +145,21 @@ export async function renderInvoicePdf(
   // Dates a droite.
   let yr = 841.89 - M - 52;
   if (invoice.issued_at) {
-    textRight(`Émis le ${invoice.issued_at}`, right, yr, { size: 9, color: muted });
+    textRight(`Émis le ${dateFr(invoice.issued_at)}`, right, yr, { size: 9, color: muted });
     yr -= 12;
   }
-  if (invoice.due_date) {
+  // Sur une facture deja reglee, une echeance n'a plus d'objet : elle laisse
+  // croire qu'il reste quelque chose a payer. On affiche la date de reglement.
+  if (invoice.paid_at && !devis) {
+    textRight(`Payée le ${dateFr(invoice.paid_at)}`, right, yr, { size: 9, color: muted });
+    yr -= 12;
+  } else if (invoice.due_date) {
     const dueLabel = devis ? "Valable jusqu'au" : "Échéance le";
-    textRight(`${dueLabel} ${invoice.due_date}`, right, yr, { size: 9, color: muted });
+    textRight(`${dueLabel} ${dateFr(invoice.due_date)}`, right, yr, { size: 9, color: muted });
     yr -= 12;
   }
   if (invoice.service_date && invoice.service_date !== invoice.issued_at) {
-    textRight(`Prestation réalisée le ${invoice.service_date}`, right, yr, {
+    textRight(`Prestation réalisée le ${dateFr(invoice.service_date)}`, right, yr, {
       size: 9,
       color: muted,
     });
@@ -200,7 +221,14 @@ export async function renderInvoicePdf(
   text("TVA", colQte, y, { size: 10, color: muted });
   textRight("-", colTot, y, { size: 10, color: muted });
   y -= 16;
-  text(devis ? "Montant du devis" : "Total à payer", colQte, y, { size: 11, font: bold });
+  // « Total a payer » sur une facture deja reglee est le meilleur moyen de se
+  // faire payer deux fois. Le libelle suit donc l'etat reel de la piece.
+  const libelleTotal = devis
+    ? "Montant du devis"
+    : invoice.paid_at
+      ? "Total réglé"
+      : "Total à payer";
+  text(libelleTotal, colQte, y, { size: 11, font: bold });
   textRight(euros(invoice.amount_ttc_cents), colTot, y, { size: 11, font: bold });
 
   // Mention TVA (293 B).
