@@ -101,7 +101,7 @@ export function Footer() {
           </Link>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
             Studio indépendant de développement d&rsquo;applications, basé en
-            Île-de-France. Le code, le nom de domaine et les accès sont livrés à
+            Île-de-France. Le code et les accès sont livrés à
             votre nom.
           </p>
         </div>
