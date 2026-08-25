@@ -1,5 +1,5 @@
 /**
- * La carte du back-office - trois poles, et rien de plus.
+ * La carte du back-office - quatre poles, et rien de plus.
  *
  * POURQUOI REGROUPER CINQ ENTREES EN TROIS. Leads et Projets sont deux moments
  * du meme fil : une demande arrive, elle devient un projet. Facturation et
@@ -7,7 +7,7 @@
  * encaisse. Les tenir separes obligeait a traverser la barre de navigation pour
  * passer d'un devis a la recette qui en decoule.
  *
- * IL N'Y A PAS DE POLE « REGLAGES », et c'est deliberе : les deux ecrans qui y
+ * IL N'Y A PAS DE POLE « REGLAGES », et c'est delibere : les deux ecrans qui y
  * seraient (verification en deux etapes, changement de mot de passe) vivent
  * hors de cette coquille, en pleine page, parce qu'on y accede AVANT d'etre
  * pleinement authentifie. Un pole qui ne contiendrait que des liens vers
@@ -57,6 +57,28 @@ export const POLES: readonly Pole[] = [
         cle: "projets",
         libelle: "Projets",
         aide: "Les chantiers en cours et leur avancement.",
+      },
+    ],
+  },
+  {
+    chemin: "/admin/prospection",
+    libelle: "Prospection",
+    aide: "Qui a accepté d'être contacté, ce qui est parti, et qui s'est retiré.",
+    onglets: [
+      {
+        cle: "contacts",
+        libelle: "Contacts",
+        aide: "Les adresses de la liste, avec le régime juridique qui autorise l'envoi.",
+      },
+      {
+        cle: "envois",
+        libelle: "Envois",
+        aide: "Ce qui est parti, ce qui a été ouvert, ce qui a échoué.",
+      },
+      {
+        cle: "retraits",
+        libelle: "Retraits",
+        aide: "La liste de suppression. Une adresse qui y figure ne peut plus être sollicitée.",
       },
     ],
   },

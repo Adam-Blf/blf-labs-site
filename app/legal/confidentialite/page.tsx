@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ConsentControls } from "@/components/analytics/ConsentControls";
 import { SITE } from "@/lib/site";
+import { VERSION_POLITIQUE } from "@/content/consentement";
 
 export const metadata: Metadata = {
   title: "Politique de confidentialité",
@@ -82,8 +83,20 @@ export default function ConfidentialitePage() {
         demande et, le cas échéant, à établir un devis. La base légale est
         l&rsquo;exécution de mesures précontractuelles prises à votre demande,
         au sens de l&rsquo;article 6.1.b du règlement général sur la protection
-        des données. Ces informations ne sont ni revendues, ni utilisées pour de
-        la prospection, ni transmises à des tiers à des fins commerciales.
+        des données. Ces informations ne sont ni revendues, ni transmises à des
+        tiers à des fins commerciales. Elles ne servent à la prospection
+        commerciale que si vous y avez consenti séparément, par une case dédiée
+        et jamais pré-cochée. Voir la section «&nbsp;Prospection
+        commerciale&nbsp;» plus bas.
+      </p>
+      <p>
+        Répondre à votre demande comprend un suivi automatisé : sans réponse de
+        votre part, vous recevez au plus <strong>trois messages</strong> de
+        relance sur ce dossier, puis il est refermé et plus rien ne part. Ce
+        suivi relève de la même finalité et de la même base légale que la
+        demande elle-même, et il s&rsquo;arrête immédiatement dès que le dossier
+        aboutit, que vous demandez son arrêt, ou que vous utilisez le lien de
+        retrait présent dans ces messages.
       </p>
       <p>
         L&rsquo;empreinte technique de l&rsquo;adresse IP et le type de
@@ -111,6 +124,58 @@ export default function ConfidentialitePage() {
         n&rsquo;apporterait rien à la finalité qui les justifie.
       </p>
 
+      <h2 className="title">Prospection commerciale</h2>
+      <p>
+        Cette section ne concerne que les personnes ayant coché la case prévue à
+        cet effet, sur le formulaire de commande ou dans le pied de page. Elle
+        décrit un traitement <strong>distinct</strong> de celui des demandes de
+        devis, avec sa propre base légale et sa propre durée.
+      </p>
+      <p>
+        <strong>Finalité</strong> : vous adresser par email des informations et
+        propositions commerciales du studio, sans lien avec le traitement
+        d&rsquo;une demande en cours.
+      </p>
+      <p>
+        <strong>Base légale</strong> : votre consentement, article 6.1.a du
+        règlement général sur la protection des données et article L.34-5 du
+        code des postes et des communications électroniques. Ce consentement est
+        distinct de celui donné pour une demande de devis, il n&rsquo;est jamais
+        pré-coché, et le refuser n&rsquo;a aucune conséquence sur le traitement
+        de vos autres demandes.
+      </p>
+      <p>
+        <strong>Données traitées</strong> : adresse email, nom et organisation si
+        vous les avez indiqués, date et heure de votre accord, texte exact de la
+        case qui vous a été présentée, page depuis laquelle vous vous êtes
+        inscrit, et la date de vos dernières ouverture ou clic.
+      </p>
+      <p>
+        <strong>Durée</strong> : trois ans à compter de votre dernière
+        interaction avec ces messages. Au-delà, le consentement est considéré
+        comme caduc et l&rsquo;adresse est retirée de la liste sans que vous ayez
+        à le demander.
+      </p>
+      <p>
+        <strong>Désinscription</strong> : un lien de retrait figure dans chaque
+        message et fonctionne en un clic, sans connexion ni justification. Le
+        retrait est enregistré immédiatement. Vous pouvez aussi écrire à{" "}
+        <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. Votre adresse est
+        alors conservée sur une liste de suppression, dans le seul but de ne plus
+        jamais vous solliciter, et elle ne peut plus être réinscrite par un
+        formulaire.
+      </p>
+      <p>
+        <strong>Prospection vers les professionnels</strong> : le studio peut
+        écrire à l&rsquo;adresse générique publiée par une entreprise ou une
+        association, du type contact@, au sujet de son activité professionnelle,
+        sur le fondement de l&rsquo;article L.34-5 du même code. Chaque message
+        précise alors l&rsquo;origine de l&rsquo;adresse, porte le même lien de
+        retrait en un clic, et deux messages au maximum sont envoyés. Aucune
+        adresse nominative de personne physique n&rsquo;est utilisée de cette
+        façon.
+      </p>
+
       <h2 className="title">Destinataires et sous-traitants</h2>
       <ul>
         <li>
@@ -131,8 +196,10 @@ export default function ConfidentialitePage() {
           une infrastructure située dans l&rsquo;Union européenne.
         </li>
         <li>
-          <strong>Resend</strong> achemine les messages de notification et
-          d&rsquo;accusé de réception, depuis la région Irlande.
+          <strong>Resend</strong> achemine les messages de notification,
+          d&rsquo;accusé de réception et de prospection, depuis la région
+          Irlande, en qualité de sous-traitant au sens de l&rsquo;article 28 du
+          règlement.
         </li>
       </ul>
 
@@ -170,6 +237,16 @@ export default function ConfidentialitePage() {
         d&rsquo;accès interdisent toute lecture anonyme. L&rsquo;accès est
         réservé à l&rsquo;éditeur, après authentification. Les échanges avec le
         site sont chiffrés par TLS.
+      </p>
+
+      {/*
+        La version est affichée parce que chaque preuve de consentement
+        enregistre celle qui était en vigueur au moment du recueil. Sans
+        version visible, cette preuve renvoie à un document impossible à
+        retrouver, et elle ne prouve plus rien.
+      */}
+      <p className="mono text-sm text-muted">
+        Version de ce document : {VERSION_POLITIQUE}.
       </p>
     </article>
   );

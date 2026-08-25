@@ -56,22 +56,21 @@ function summaryRows(order: OrderInput): string {
   // Les informations de facturation figurent dans la notification : elles
   // permettent d'etablir le devis sans avoir a les redemander au client.
   if (order.customerType === "entreprise") {
-    rows.push(
-      ["Client", "Entreprise ou association"],
-      ["Raison sociale", order.companyName ?? ""],
-      ["SIREN / SIRET", order.siren ?? ""],
-      ["TVA intracommunautaire", order.vatNumber ?? "non assujetti"],
-      [
-        "Adresse de facturation",
-        [
-          order.billingStreet,
-          `${order.billingPostalCode ?? ""} ${order.billingCity ?? ""}`.trim(),
-          order.billingCountry,
-        ]
-          .filter(Boolean)
-          .join(", "),
-      ],
-    );
+    // Le formulaire ne demande plus de quoi facturer avant le devis : ne
+    // figurent ici que les champs REELLEMENT collectes, et seulement s'ils
+    // sont remplis.
+    //
+    // La version precedente affichait « TVA intracommunautaire : non
+    // assujetti » des que le champ etait vide. C'etait une affirmation
+    // factuelle sur le client, deduite d'une absence de saisie, sur l'email
+    // qui sert justement a preparer le devis. Une ligne « Adresse de
+    // facturation » vide s'imprimait de la meme facon.
+    rows.push(["Client", "Entreprise ou association"]);
+    if (order.companyName) rows.push(["Raison sociale", order.companyName]);
+    if (order.siren) rows.push(["SIREN / SIRET", order.siren]);
+    if (!order.companyName && !order.siren) {
+      rows.push(["Facturation", "a demander a l'emission du devis"]);
+    }
   } else {
     rows.push(["Client", "Particulier"], ["Organisation", order.company ?? "non renseignee"]);
   }

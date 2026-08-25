@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SITE, SIRET_PRETTY } from "@/lib/site";
 import { OFFRES } from "@/content/offres";
 import { Graduation } from "@/components/ui/Graduation";
+import { Carnet } from "@/components/marketing/Carnet";
 import { Wordmark } from "./Wordmark";
 
 /**
@@ -138,6 +139,16 @@ export function Footer() {
               </Lien>
             ))}
           </ul>
+
+          {/*
+            Seul point de captation d'adresse du site, et il est volontairement
+            ici, en bas : quelqu'un qui a lu la page entiere sait ce qu'il
+            demande. Rien n'est echange contre cette adresse, les ressources et
+            le journal restent en acces libre.
+          */}
+          <div className="mt-8">
+            <Carnet />
+          </div>
         </div>
       </div>
 

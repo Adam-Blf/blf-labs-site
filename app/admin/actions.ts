@@ -1,26 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import { db } from "@/lib/admin-db";
-import {
-  defaultPaymentTerms,
-  dueDateFrom,
-  issuerSnapshot,
-} from "@/lib/invoice";
-import { isSirenOrSiret } from "@/lib/siren";
-import { createInvoicePaymentLink } from "@/lib/stripe";
-import { sendInvoicePaymentEmail } from "@/lib/mail";
-import {
-  formatEuros,
-  INVOICE_COLUMNS,
-  type Invoice,
-  type InvoiceKind,
-  type InvoiceStatus,
-  type OrderStatus,
-  type ProjectStatus,
-} from "@/lib/admin-types";
+// Treize imports de facturation trainaient ici depuis la scission du fichier
+// en actions.ts et actions-facturation.ts : du code mort qui laissait croire
+// que ce module touchait encore aux factures.
+import { type OrderStatus, type ProjectStatus } from "@/lib/admin-types";
 
 /**
  * Mutations du back-office - activite commerciale.

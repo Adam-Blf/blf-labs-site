@@ -69,8 +69,8 @@ export default function MentionsPage() {
         propriété de son éditeur, à l&rsquo;exception des marques et des
         réalisations citées, qui restent la propriété de leurs titulaires
         respectifs. Les pictogrammes proviennent d&rsquo;Icons8. Les polices de
-        caractères Space Grotesk et Space Mono sont distribuées sous licence SIL
-        Open Font.
+        caractères Archivo, Bricolage Grotesque, Hanken Grotesk, Instrument Serif
+        et Outfit sont distribuées sous licence SIL Open Font.
       </p>
 
       <h2 className="title">Données personnelles</h2>

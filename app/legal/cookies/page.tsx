@@ -55,10 +55,6 @@ export default function CookiesPage() {
         n&rsquo;est pas le mode « consentement refusé » de Google, qui
         télécharge quand même sa bibliothèque.
       </p>
-      <p>
-        La carte de la zone d&rsquo;intervention, fournie par Google Maps, suit
-        la même règle et ne se charge qu&rsquo;au clic.
-      </p>
       <ul>
         <li>
           <strong>Finalité</strong> : compter les visites et savoir quelles

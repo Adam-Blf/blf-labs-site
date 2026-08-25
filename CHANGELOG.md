@@ -6,7 +6,152 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
-## 0.20.0 - 2026-08-20
+## 0.25.0 - 2026-08-25
+
+### Ajoute
+
+- **Un moteur d'emailing automatise, avec deux regimes juridiques separes par la
+  base.** Le regime `optin` couvre les personnes qui ont coche une case dediee,
+  article 6.1.a du RGPD. Le regime `b2b_generique` ne vaut que pour l'adresse
+  generique d'une personne morale immatriculee, article L.34-5 du CPCE. Une
+  contrainte `CHECK` refuse une adresse nominative en regime professionnel, et
+  exige un SIREN : un independant ou une profession liberale est une personne
+  physique, et la base l'empeche d'etre traite autrement, sans dependre de
+  l'attention de celui qui importe un fichier.
+- **Trois sequences, dans `content/emails/sequences.ts`.** Le suivi d'une demande
+  de devis, trois relances puis cloture, sur la base de l'article 6.1.b : ce
+  n'est pas de la prospection, aucune case n'est requise, et c'est la sequence
+  qui rapporte le plus tot. Le carnet du studio, quatre messages d'accueil puis
+  une note par mois, sur consentement. Le premier contact professionnel, deux
+  messages et jamais trois.
+- **La desinscription en un clic**, page `/desinscription` et route
+  `/api/desinscription`, avec les en-tetes `List-Unsubscribe` et
+  `List-Unsubscribe-Post` de la RFC 8058. C'est le bouton natif de Gmail et
+  d'Outlook, celui que les gens utilisent au lieu du bouton « indesirable ».
+  Traitement immediat, pas sous quarante-huit heures : la limite legale est un
+  plafond, pas un objectif.
+- **Le double opt-in** pour les inscriptions faites depuis le pied de page. Sans
+  clic de confirmation, aucune adresse n'entre dans la liste et rien ne part.
+  Le formulaire de commande, lui, porte deja une preuve bien plus solide,
+  formulaire complet et accuse de reception, et n'ajoute pas ce clic.
+- **Un pole « Prospection » dans le back-office**, trois onglets : contacts,
+  envois, retraits. La liste de suppression y est en LECTURE SEULE : une
+  reinscription apres desabonnement a deja coute 250 000 euros a un annonceur
+  devant la CNIL, et la friction est voulue.
+- **Le battement du moteur par GitHub Actions**, toutes les quinze minutes, sur
+  une route gardee par `CRON_SECRET`. Pas par Vercel Cron : le plan Hobby limite
+  une tache planifiee a une execution par jour, alors qu'une sequence a des
+  echeances a l'heure.
+- **Le webhook Resend**, qui retire automatiquement une adresse en cas de
+  plainte ou de rebond definitif. Sans lui, le back-office afficherait
+  « envoye » pour l'eternite, y compris pour une adresse morte.
+- **Le registre des traitements**, `docs/registre-traitements.md`, quatre fiches
+  au titre de l'article 30, plus la regle interne interdisant tout premier email
+  a une adresse achetee ou extraite automatiquement.
+- **Une configuration Vitest**, absente jusqu'ici, et dix-huit tests sur les
+  deux choses qu'on ne verra jamais echouer a l'oeil nu : un jeton falsifie qui
+  passerait, et un message parti sans lien de retrait.
+
+### Modifie
+
+- **Les etudes de cas portent enfin des chiffres**, et seulement des chiffres
+  reellement mesures : poids reel transfere et delai de premiere reponse,
+  chacun avec sa methode et sa date dans le champ `source`. La frequentation et
+  le taux de prise de contact restent absents tant que la mesure d'audience
+  n'est pas branchee.
+- **La politique DMARC est posee** sur `beloucif.com` et `send.beloucif.com`,
+  en `p=none` pour observer avant de sanctionner, par le nouveau script
+  `scripts/setup_dmarc.py`. Sans elle, depuis novembre 2025, Gmail et Yahoo ne
+  classent plus le courrier non conforme en indesirable : ils le rejettent.
+- **La politique de confidentialite ne ment plus.** Elle affirmait que les
+  donnees n'etaient « jamais utilisees pour de la prospection », promesse
+  repetee a quatre endroits du site. Une section « Prospection commerciale »
+  complete la remplace, et le suivi automatise d'une demande de devis y est
+  annonce noir sur blanc, avec son plafond de trois messages.
+- **L'etape 5 du tunnel ne demande plus de quoi facturer.** Elle reclamait
+  raison sociale, SIREN et adresse de facturation complete, tous obligatoires,
+  sur un formulaire de PRISE DE CONTACT : personne ne va chercher son numero
+  SIREN pour demander un devis qu'il n'a pas encore vu. La garde n'a pas
+  disparu, elle a bouge la ou elle a du sens : `issueInvoice` refuse toujours
+  d'emettre une piece a un professionnel sans SIREN valide. Seul le SIREN reste
+  propose, facultatif, avec sa verification de format des la saisie.
+- **La politique cookies decrivait une carte Google Maps retiree le 2026-08-12**,
+  et les mentions legales citaient deux polices non utilisees. Une politique qui
+  decrit un traitement inexistant est une politique fausse.
+- **Le formulaire de commande porte une seconde case, facultative.** La refuser
+  n'empeche rien : un consentement dont le refus bloquerait le service ne serait
+  pas libre au sens de l'article 7.4, donc nul.
+
+### Corrige
+
+- **Une panne passagere arretait DEFINITIVEMENT des sequences.** L'appel a la
+  garde `peut_recevoir` ne distinguait pas un refus d'un echec : sur coupure
+  reseau ou rechargement du cache de schema, la reponse etait nulle, le moteur
+  concluait « envoi non autorise » et arretait tout le lot, avec un motif
+  parfaitement credible dans le back-office. Un echec libere maintenant le
+  verrou et retente au tour suivant.
+- **Le suivi de devis relancait des clients qui venaient de signer.**
+  `orders.email` etait en `text`, sensible a la casse, et l'adresse y est
+  inseree telle qu'elle a ete tapee ; `contacts.email` est en minuscules. Pour
+  quelqu'un ayant tape « Jean@Exemple.fr », la comparaison ne trouvait rien et
+  la sequence continuait. Colonne passee en `citext`, migration `0016`.
+- **Une cle Resend momentanement absente FAISAIT PERDRE le message** au lieu de
+  le retenter : la ligne restait verrouillee sans avancer, et au tour suivant
+  l'unicite du journal faisait sauter l'etape pour toujours. Le moteur ne
+  reserve plus rien sans cle.
+- **Toute erreur d'insertion au journal valait « deja envoye ».** Seul le code
+  `23505`, la violation d'unicite, le signifie desormais.
+- **Le formulaire de commande inscrivait un tiers sans verification.** Cocher la
+  case facultative avec l'adresse de quelqu'un d'autre l'inscrivait en
+  `confirme`, et le premier message partait au battement suivant. Le double
+  opt-in s'applique maintenant a ce chemin comme au pied de page.
+- **La preuve de consentement enregistrait un texte que personne n'avait vu.**
+  Une constante unique servait pour deux formulaires aux libelles differents.
+  Les textes vivent dans `content/consentement.ts`, lus par l'ecran ET par la
+  route, et la politique affiche desormais sa version pour qu'une preuve puisse
+  y etre rattachee.
+- **Le retrait automatique apres trois ans etait promis sans etre implemente.**
+  `last_engagement_at` etait alimente mais jamais lu. Fonction
+  `purge_consentements_caducs`, migration `0017`, appelee a chaque battement.
+- **Une etape affirmait un fait que le moteur ne verifiait pas.** « Le devis
+  envoye la semaine derniere » partait sur un simple minuteur, y compris a des
+  gens n'ayant jamais recu de devis. Les etapes portent une condition d'etat.
+- **Le nom et l'organisation etaient injectes bruts dans le HTML des messages**,
+  alors que la coquille echappe tout le reste. Ils viennent d'un formulaire.
+- **Un evenement Resend en retard faisait regresser un statut** de « Cliqué » a
+  « Délivré ». Les statuts ont un rang, il ne descend plus.
+- **Le piege a robots du formulaire du pied de page n'existait pas** : la route
+  le validait, le composant ne le rendait jamais.
+- **La notification de commande affirmait « TVA non applicable »** pour tout
+  professionnel, deduit d'un champ que le formulaire ne collecte plus.
+- **Deux homoglyphes cyrilliques** U+0435 dans du code, invisibles a l'oeil et
+  a la garde d'encodage, qui cassaient toute recherche sur le mot.
+- **Securite : une fonction de la base etait appelable par n'importe qui.**
+  Toute fonction du schema `public` est exposee par PostgREST a
+  `/rest/v1/rpc/<nom>`, et PostgreSQL accorde l'execution a tous par defaut.
+  `desinscrire`, ecrite en SECURITY DEFINER, s'executait donc pour quiconque
+  portait la cle publiable, laquelle est publique par conception puisqu'elle vit
+  dans le navigateur. Mesure avant correctif : un appel HTTP sans aucun jeton a
+  inscrit une adresse arbitraire dans la liste de suppression, contournant toute
+  la mecanique de jetons signes. `desinscrire` et `peut_recevoir` sont
+  desormais reservees au role de service. La lecon depasse ce projet : une
+  fonction n'est pas privee parce que seul le code serveur l'appelle.
+- **Le piege a robots annoncait a l'automate qu'il avait ete repere.** Le champ
+  invisible etait valide en `max(0)`, donc le remplir faisait echouer la
+  validation et renvoyait 400. Le garde-fou ecrit pour repondre un succes
+  factice n'etait jamais atteint. Le tri se fait maintenant dans la route.
+- **Le CHANGELOG portait trois fois l'entree 0.20.0**, dans le desordre, et rien
+  pour 0.23.0 ni 0.24.0. Les etiquettes ont ete recalees sur les commits qui ont
+  reellement bumpe `package.json`.
+- **Treize imports morts dans `app/admin/actions.ts`**, restes de la scission en
+  `actions-facturation.ts`. Ils laissaient croire que ce module touchait encore
+  aux factures.
+- **Trois pages du back-office supprimees par le regroupement en poles trainaient
+  encore sur le disque**, non suivies par git. Une route reelle gagne sur une
+  redirection : elles masquaient silencieusement les redirections de
+  `next.config.ts`.
+
+## 0.24.0 - 2026-08-20
 
 ### Modifie
 
@@ -44,6 +189,49 @@ est dans les messages de commit et les pull requests.
 - La fonction `db()`, recopiee dans les deux fichiers d'actions, vit dans
   `lib/admin-db.ts` : toutes les mutations doivent passer par le client lie a
   la session pour que RLS applique `is_blf_admin()`.
+## 0.23.0 - 2026-08-20
+
+### Ajoute
+
+- **IndexNow.** Le site annonce desormais ses pages a Bing, Yandex, Seznam et
+  Naver en un seul appel, au lieu d'attendre qu'un robot repasse - ce qui prend
+  des jours, parfois des semaines. `npm run indexnow`, a lancer apres un
+  deploiement.
+
+  Le script lit le plan du site et ne tient AUCUNE liste : une seconde liste
+  divergerait de la premiere des la page suivante, et personne ne s'en
+  apercevrait - le plan resterait juste, l'annonce oublierait les nouveautes.
+
+  Il verifie aussi le fichier de cle AVANT d'annoncer, en nommant l'adresse
+  attendue. C'est la seule erreur vraiment frequente du protocole : sans ce
+  fichier servi a la racine, le moteur repond 403 et l'annonce est perdue sans
+  que rien ne l'explique.
+
+  La cle est publique par construction - le moteur la lit a la racine du site
+  pour verifier qu'on controle le domaine. Elle vit dans le code plutot que
+  dans l'environnement pour rester identique au fichier `public/<cle>.txt` :
+  deux sources separees finiraient par diverger.
+
+  Google ne participe pas a IndexNow. Pour lui, le plan du site et la Search
+  Console restent le seul chemin.
+
+## 0.22.1 - 2026-08-20
+
+### Corrige
+
+- **`npm run lint` analysait tout le disque.** La commande etait `eslint` sans
+  chemin : plus de sept minutes, 116 000 remontees, et donc une commande que
+  personne ne lance. Elle cible desormais `app`, `components` et `lib` - trente
+  secondes, deux avertissements.
+- **Le controle du francais reclamait d'accentuer du CODE.** Il signalait
+  `numero` dans le livre des recettes, c'est-a-dire une propriete TypeScript :
+  l'accentuer aurait casse la compilation, exactement la panne que l'en-tete du
+  script raconte avoir deja subie sur un import. La cause : le filtre
+  `looks_like_code` etait applique aux textes JSX mais pas aux chaines, et
+  l'expression reguliere capturait tout le code separant deux chaines
+  eloignees. Verifie dans les deux sens - le controle ne signale plus le code,
+  et attrape toujours une vraie faute d'accent introduite volontairement.
+
 ## 0.22.0 - 2026-08-20
 
 ### Logos cliquables et pied de page range
@@ -88,49 +276,6 @@ affiche sans obligation :
 - **Telephone personnel** retire des devis et factures : il n'est pas une
   mention obligatoire de facture, et l'e-mail suffit comme contact. Il reste sur
   les mentions legales, ou la loi l'impose.
-
-## 0.19.1 - 2026-08-20
-
-### Corrige
-
-- **`npm run lint` analysait tout le disque.** La commande etait `eslint` sans
-  chemin : plus de sept minutes, 116 000 remontees, et donc une commande que
-  personne ne lance. Elle cible desormais `app`, `components` et `lib` - trente
-  secondes, deux avertissements.
-- **Le controle du francais reclamait d'accentuer du CODE.** Il signalait
-  `numero` dans le livre des recettes, c'est-a-dire une propriete TypeScript :
-  l'accentuer aurait casse la compilation, exactement la panne que l'en-tete du
-  script raconte avoir deja subie sur un import. La cause : le filtre
-  `looks_like_code` etait applique aux textes JSX mais pas aux chaines, et
-  l'expression reguliere capturait tout le code separant deux chaines
-  eloignees. Verifie dans les deux sens - le controle ne signale plus le code,
-  et attrape toujours une vraie faute d'accent introduite volontairement.
-
-## 0.20.0 - 2026-08-20
-
-### Ajoute
-
-- **IndexNow.** Le site annonce desormais ses pages a Bing, Yandex, Seznam et
-  Naver en un seul appel, au lieu d'attendre qu'un robot repasse - ce qui prend
-  des jours, parfois des semaines. `npm run indexnow`, a lancer apres un
-  deploiement.
-
-  Le script lit le plan du site et ne tient AUCUNE liste : une seconde liste
-  divergerait de la premiere des la page suivante, et personne ne s'en
-  apercevrait - le plan resterait juste, l'annonce oublierait les nouveautes.
-
-  Il verifie aussi le fichier de cle AVANT d'annoncer, en nommant l'adresse
-  attendue. C'est la seule erreur vraiment frequente du protocole : sans ce
-  fichier servi a la racine, le moteur repond 403 et l'annonce est perdue sans
-  que rien ne l'explique.
-
-  La cle est publique par construction - le moteur la lit a la racine du site
-  pour verifier qu'on controle le domaine. Elle vit dans le code plutot que
-  dans l'environnement pour rester identique au fichier `public/<cle>.txt` :
-  deux sources separees finiraient par diverger.
-
-  Google ne participe pas a IndexNow. Pour lui, le plan du site et la Search
-  Console restent le seul chemin.
 
 ## 0.19.0 - 2026-08-20
 

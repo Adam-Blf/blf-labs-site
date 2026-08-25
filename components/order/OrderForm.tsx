@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Checkbox, CheckboxCards, RadioCards, TextArea, TextField } from "./fields";
 import { OPTIONS, OPTION_GROUPS } from "@/content/options";
+import { TEXTES_CONSENTEMENT } from "@/content/consentement";
 import { WizardSteps, type WizardStep } from "@/components/ui/WizardSteps";
 import {
   BUDGET_LABELS,
@@ -32,12 +33,8 @@ type Values = {
   company: string;
   companyName: string;
   siren: string;
-  vatNumber: string;
-  billingStreet: string;
-  billingPostalCode: string;
-  billingCity: string;
-  billingCountry: string;
   consent: boolean;
+  prospectionConsent: boolean;
   website: string;
 };
 
@@ -54,14 +51,10 @@ const EMPTY: Values = {
   company: "",
   companyName: "",
   siren: "",
-  vatNumber: "",
-  billingStreet: "",
-  billingPostalCode: "",
-  billingCity: "",
-  // Pre-rempli parce que la quasi-totalite des clients sont francais : c'est
-  // un gain de saisie, pas une contrainte, le champ reste modifiable.
-  billingCountry: "France",
   consent: false,
+  // Jamais pre-coche. Une case cochee par defaut n'est pas un consentement,
+  // c'est un piege, et elle est nulle en droit.
+  prospectionConsent: false,
   website: "",
 };
 
@@ -360,87 +353,55 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
             />
           </div>
 
-          {/* Bloc de facturation, affiche uniquement pour un professionnel.
-              Ces champs sont ceux qu'une facture entre professionnels doit
-              porter, et que le format de facture electronique exige : sans eux,
-              la facture ne peut pas etre emise correctement. */}
+          {/* CE BLOC NE DEMANDE PLUS DE QUOI FACTURER, et c'est delibere.
+
+              Il reclamait raison sociale, SIREN et adresse de facturation
+              complete, tous obligatoires, sur un formulaire de PRISE DE
+              CONTACT. Personne ne va chercher son numero SIREN pour demander un
+              devis qu'il n'a pas encore vu : c'etait la friction la plus
+              couteuse du site, un formulaire de facturation deguise.
+
+              Ces informations sont maintenant demandees a l'emission du devis,
+              la ou elles servent, et la garde vit dans `issueInvoice` : une
+              piece legale ne peut toujours pas partir sans SIREN valide. La
+              regle n'a pas disparu, elle a bouge la ou elle a du sens.
+
+              Le SIREN reste propose ici, facultatif, parce qu'un professionnel
+              qui l'a sous la main fait gagner un aller-retour. Son FORMAT est
+              verifie des la saisie : un numero faux doit se voir tout de suite,
+              pas trois semaines plus tard sur une facture. */}
           {values.customerType === "entreprise" && (
             <fieldset className="blk-flat bg-surface p-6">
               <legend className="title px-2 text-lg">
-                Informations de facturation
+                Facturation, si vous les avez sous la main
               </legend>
               <p className="mt-2 text-sm text-muted">
-                Obligatoires sur une facture professionnelle. Elles ne servent
-                qu&rsquo;à établir le devis puis la facture.
+                Rien d&rsquo;obligatoire ici. Ces informations seront demandées
+                au moment du devis, elles ne servent qu&rsquo;à établir la pièce
+                comptable.
               </p>
 
               <div className="mt-6 space-y-6">
                 <TextField
                   id="companyName"
                   label="Raison sociale"
+                  optional
                   value={values.companyName}
                   onChange={(value) => set("companyName", value)}
                   error={errors.companyName}
                   autoComplete="organization"
                 />
 
-                <div className="grid gap-6 sm:grid-cols-2">
-                  <TextField
-                    id="siren"
-                    label="SIREN ou SIRET"
-                    placeholder="123 456 789"
-                    value={values.siren}
-                    onChange={(value) => set("siren", value)}
-                    onBlur={() => validateField("siren")}
-                    error={errors.siren}
-                  />
-                  <TextField
-                    id="vatNumber"
-                    label="TVA intracommunautaire"
-                    placeholder="FR12345678901"
-                    optional
-                    value={values.vatNumber}
-                    onChange={(value) => set("vatNumber", value)}
-                    onBlur={() => validateField("vatNumber")}
-                    error={errors.vatNumber}
-                  />
-                </div>
-
                 <TextField
-                  id="billingStreet"
-                  label="Adresse de facturation"
-                  value={values.billingStreet}
-                  onChange={(value) => set("billingStreet", value)}
-                  error={errors.billingStreet}
-                  autoComplete="street-address"
+                  id="siren"
+                  label="SIREN ou SIRET"
+                  placeholder="123 456 789"
+                  optional
+                  value={values.siren}
+                  onChange={(value) => set("siren", value)}
+                  onBlur={() => validateField("siren")}
+                  error={errors.siren}
                 />
-
-                <div className="grid gap-6 sm:grid-cols-3">
-                  <TextField
-                    id="billingPostalCode"
-                    label="Code postal"
-                    value={values.billingPostalCode}
-                    onChange={(value) => set("billingPostalCode", value)}
-                    error={errors.billingPostalCode}
-                    autoComplete="postal-code"
-                  />
-                  <TextField
-                    id="billingCity"
-                    label="Ville"
-                    value={values.billingCity}
-                    onChange={(value) => set("billingCity", value)}
-                    error={errors.billingCity}
-                    autoComplete="address-level2"
-                  />
-                  <TextField
-                    id="billingCountry"
-                    label="Pays"
-                    value={values.billingCountry}
-                    onChange={(value) => set("billingCountry", value)}
-                    error={errors.billingCountry}
-                    autoComplete="country-name"
-                  />
-                </div>
               </div>
             </fieldset>
           )}
@@ -465,13 +426,37 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
             error={errors.consent}
           >
             J&rsquo;accepte que ces informations soient utilisées pour répondre à
-            ma demande. Elles ne sont ni revendues ni utilisées pour de la
-            prospection. Voir la{" "}
+            ma demande. Elles ne sont ni revendues, ni transmises à des tiers à
+            des fins commerciales. Voir la{" "}
             <Link href="/legal/confidentialite" className="underline">
               politique de confidentialité
             </Link>
             .
           </Checkbox>
+
+          {/* SECONDE case, distincte de la premiere, et facultative.
+              La premiere autorise a traiter la demande, article 6.1.b du RGPD.
+              Celle-ci autorise la prospection, article 6.1.a. Les confondre
+              serait un detournement de finalite, article 5.1.b, et un
+              consentement dont le refus bloquerait l'envoi de la demande ne
+              serait pas libre, article 7.4, donc nul. La refuser n'empeche
+              rien du tout. */}
+          <div className="mt-5">
+            <Checkbox
+              id="prospectionConsent"
+              checked={values.prospectionConsent}
+              onChange={(checked) => set("prospectionConsent", checked)}
+              error={errors.prospectionConsent}
+            >
+              {/*
+                Le libelle vient de content/consentement.ts, le MEME objet que
+                la route recopie dans la preuve de consentement. Ecrire la
+                phrase ici en dur laissait les deux diverger, et c'est la preuve
+                qui devenait fausse.
+              */}
+              {TEXTES_CONSENTEMENT.formulaire_commande}
+            </Checkbox>
+          </div>
         </div>
       ),
     },

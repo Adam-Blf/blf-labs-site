@@ -74,8 +74,9 @@ export default function RendezVousPage() {
             </a>
 
             <p className="mt-6 text-sm text-muted">
-              Gratuit, sans engagement, et sans relance commerciale si vous ne
-              donnez pas suite.
+              Gratuit et sans engagement. Si vous ne donnez pas suite, vous
+              recevez au plus trois messages de suivi sur votre demande, puis
+              plus rien.
             </p>
           </div>
         </section>
