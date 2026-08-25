@@ -156,8 +156,21 @@ Les emails partent du domaine `beloucif.com` verifie chez Resend (region
 Irlande). Trois enregistrements sont necessaires, poses automatiquement dans la
 zone OVH :
 
-- `TXT resend._domainkey` : signature DKIM
+- `TXT resend._domainkey` : signature DKIM, sur la RACINE
 - `MX send` et `TXT send` : chemin de retour et SPF, **sur le sous-domaine**
+- `TXT _dmarc` et `TXT _dmarc.send` : politique DMARC, posee par
+  `scripts/setup_dmarc.py`
+
+La cle DKIM est sur la racine et le chemin de retour sur `send` : c'est le
+montage standard de Resend, pas une incoherence. L'alignement DMARC tient
+quand meme, en mode relache, parce que les deux partagent le meme domaine
+organisationnel.
+
+DMARC est en `p=none` : on observe avant de sanctionner. Une politique stricte
+posee d'emblee sur un domaine qui envoie deja des factures ferait disparaitre
+sans preavis les messages qu'on aurait mal configures. Passage a
+`p=quarantine` apres deux semaines de rapports propres, une ligne a changer
+dans le script.
 
 Ce point compte : Resend place son SPF sur `send`, pas sur la racine. Les
 enregistrements MX de `beloucif.com` restent donc intacts et la boite
@@ -228,6 +241,7 @@ Tout asset genere a son script reproductible, aucun n&rsquo;embarque de secret :
 | `scripts/fetch_icons.py` | Recupere les pictogrammes Icons8 et les convertit en composants React |
 | `scripts/ovh_dns.py` | Consulte et modifie la zone DNS de beloucif.com |
 | `scripts/setup_email_dns.py` | Lit les enregistrements exiges par Resend et les pose chez OVH, de facon idempotente |
+| `scripts/setup_dmarc.py` | Pose la politique DMARC de la zone, en simulation par defaut, `--apply` pour ecrire |
 | `scripts/check_encoding.py` | Garde : UTF-8 propre, sans BOM ni mojibake. Executee en CI |
 | `scripts/check_french.py` | Garde : accents manquants dans le texte visible. `--fix` pour appliquer. Executee en CI |
 | `scripts/clean_svg.py` | Retire les metadonnees des SVG exportes de Canva |
