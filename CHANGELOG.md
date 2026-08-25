@@ -6,6 +6,45 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.30.1 - 2026-08-26
+
+### Ajoute
+
+- **Une garde sur le contenu des conditions generales.** Quatorze mentions
+  exigees par un texte et deux formulations interdites sont desormais
+  verifiees. Ce qu'elle protege : une mention retiree par inadvertance d'un
+  contrat n'echoue NULLE PART - le typecheck passe, le lint passe, le build
+  passe, la page s'affiche. Rien ne proteste. Seul un test qui cherche la
+  mention la voit disparaitre.
+
+### Note de methode
+
+Cette garde a d'abord ete ecrite autrement : elle rendait le composant de la
+page en balisage pour generer un PDF des conditions generales depuis la meme
+source, afin qu'aucune divergence ne soit possible entre le document remis et
+la page. **Le typecheck passait, le build a echoue** - `react-dom/server` est
+interdit dans une route d'application Next. Deuxieme fois que le meme piege se
+paie : seul le build applique les regles du framework.
+
+La tentative a ete retiree entierement plutot que laissee en l'etat. Le PDF
+reste a produire, par extraction du texte en donnees lues par la page ET par le
+PDF, et c'est ecrit comme tache plutot que garde en dette.
+
+Deux defauts de la garde elle-meme, trouves en la cassant volontairement et non
+en la relisant : une phrase coupee par un retour a la ligne dans le JSX rendait
+introuvable un texte pourtant present, et une mention vivant dans une constante
+partagee echappait a une recherche limitee a la page.
+
+### Verifie, et rien a changer
+
+- **La mention de franchise de TVA reste valable.** L'ordonnance n° 2025-1247
+  devait basculer les regles de TVA du CGI vers le Code des impositions sur les
+  biens et services au 1er septembre 2026 ; l'ordonnance n° 2026-671 du
+  27 juillet 2026 a reporte cette date au **1er janvier 2027**, et une tolerance
+  sur les renvois au CGI court jusqu'au **30 juin 2028**. La formule actuelle est
+  la seule couverte par la doctrine publiee : ecrire une reference au nouveau
+  code des maintenant citerait un article pas encore en vigueur.
+
 ## 0.30.0 - 2026-08-25
 
 ### Ajoute
