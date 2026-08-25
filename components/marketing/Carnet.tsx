@@ -130,13 +130,13 @@ export function Carnet({ source = "pied_de_page" }: { source?: SourceConsentemen
       <button
         type="submit"
         disabled={!accord || etat === "envoi"}
-        className="blk-sm bg-accent px-4 py-2 text-sm font-semibold text-ink disabled:opacity-40"
+        className="blk-sm bg-accent px-4 py-2 text-sm font-semibold text-accent-ink disabled:opacity-40"
       >
         {etat === "envoi" ? "Envoi..." : "S'inscrire"}
       </button>
 
       {etat === "erreur" && (
-        <p role="alert" className="text-xs text-support-ink">
+        <p role="alert" className="blk-sm bg-support px-3 py-2 text-xs text-support-ink">
           {message}
         </p>
       )}

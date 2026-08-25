@@ -41,10 +41,14 @@ export function Methode() {
             <li key={etape.title} className="glass flex flex-col gap-4 p-8">
               {/* Filet colore en tete de carte : marque le rythme sans
                   recourir a un chiffre. */}
-              <span
-                aria-hidden="true"
-                className="h-px w-10 bg-gradient-to-r from-orange to-rose"
-              />
+              {/*
+                Filet en couleur d'accent, pas en degrade. `from-orange to-rose`
+                figurait ici et ne rendait RIEN : ni `orange` ni `rose` n'est
+                declare dans `@theme`, et themes.css precise que cette direction
+                chaude a ete abandonnee. Une classe Tailwind qui nomme un jeton
+                inexistant n'emet aucune regle et ne leve aucune erreur.
+              */}
+              <span aria-hidden="true" className="h-px w-10 bg-accent" />
               <h3 className="title text-xl sm:text-2xl">{etape.title}</h3>
               <p className="text-sm font-light leading-relaxed text-muted">
                 {etape.body}

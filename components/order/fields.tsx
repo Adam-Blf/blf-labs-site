@@ -15,10 +15,26 @@ import { motion, useReducedMotion } from "framer-motion";
  * cibles tactiles est de 44 px.
  */
 
+/**
+ * Message d'erreur d'un champ.
+ *
+ * Le citron ne s'ecrit JAMAIS en couleur de texte. `--support` vaut `#d9fb50`
+ * et `--paper` vaut `#f7f7fa` en clair : le rapport de contraste tombe a
+ * environ 1,3 pour 1, donc tous les messages d'erreur de ce formulaire etaient
+ * illisibles en mode clair. themes.css le dit deja, la couleur de tension
+ * s'emploie par petites touches et en APLAT, jamais en aplat large ni en texte.
+ *
+ * Un aplat citron avec son encre noire invariante donne un contraste eleve dans
+ * les deux modes, et il se distingue d'un simple texte gris.
+ */
 export function FieldError({ id, message }: { id: string; message?: string }) {
   if (!message) return null;
   return (
-    <p id={id} role="alert" className="mt-2 text-sm font-medium text-support">
+    <p
+      id={id}
+      role="alert"
+      className="blk-sm mt-2 inline-block bg-support px-3 py-1.5 text-sm font-medium text-support-ink"
+    >
       {message}
     </p>
   );
@@ -129,7 +145,7 @@ export function TextArea({
         <FieldError id={errorId} message={error} />
         <span
           className={`tabular mono ml-auto shrink-0 text-xs ${
-            belowMin || nearMax ? "text-support" : "text-muted"
+            belowMin || nearMax ? "text-muted-strong" : "text-muted"
           }`}
         >
           {compteur}

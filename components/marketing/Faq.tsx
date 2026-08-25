@@ -51,7 +51,7 @@ export function Faq() {
                       aria-hidden="true"
                       animate={{ rotate: open ? 45 : 0 }}
                       transition={{ duration: 0.2 }}
-                      className="shrink-0 text-support"
+                      className="shrink-0 text-accent"
                     >
                       <svg
                         viewBox="0 0 24 24"

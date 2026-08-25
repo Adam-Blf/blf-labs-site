@@ -45,10 +45,16 @@ export function OffreGrid() {
                 href={`/offre/${offre.slug}`}
                 className="glass group relative overflow-hidden p-8 transition-transform duration-300 hover:scale-[1.02] sm:p-10"
               >
-                {/* Quart de disque colore, dans l'angle de la carte. */}
+                {/*
+                  Quart de disque colore, dans l'angle de la carte.
+                  Il etait ecrit `from-orange/25`, une couleur qui n'existe pas
+                  dans `@theme` : Tailwind n'emettait aucune regle, le decor
+                  etait invisible depuis toujours et rien ne le signalait.
+                  Repose sur la couleur d'accent, qui elle est declaree.
+                */}
                 <span
                   aria-hidden="true"
-                  className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-gradient-to-br from-orange/25 to-transparent blur-2xl transition-opacity duration-500 group-hover:opacity-80"
+                  className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-gradient-to-br from-accent/25 to-transparent blur-2xl transition-opacity duration-500 group-hover:opacity-80"
                 />
 
                 <div className="relative z-10">

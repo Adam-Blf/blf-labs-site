@@ -78,7 +78,7 @@ export default async function DesinscriptionPage({
                 <input type="hidden" name="jeton" value={jeton ?? ""} />
                 <button
                   type="submit"
-                  className="blk bg-accent px-6 py-3 font-semibold text-ink"
+                  className="blk bg-accent px-6 py-3 font-semibold text-accent-ink"
                 >
                   Retirer mon adresse
                 </button>
