@@ -12,6 +12,21 @@ export default function CgvPage() {
       <h1 className="title text-4xl md:text-5xl">
         Conditions générales de vente
       </h1>
+      {/*
+        Une page web n'est pas un support durable : la Cour de justice l'a juge
+        dans l'affaire Content Services (C-49/11), une information simplement
+        accessible par lien sur le site du professionnel n'est ni adressee
+        personnellement ni protegee contre une modification unilaterale.
+
+        Dater et versionner ne suffit donc pas a purger l'article L. 441-1, II
+        du Code de commerce, mais c'est le prealable : sans date, on ne peut pas
+        savoir QUELLE version le client avait sous les yeux. Le PDF joint au
+        devis reste a produire.
+      */}
+      <p className="text-sm text-muted">
+        Version du 25 août 2026. Les versions antérieures restent disponibles
+        sur demande.
+      </p>
       <p>
         Ces conditions s&rsquo;appliquent aux prestations de développement
         fournies par {SITE.legalMention}. Les coordonnées complètes figurent
@@ -46,9 +61,60 @@ export default function CgvPage() {
         seuls clients professionnels.
       */}
       <p>
-        Les prix sont exprimés en euros. {SITE.vat}. Sauf mention différente au
-        devis, le règlement intervient à trente jours à compter de la date de
-        facture.
+        Les prix sont exprimés en euros. {SITE.vat} : les montants annoncés sont
+        nets, aucune taxe ne s&rsquo;y ajoute. Sauf mention différente au devis,
+        le règlement intervient à trente jours à compter de la date de facture.
+      </p>
+      {/*
+        L'article L. 441-1, I du Code de commerce exige que des conditions
+        generales de vente comportent « les elements de determination du prix
+        tels que le bareme des prix unitaires ». Le document n'en portait aucun :
+        un texte intitule CGV sans element de prix ne satisfait pas ce texte.
+        Et le II du meme article rend leur communication obligatoire a tout
+        acheteur professionnel qui en fait la demande, sur support durable.
+
+        Le III prevoit exactement le cas d'une prestation dont le prix ne peut
+        pas etre determine a priori : c'est alors la METHODE de calcul qui se
+        communique, ou un devis suffisamment detaille. C'est ce que fait le
+        paragraphe ci-dessous, en renvoyant a la page des budgets qui porte le
+        plancher, ce qu'il couvre et ce qui le fait monter.
+      */}
+      <p>
+        <strong>Éléments de détermination du prix.</strong> Les prestations sont
+        établies sur devis. Le prix se compose d&rsquo;un forfait de création,
+        calculé à partir du périmètre fonctionnel retenu, et le cas échéant
+        d&rsquo;un abonnement de maintenance facturé mensuellement.
+      </p>
+      <p>
+        La création d&rsquo;un site de présentation part de <strong>600 €</strong>.
+        La création d&rsquo;un site comportant une prise de rendez-vous, un
+        paiement en ligne, un espace personnel ou un back-office sur mesure part
+        de <strong>1 300 €</strong>. Ces montants sont des prix totaux à payer :
+        la taxe sur la valeur ajoutée n&rsquo;est pas applicable et aucune taxe
+        ne s&rsquo;y ajoute. Ils ne comprennent pas le nom de domaine, son
+        renouvellement, l&rsquo;hébergement, la rédaction des contenus,
+        l&rsquo;identité visuelle, la reprise d&rsquo;un site existant, le
+        référencement éditorial, la formation à l&rsquo;édition ni la
+        maintenance, qui font chacun l&rsquo;objet d&rsquo;une ligne chiffrée
+        distincte au devis.
+      </p>
+      <p>
+        Le prix est calculé à partir du nombre de gabarits d&rsquo;écran
+        distincts, de la charge de reprise ou de production des contenus, du
+        nombre et de la difficulté des connexions à des outils existants, et du
+        niveau d&rsquo;exigence sur les données. Pour les applications web, les
+        applications mobiles et les traitements de données, aucun prix de départ
+        n&rsquo;est publié faute de projet livré dans ces familles : le prix y
+        résulte d&rsquo;un taux de <strong>30 € de l&rsquo;heure</strong>
+        multiplié par le nombre d&rsquo;heures estimé au cadrage, détaillé poste
+        par poste dans le devis.
+      </p>
+      <p>
+        Les présentes conditions générales, y compris ces éléments de prix, sont
+        jointes à chaque devis et adressées au format PDF, sur simple demande, à
+        tout client agissant pour une activité professionnelle. Les prix
+        indiqués sont ceux en vigueur à la date figurant en tête des présentes ;
+        seul le devis signé fixe le prix, le périmètre et le calendrier.
       </p>
       <p>
         <strong>Entre professionnels uniquement.</strong> Conformément aux
@@ -69,11 +135,46 @@ export default function CgvPage() {
       </p>
 
       <h2 className="title">5. Propriété intellectuelle</h2>
+      {/*
+        L'article L. 131-3 du Code de la propriete intellectuelle subordonne la
+        transmission des droits d'auteur a la mention DISTINCTE de chaque droit
+        cede, et a la delimitation du domaine d'exploitation quant a son
+        etendue, sa destination, son lieu et sa duree.
+
+        La version precedente disait « les droits sur les livrables specifiques
+        sont cedes au client au paiement integral du prix » : aucun droit
+        mentionne distinctement, aucune delimitation. La jurisprudence est
+        divisee sur l'application de ce formalisme au logiciel, donc la clause
+        n'etait pas nulle - elle etait PLAIDABLE, et le risque se retournait
+        contre le client, qui n'aurait pas obtenu ce que la page lui promettait.
+
+        Trois lignes de plus suppriment le debat.
+      */}
       <p>
-        Les droits sur les livrables spécifiques sont cédés au client au
-        paiement intégral du prix. Les composants génériques et les
-        bibliothèques tierces restent régis par leurs licences respectives. Le
-        prestataire conserve le droit de citer la prestation à titre de
+        Au paiement intégral du prix, le prestataire cède au client, à titre
+        exclusif, les droits de reproduction, de représentation,
+        d&rsquo;adaptation, de modification et de diffusion portant sur les
+        développements spécifiques réalisés pour lui au titre du devis signé,
+        sur tout support numérique existant à la date de la livraison, pour le
+        monde entier et pour la durée légale de protection des droits
+        d&rsquo;auteur. Cette cession comprend expressément le droit de faire
+        modifier, maintenir ou reprendre ces développements par tout tiers de
+        son choix, sans autorisation ni redevance.
+      </p>
+      <p>
+        Tant que le prix n&rsquo;est pas intégralement réglé, aucun droit
+        n&rsquo;est cédé et l&rsquo;usage des livrables n&rsquo;est autorisé
+        qu&rsquo;à des fins de recette.
+      </p>
+      <p>
+        La cession ne porte pas sur les composants génériques, bibliothèques et
+        briques logicielles tierces intégrés au livrable, qui restent régis par
+        leurs licences respectives. Le prestataire garantit que ces licences
+        autorisent le client à utiliser, modifier et diffuser le livrable sans
+        redevance et sans limitation de durée.
+      </p>
+      <p>
+        Le prestataire conserve le droit de citer la prestation à titre de
         référence, sauf demande contraire écrite du client.
       </p>
 

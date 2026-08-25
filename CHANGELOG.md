@@ -6,6 +6,63 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.30.0 - 2026-08-25
+
+### Ajoute
+
+- **Les prix sont publies.** `content/tarifs.ts` etait volontairement vide
+  depuis le premier jour ; il porte desormais un plancher reel sur `sites-web`,
+  seule famille ou des projets ont ete livres. Deux methodes independantes y
+  sont arrivees sans partager la moindre donnee d'entree, et le montant final
+  est une decision assumee, pas le resultat d'un calcul.
+- **Le taux horaire est publie** pour les trois familles sans plancher.
+  L'article L112-3 du Code de la consommation impose un mode de calcul pour
+  TOUTE prestation dont le prix n'est pas calculable a l'avance, pas seulement
+  pour celles ou l'on a une reference. Quatre facteurs qualitatifs ne
+  permettent pas de verifier un prix ; un taux horaire, si. C'est un taux
+  HORAIRE et non journalier, deliberement : le studio ne travaille pas en
+  journees, et annoncer « cinq jours » pour ce qui prend cinq semaines
+  calendaires serait un mensonge sur le calendrier.
+
+### Corrige
+
+- **Le site annoncait le nom de domaine parmi ce qui est inclus.** Sur la page
+  des budgets, sous un titre « Ce qui est inclus », et dans le pied de page de
+  CHAQUE page du site. Or `content/options.ts` le facture. La phrase voulait
+  dire que le domaine est mis AU NOM du client, pas qu'il est offert : elle se
+  lisait comme le contraire. L'article 3 de l'arrete du 3 decembre 1987 impose
+  d'indiquer explicitement ce qu'un prix ne comprend pas des lors que c'est
+  indispensable a la finalite du service, et un nom de domaine l'est.
+- **« Nets de TVA » disait l'inverse de ce qu'on voulait dire.** La formule
+  avait ete choisie pour eviter « HT », qui suggere une taxe a venir alors
+  qu'il n'y en a aucune en franchise de base. Mais dans l'usage commercial,
+  « net de TVA » signifie DEDUCTION FAITE de la TVA, donc hors taxes. La
+  qualification est maintenant ecrite en clair.
+- **La clause de propriete intellectuelle etait plaidable.** L'article L. 131-3
+  du Code de la propriete intellectuelle exige la mention DISTINCTE de chaque
+  droit cede et la delimitation du domaine d'exploitation quant a l'etendue, la
+  destination, le lieu et la duree. « Les droits sur les livrables specifiques
+  sont cedes » n'en portait aucune. Le risque se retournait contre le client,
+  qui n'aurait pas obtenu ce que la page lui promettait.
+- **Les CGV ne portaient aucun element de prix**, ce qu'exige l'article
+  L. 441-1, I du Code de commerce. Le renvoi vers une page ne suffisait pas :
+  l'article 3 porte desormais les montants eux-memes.
+- **Les mentions substantielles de l'invitation a l'achat manquaient.** Des
+  qu'une page mentionne un prix et les caracteristiques d'un service,
+  l'article L121-3 rend substantielles l'identite du vendeur, les modalites de
+  paiement et l'existence du droit de retractation. Leur omission est une
+  pratique trompeuse.
+- **Les CGV sont datees et versionnees.** Sans date, impossible de savoir
+  quelle version le client avait sous les yeux.
+
+### Note de methode
+
+La premiere version de ce lot a ete refusee par l'audit juridique avant fusion,
+et le defaut le plus grave qu'il a trouve n'etait pas dans ce qu'on ajoutait :
+il etait DEJA EN LIGNE depuis des semaines, dans le pied de page de chaque
+page. Publier un prix a servi de revelateur, parce que cela oblige a relire ce
+que le site promet deja.
+
 ## 0.29.0 - 2026-08-25
 
 ### Corrige

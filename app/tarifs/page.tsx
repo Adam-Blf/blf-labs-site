@@ -4,8 +4,9 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { CtaBand } from "@/components/marketing/CtaBand";
 import { Breadcrumb } from "@/components/seo/Breadcrumb";
-import { FOURCHETTES } from "@/content/tarifs";
+import { FOURCHETTES, TAUX_HORAIRE } from "@/content/tarifs";
 import { OFFRE_BY_SLUG } from "@/content/offres";
+import { SITE } from "@/lib/site";
 
 /**
  * Budgets et delais.
@@ -105,16 +106,93 @@ export default function TarifsPage() {
                       <p className="tabular title text-3xl text-accent">
                         {fourchette.plancher}
                       </p>
+                      <p className="text-sm text-muted">
+                        {fourchette.mention_prix}
+                      </p>
                       <p className="leading-relaxed text-muted">
                         {fourchette.couvre}
                       </p>
                       <p className="text-sm text-muted">
                         Ce qui fait monter : {fourchette.fait_monter}
                       </p>
+                      <p className="text-sm text-muted">
+                        {fourchette.hors_forfait}
+                      </p>
+                      <p className="text-sm text-muted">
+                        {fourchette.date_effet}
+                      </p>
                     </li>
                   );
                 })}
               </ul>
+
+              {/*
+                LES TROIS FAMILLES SANS PLANCHER.
+
+                L'article L112-3 du Code de la consommation impose un mode de
+                calcul pour TOUTE prestation dont le prix n'est pas calculable a
+                l'avance, pas seulement pour celles ou l'on a une reference
+                livree. Quatre facteurs qualitatifs decrivent ce qui fait bouger
+                un prix ; ils ne permettent pas de le VERIFIER.
+
+                La sortie n'est pas d'inventer trois planchers, ce que
+                content/tarifs.ts interdit. C'est de publier l'unite de
+                facturation : un taux horaire est une DECISION, pas une
+                extrapolation, et il se verifie.
+              */}
+              <div className="mt-12">
+                <h3 className="title text-2xl">Les autres prestations</h3>
+                <p className="mt-6 max-w-2xl leading-relaxed text-muted">
+                  Les applications web, les applications mobiles et les
+                  traitements de données ne portent pas de prix de départ, et
+                  c&rsquo;est volontaire : aucun projet de ces familles
+                  n&rsquo;a encore été livré, et publier un chiffre sans rien
+                  derrière serait une promesse que le premier devis
+                  contredirait.
+                </p>
+                <p className="mt-4 max-w-2xl leading-relaxed text-muted">
+                  Leur prix se calcule de la même façon dans tous les cas :{" "}
+                  <strong className="text-ink">
+                    {TAUX_HORAIRE} de l&rsquo;heure
+                  </strong>
+                  , multiplié par le nombre d&rsquo;heures estimé lors du
+                  cadrage, auquel s&rsquo;ajoutent les postes facturés à part
+                  listés plus haut. Le cadrage est présenté avant tout
+                  engagement et détaille les heures poste par poste, pour que
+                  vous puissiez refaire le calcul vous-même. Ce montant est un
+                  prix total : la TVA n&rsquo;est pas applicable et rien ne
+                  s&rsquo;y ajoute.
+                </p>
+              </div>
+
+              {/*
+                MENTIONS SUBSTANTIELLES DE L'INVITATION A L'ACHAT.
+
+                Des lors qu'une communication commerciale mentionne un prix et
+                les caracteristiques du service, l'article L121-3 rend
+                substantielles cinq informations, dont l'identite du vendeur,
+                les modalites de paiement lorsqu'elles s'ecartent des usages, et
+                l'existence du droit de retractation. Leur omission est une
+                pratique commerciale trompeuse. Elles etaient absentes.
+              */}
+              <div className="blk-flat mt-12 p-6 text-sm leading-relaxed text-muted">
+                <p>
+                  <strong className="text-ink">
+                    Qui vend, comment on paie, comment on annule.
+                  </strong>{" "}
+                  Ces prestations sont vendues par {SITE.legalMention},{" "}
+                  {SITE.email}. Le contrat se forme à la signature du devis,
+                  accompagnée de l&rsquo;acompte qui y figure ; le solde est dû
+                  à trente jours à compter de la facture.
+                </p>
+                <p className="mt-3">
+                  Si vous êtes un particulier et que le devis est signé à
+                  distance, vous disposez d&rsquo;un délai de quatorze jours
+                  pour vous rétracter. Le formulaire à recopier figure dans les{" "}
+                  <a href="/legal/cgv">conditions générales de vente</a>, qui
+                  vous sont adressées avec chaque devis.
+                </p>
+              </div>
             </div>
           </section>
         )}
@@ -147,7 +225,7 @@ export default function TarifsPage() {
             <ul className="mt-10 space-y-4">
               {[
                 "La maquette validée avant la première ligne de code.",
-                "Le code, le nom de domaine et les accès livrés à votre nom.",
+                "Le code et les accès livrés à votre nom, et cédés au paiement intégral.",
                 "Les pages légales et la conformité RGPD dès la mise en ligne.",
                 "Le référencement technique et les données structurées.",
                 "La documentation nécessaire pour qu'un autre développeur reprenne.",
@@ -160,6 +238,27 @@ export default function TarifsPage() {
                 </li>
               ))}
             </ul>
+
+            {/*
+              L'article 3 de l'arrete du 3 decembre 1987 impose d'indiquer
+              EXPLICITEMENT ce que le prix annonce ne comprend pas, des lors
+              qu'il s'agit d'un element indispensable a la finalite du service.
+              Un nom de domaine et un hebergement sont indispensables a un site.
+
+              La liste ci-dessus disait « le code, le nom de domaine et les
+              acces livres a votre nom », sous un titre « Ce qui est inclus »,
+              alors que content/options.ts facture le nom de domaine. La phrase
+              voulait dire que le domaine est mis AU NOM du client, pas qu'il
+              est offert : elle se lisait comme le contraire.
+            */}
+            <p className="mt-8 max-w-2xl leading-relaxed text-muted">
+              Le nom de domaine et l&rsquo;hébergement ne sont pas compris dans
+              ce montant, alors qu&rsquo;ils sont nécessaires pour qu&rsquo;un
+              site soit en ligne. Lorsque vous nous les confiez, ils sont ouverts
+              à votre nom, jamais au nôtre, et vous en gardez les accès. Ils
+              figurent au devis sur une ligne chiffrée à part, comme la rédaction
+              des contenus, l&rsquo;identité visuelle et la maintenance.
+            </p>
 
             <p className="mt-10 max-w-2xl leading-relaxed text-muted">
               L&rsquo;hébergement, les licences tierces et la maintenance après
