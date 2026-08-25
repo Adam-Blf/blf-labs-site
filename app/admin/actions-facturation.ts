@@ -1,25 +1,17 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/admin-db";
+import { generatePaymentLink } from "@/app/admin/actions-paiement";
 import {
   defaultPaymentTerms,
   dueDateFrom,
   issuerSnapshot,
+  validerDateEncaissement,
 } from "@/lib/invoice";
 import { isSirenOrSiret } from "@/lib/siren";
-import { createInvoicePaymentLink } from "@/lib/stripe";
-import { sendInvoicePaymentEmail } from "@/lib/mail";
-import {
-  formatEuros,
-  INVOICE_COLUMNS,
-  type Invoice,
-  type InvoiceKind,
-  type InvoiceStatus,
-} from "@/lib/admin-types";
-
+import type { InvoiceKind, InvoiceStatus } from "@/lib/admin-types";
 
 /**
  * Mutations du back-office - devis, factures et paiements.
@@ -193,8 +185,19 @@ export async function removeInvoiceLine(lineId: string, invoiceId: string) {
  * Emet le document : attribue un numero legal (sequentiel, sans trou, via la
  * fonction en base), fige l'identite de l'emetteur, pose la date et l'echeance,
  * et verrouille la piece (statut envoye). N'agit que sur un brouillon.
+ *
+ * POURQUOI CETTE FONCTION REND UN ETAT AU LIEU DE LEVER. Ses refus ne sont pas
+ * des pannes : ce sont des reponses attendues, adressees a la personne qui vient
+ * de cliquer, et qui peut y remedier en remplissant un champ. Une exception,
+ * elle, remonte a la frontiere d'erreur la plus proche et fait disparaitre
+ * l'ecran ; le message le mieux redige devient alors invisible.
+ *
+ * Les erreurs de base restent des `throw` : elles n'apprennent rien a
+ * l'utilisateur et signalent un defaut a corriger, pas une saisie a completer.
  */
-export async function issueInvoice(id: string) {
+export type ResultatEmission = { ok: true } | { ok: false; message: string };
+
+export async function issueInvoice(id: string): Promise<ResultatEmission> {
   const supabase = await db();
   const { data: inv, error: readErr } = await supabase
     .from("invoices")
@@ -203,7 +206,7 @@ export async function issueInvoice(id: string) {
     .single();
   if (readErr) throw new Error(readErr.message);
   if (inv.status !== "brouillon") {
-    throw new Error("Cette pièce est déjà émise.");
+    return { ok: false, message: "Cette pièce est déjà émise." };
   }
 
   // Garde avant d'attribuer un numero legal : celui-ci est sequentiel et
@@ -211,18 +214,25 @@ export async function issueInvoice(id: string) {
   // facture doit porter l'identite de l'acheteur ; pour un professionnel, le
   // SIREN / SIRET est obligatoire (art. 242 nonies A CGI, art. L441-9 c. com.).
   if (!inv.client_name?.trim()) {
-    throw new Error("Renseignez le client avant d'émettre la pièce.");
+    return {
+      ok: false,
+      message: "Renseignez le client avant d'émettre la pièce.",
+    };
   }
   if (inv.client_type === "entreprise") {
     if (!inv.client_siren?.trim()) {
-      throw new Error(
-        "Le SIREN ou le SIRET du client professionnel est obligatoire pour émettre.",
-      );
+      return {
+        ok: false,
+        message:
+          "Le SIREN ou le SIRET du client professionnel est obligatoire pour émettre.",
+      };
     }
     if (!isSirenOrSiret(inv.client_siren)) {
-      throw new Error(
-        "Le SIREN / SIRET du client est invalide (9 ou 14 chiffres, clé de contrôle).",
-      );
+      return {
+        ok: false,
+        message:
+          "Le SIREN / SIRET du client est invalide (9 ou 14 chiffres, clé de contrôle).",
+      };
     }
   }
 
@@ -230,7 +240,11 @@ export async function issueInvoice(id: string) {
   const year = Number(today.slice(0, 4));
   const { data: number, error: numErr } = await supabase.rpc(
     "next_invoice_number",
-    { p_kind: inv.kind, p_year: year },
+    // `p_date` est passe explicitement, pas laisse a son defaut. Le defaut de la
+    // fonction est `current_date`, evalue par la base : autour de minuit, la date
+    // portee par le NUMERO differerait de `issued_at`, calcule ici. Une piece dont
+    // le numero annonce une date et l'entete une autre est un defaut comptable.
+    { p_kind: inv.kind, p_year: year, p_date: today },
   );
   if (numErr) throw new Error(numErr.message);
 
@@ -260,6 +274,7 @@ export async function issueInvoice(id: string) {
   }
 
   revalidatePath(`/admin/facturation/${id}`);
+  return { ok: true };
 }
 
 /** Enregistre le mode de reglement d'une facture (pour le livre des recettes). */
@@ -274,48 +289,37 @@ export async function setInvoicePaymentMethod(id: string, method: string) {
   revalidatePath("/admin/comptabilite");
 }
 
-/**
- * Cree (ou reutilise) le lien de paiement Stripe d'une facture et le stocke.
- * Idempotent : si un lien existe deja, on le renvoie. Renvoie la facture a jour.
- */
-async function ensurePaymentLink(
-  supabase: Awaited<ReturnType<typeof db>>,
+export async function setInvoicePaidAt(
   id: string,
-): Promise<Invoice | null> {
-  const { data, error } = await supabase
-    .from("invoices")
-    .select(INVOICE_COLUMNS)
-    .eq("id", id)
-    .single();
-  if (error || !data) return null;
-  const invoice = data as Invoice;
-  if (invoice.payment_url) return invoice;
+  date: string,
+): Promise<ResultatEmission> {
+  const verdict = validerDateEncaissement(
+    date,
+    new Date().toISOString().slice(0, 10),
+  );
+  if (!verdict.ok) return verdict;
 
-  const origin = (await headers()).get("origin") ?? "";
-  const { url, id: linkId } = await createInvoicePaymentLink(invoice, origin);
-  const { error: upErr } = await supabase
-    .from("invoices")
-    .update({ payment_url: url, stripe_payment_link_id: linkId })
-    .eq("id", id);
-  if (upErr) throw new Error(upErr.message);
-  return { ...invoice, payment_url: url, stripe_payment_link_id: linkId };
-}
-
-/** Genere le lien de paiement d'une facture et l'envoie au client par email. */
-export async function generatePaymentLink(id: string) {
   const supabase = await db();
-  const invoice = await ensurePaymentLink(supabase, id);
-  if (invoice?.client_email && invoice.payment_url) {
-    await sendInvoicePaymentEmail({
-      to: invoice.client_email,
-      number: invoice.number ?? id,
-      amountLabel: formatEuros(invoice.amount_ttc_cents),
-      paymentUrl: invoice.payment_url,
-    });
-  }
+  const { error } = await supabase
+    .from("invoices")
+    .update({ paid_at: date })
+    .eq("id", id)
+    .eq("status", "paye");
+  if (error) throw new Error(error.message);
+
   revalidatePath(`/admin/facturation/${id}`);
+  revalidatePath("/admin/facturation");
+  revalidatePath("/admin/comptabilite");
+  return { ok: true };
 }
 
+/**
+ * Pointe le statut. Quand il passe a "paye", la date d'encaissement prend la
+ * date du jour PAR DEFAUT : c'est le cas courant, et exiger une saisie a chaque
+ * pointage couterait plus qu'elle ne rapporte. Elle se corrige ensuite sur la
+ * fiche, via `setInvoicePaidAt`, des que le pointage ne tombe pas le jour du
+ * reglement.
+ */
 export async function updateInvoiceStatus(id: string, status: InvoiceStatus) {
   const supabase = await db();
   const patch: { status: InvoiceStatus; paid_at?: string | null } = { status };
@@ -323,6 +327,8 @@ export async function updateInvoiceStatus(id: string, status: InvoiceStatus) {
   const { error } = await supabase.from("invoices").update(patch).eq("id", id);
   if (error) throw new Error(error.message);
   revalidatePath("/admin/facturation");
+  revalidatePath(`/admin/facturation/${id}`);
+  revalidatePath("/admin/comptabilite");
 }
 
 /**
@@ -346,47 +352,5 @@ export async function deleteInvoice(id: string) {
       "Seul un brouillon peut être supprimé ; une pièce émise doit être annulée.",
     );
   }
-  revalidatePath("/admin/facturation");
-}
-
-/**
- * Catalogue de prestations reutilisables. Ajout manuel : on passe par la meme
- * fonction que l'auto-save (insert ou actualisation sans doublon), pour qu'une
- * saisie manuelle et une prestation deja apprise ne se dedoublent pas.
- */
-export async function createServiceItem(formData: FormData) {
-  const supabase = await db();
-  const designation = String(formData.get("designation") ?? "").trim();
-  if (!designation) throw new Error("La désignation est obligatoire.");
-  const priceRaw = String(formData.get("unit_price_euros") ?? "").trim();
-  const cents = priceRaw ? Math.round(parseFloat(priceRaw) * 100) : 0;
-  const { error } = await supabase.rpc("remember_service_item", {
-    p_designation: designation,
-    p_cents: cents,
-  });
-  if (error) throw new Error(error.message);
-  revalidatePath("/admin/facturation");
-}
-
-/** Met a jour la designation et le prix d'une prestation du catalogue. */
-export async function updateServiceItem(id: string, formData: FormData) {
-  const supabase = await db();
-  const designation = String(formData.get("designation") ?? "").trim();
-  if (!designation) throw new Error("La désignation est obligatoire.");
-  const priceRaw = String(formData.get("unit_price_euros") ?? "").trim();
-  const cents = priceRaw ? Math.round(parseFloat(priceRaw) * 100) : 0;
-  const { error } = await supabase
-    .from("service_items")
-    .update({ designation, unit_price_cents: cents, updated_at: new Date().toISOString() })
-    .eq("id", id);
-  if (error) throw new Error(error.message);
-  revalidatePath("/admin/facturation");
-}
-
-/** Retire une prestation du catalogue (n'affecte aucune facture deja emise). */
-export async function deleteServiceItem(id: string) {
-  const supabase = await db();
-  const { error } = await supabase.from("service_items").delete().eq("id", id);
-  if (error) throw new Error(error.message);
   revalidatePath("/admin/facturation");
 }

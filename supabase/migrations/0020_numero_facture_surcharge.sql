@@ -1,0 +1,30 @@
+-- REGRESSION INTRODUITE PAR 0018, AGGRAVEE PAR 0019, FERMEE ICI.
+--
+-- `create or replace function` ne remplace une fonction que si la signature est
+-- IDENTIQUE. 0018 a ajoute un troisieme parametre : Postgres n'a donc rien
+-- remplace, il a cree une SURCHARGE. L'ancienne fonction a deux arguments,
+-- posee par 0007, est restee en place a cote de la nouvelle.
+--
+-- Consequence mesuree en production, pas redoutee. Le back-office appelle la
+-- fonction avec deux arguments nommes, `p_kind` et `p_year`. Les deux candidates
+-- acceptent cet appel : l'ancienne exactement, la nouvelle en completant
+-- `p_date` par son defaut. Postgres refuse d'arbitrer :
+--
+--   ERROR 42725: function public.next_invoice_number(p_kind => invoice_kind,
+--                p_year => integer) is not unique
+--
+-- Autrement dit, depuis la mise en service de 0018, le bouton Emettre du
+-- back-office ne pouvait plus emettre AUCUNE piece. Et comme aucune frontiere
+-- d'erreur n'existait, il echouait sans rien afficher : on cliquait, il ne se
+-- passait rien.
+--
+-- La lecon, qui depasse ce projet : ajouter un parametre avec valeur par defaut
+-- a une fonction existante n'est pas une modification, c'est une creation. Tant
+-- que l'ancienne signature n'est pas supprimee, tout appel qui pouvait viser les
+-- deux devient ambigu, et l'ambiguite se paie a l'execution, pas au deploiement.
+--
+-- Le correctif est la SUPPRESSION de l'ancienne, pas un contournement au site
+-- d'appel : passer explicitement les trois arguments leverait l'ambiguite pour
+-- cet appel-la et laisserait le piege arme pour le suivant.
+
+drop function if exists public.next_invoice_number(invoice_kind, integer);

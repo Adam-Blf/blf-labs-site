@@ -67,3 +67,44 @@ export function lineTotalCents(line: Pick<InvoiceLine, "quantity" | "unit_price_
 export function invoiceTotalCents(lines: InvoiceLine[]): number {
   return lines.reduce((sum, line) => sum + lineTotalCents(line), 0);
 }
+
+/**
+ * Valide une date d'encaissement saisie a la main.
+ *
+ * Isolee ici, et pas dans l'action serveur, pour une raison de testabilite :
+ * `app/admin/actions-facturation.ts` importe Stripe et l'envoi d'email, qui
+ * s'evaluent des l'import et exigent des cles. Une garde qu'on ne peut pas
+ * executer dans un test est une garde qu'on n'a jamais vue rouge.
+ *
+ * Ce qui est refuse : un format autre que AAAA-MM-JJ, une date inexistante
+ * (le 31 fevrier se presente bien au format), et une date future, parce qu'on
+ * ne declare pas une recette qui n'est pas encore entree.
+ *
+ * Ce qui est ACCEPTE, volontairement : une date anterieure a l'emission de la
+ * piece. Une facture etablie apres coup pour un travail deja regle porte
+ * legitimement une date d'encaissement anterieure a sa propre emission.
+ */
+export function validerDateEncaissement(
+  date: string,
+  aujourdhuiISO: string,
+): { ok: true } | { ok: false; message: string } {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return { ok: false, message: "Date d'encaissement invalide." };
+  }
+
+  // `new Date("2026-02-31")` ne leve pas, il glisse au 3 mars. On compare donc
+  // la date reconstruite a la chaine d'origine : un glissement la trahit.
+  const d = new Date(`${date}T00:00:00Z`);
+  if (Number.isNaN(d.getTime()) || d.toISOString().slice(0, 10) !== date) {
+    return { ok: false, message: "Cette date n'existe pas." };
+  }
+
+  if (date > aujourdhuiISO) {
+    return {
+      ok: false,
+      message: "La date d'encaissement ne peut pas être dans le futur.",
+    };
+  }
+
+  return { ok: true };
+}

@@ -8,7 +8,7 @@ import {
   createServiceItem,
   deleteServiceItem,
   updateServiceItem,
-} from "@/app/admin/actions-facturation";
+} from "@/app/admin/actions-catalogue";
 
 /**
  * Catalogue de prestations reutilisables. Il se remplit tout seul (chaque ligne
