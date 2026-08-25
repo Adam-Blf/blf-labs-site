@@ -10,10 +10,13 @@
  * prospect qui verifie une affirmation fausse ne revient pas, et une etude de
  * cas est justement lue par ceux qui verifient.
  *
- * Le champ `chiffres` est volontairement vide sur les deux fiches. Il attend
- * des mesures reelles - frequentation, taux de prise de contact, temps de
- * chargement mesure - et la section correspondante ne s'affiche pas tant qu'il
- * l'est.
+ * Le champ `chiffres` porte des mesures REELLEMENT PRISES, jamais une
+ * estimation. Chaque valeur nomme sa methode et sa date dans `source`, pour que
+ * n'importe qui puisse la refaire et obtenir le meme ordre de grandeur.
+ *
+ * Ce qui n'y figure toujours pas, faute de mesure : la frequentation et le taux
+ * de prise de contact. Ils viendront quand la mesure d'audience sera branchee,
+ * pas avant. Un chiffre d'affluence invente se verifie en une requete.
  */
 export type Chiffre = {
   /** La valeur, telle qu'elle sera affichee. */
@@ -75,7 +78,21 @@ export const ETUDES: Etude[] = [
       "Les trois plateformes sont maintenues en parallèle, depuis la même base.",
       "La mesure d'audience ne se déclenche qu'après acceptation.",
     ],
-    chiffres: [],
+    chiffres: [
+      {
+        valeur: "335 Ko",
+        libelle:
+          "Ce que le navigateur télécharge pour afficher le jeu, feuilles de style et scripts compris",
+        source:
+          "Somme des transferts compressés du document et des cinq fichiers d'assets, relevée avec curl --compressed le 25 août 2026.",
+      },
+      {
+        valeur: "0,08 s",
+        libelle: "Délai avant le premier octet servi",
+        source:
+          "Médiane de sept mesures curl depuis une connexion grand public en Île-de-France, le 25 août 2026.",
+      },
+    ],
   },
   {
     slug: "ohypnozen",
@@ -112,7 +129,20 @@ export const ETUDES: Etude[] = [
       "Les pages légales sont accessibles depuis le pied de page.",
       "La praticienne modifie ses textes elle-même, sans intervention du studio.",
     ],
-    chiffres: [],
+    chiffres: [
+      {
+        valeur: "22 Ko",
+        libelle: "Poids du document de la page d'accueil, une fois compressé",
+        source:
+          "Relevé avec curl --compressed le 25 août 2026. La page est rendue côté serveur, elle s'affiche donc sans attendre le moindre script.",
+      },
+      {
+        valeur: "0,08 s",
+        libelle: "Délai avant le premier octet servi",
+        source:
+          "Médiane de sept mesures curl depuis une connexion grand public en Île-de-France, le 25 août 2026.",
+      },
+    ],
   },
 ];
 

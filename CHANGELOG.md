@@ -54,6 +54,15 @@ est dans les messages de commit et les pull requests.
 
 ### Modifie
 
+- **Les etudes de cas portent enfin des chiffres**, et seulement des chiffres
+  reellement mesures : poids reel transfere et delai de premiere reponse,
+  chacun avec sa methode et sa date dans le champ `source`. La frequentation et
+  le taux de prise de contact restent absents tant que la mesure d'audience
+  n'est pas branchee.
+- **La politique DMARC est posee** sur `beloucif.com` et `send.beloucif.com`,
+  en `p=none` pour observer avant de sanctionner, par le nouveau script
+  `scripts/setup_dmarc.py`. Sans elle, depuis novembre 2025, Gmail et Yahoo ne
+  classent plus le courrier non conforme en indesirable : ils le rejettent.
 - **La politique de confidentialite ne ment plus.** Elle affirmait que les
   donnees n'etaient « jamais utilisees pour de la prospection », promesse
   repetee a quatre endroits du site. Une section « Prospection commerciale »

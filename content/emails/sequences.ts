@@ -119,12 +119,12 @@ const CARNET: Sequence = {
           "La question qui revient le plus souvent, et à laquelle presque aucune agence ne répond publiquement : combien.",
         ) +
         p(
-          "La réponse honnête, c'est que le prix dépend de trois choses, et qu'elles sont connues avant de commencer : le nombre d'écrans réellement différents, la présence ou non d'un espace connecté, et qui écrit les contenus.",
+          "La réponse honnête, c'est que le prix dépend de trois choses, connues avant de commencer : le nombre d'écrans réellement différents, la présence ou non d'un espace connecté, et qui écrit les contenus.",
         ) +
         p(
-          "La page des budgets du site détaille les fourchettes de départ et ce qui les fait monter. Elle est là pour que vous puissiez estimer votre projet sans avoir à me parler.",
+          "Le studio n'affiche pas de tarif fixe, et ce n'est pas une pudeur commerciale : le périmètre s'ajuste au budget disponible plutôt que l'inverse. Dites ce que vous pouvez y mettre, je dis ce que cela permet de faire, et ce qu'il faut remettre à plus tard.",
         ) +
-        bouton(`${v.url}/tarifs`, "Voir les budgets") +
+        bouton(`${v.url}/tarifs`, "Ce qui fait monter un prix") +
         signature(),
     },
     {
@@ -154,7 +154,7 @@ const CARNET: Sequence = {
         p(
           "C'est gratuit et sans suite obligatoire. Si le projet ne correspond pas à ce que fait le studio, je vous le dis, et je vous oriente vers quelqu'un de plus adapté.",
         ) +
-        bouton(`${v.url}/rendez-vous`, "Réserver un créneau") +
+        bouton(`${v.url}/rendez-vous`, "Caler vingt minutes") +
         p(
           "Sinon, rien à faire : vous continuerez à recevoir une note par mois, et rien d'autre.",
         ) +
@@ -258,7 +258,7 @@ const PREMIER_CONTACT: Sequence = {
           "Beaucoup de structures de votre taille ont un site qui informe correctement, mais sur lequel un client ne peut rien faire : ni prendre rendez-vous, ni demander un devis, ni payer. Le contact se fait alors par téléphone, aux heures d'ouverture, et ce qui arrive en dehors est perdu.",
         ) +
         p(
-          `Si c'est votre cas et que le sujet est d'actualité, le studio fait exactement cela. Les réalisations et les budgets de départ sont publics : <a href="${v.url}/references" style="color:#5b5bd6">${SITE.domain}/references</a>.`,
+          `Si c'est votre cas et que le sujet est d'actualité, le studio fait exactement cela. Les réalisations sont publiques et vérifiables : <a href="${v.url}/references" style="color:#5b5bd6">${SITE.domain}/references</a>.`,
         ) +
         p(
           "Si ce n'est pas d'actualité, le lien en bas de ce message vous retire définitivement de ma liste, en un clic.",
