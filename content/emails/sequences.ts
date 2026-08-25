@@ -284,8 +284,19 @@ const PREMIER_CONTACT: Sequence = {
           "Si ce n'est pas d'actualité, le lien en bas de ce message vous retire définitivement de ma liste, en un clic.",
         ) +
         signature() +
+        // Information de l'article 14 du RGPD, due AU PLUS TARD lors de la
+        // premiere communication (art. 14.3.b) puisque la donnee sert
+        // precisement a communiquer. Elle porte l'origine, la finalite, la base
+        // legale et la duree, que la version precedente ne disait pas.
         p(
-          `<span style="font-size:12px;color:#5b6472">Cette adresse professionnelle a été relevée sur le site public de votre structure ou dans la base SIRENE, base de données ouverte de l'INSEE. Vous disposez d'un droit d'accès, de rectification, d'effacement et d'opposition, à exercer à ${SITE.email}.</span>`,
+          `<span style="font-size:12px;color:#5b6472">Cette adresse professionnelle a été relevée sur le site public de votre structure ou dans la base SIRENE, base de données ouverte de l'INSEE. Elle est utilisée pour vous proposer une prestation de création de site, sur le fondement de l'intérêt légitime (article 6.1.f du RGPD), et conservée trois ans au plus à compter de votre dernier contact. Vos droits d'accès, de rectification et d'effacement s'exercent à ${SITE.email}, et le détail figure dans la <a href="${v.url}/legal/confidentialite" style="color:#5b6472">politique de confidentialité</a>.</span>`,
+        ) +
+        // Le droit d'opposition se mentionne « explicitement et de facon
+        // distincte des autres informations » (art. 21.4). Noye dans la ligne
+        // ci-dessus, il ne remplissait pas cette exigence : il a donc son
+        // propre paragraphe, et il est ecrit plus gros que le reste.
+        p(
+          `<span style="font-size:13px;color:#3d4450"><strong>Vous pouvez vous opposer à tout moment à recevoir ces messages</strong>, sans avoir à vous justifier : le lien de désinscription ci-dessous suffit, et il est définitif.</span>`,
         ),
     },
     {
