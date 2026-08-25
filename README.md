@@ -242,6 +242,7 @@ Tout asset genere a son script reproductible, aucun n&rsquo;embarque de secret :
 | `scripts/ovh_dns.py` | Consulte et modifie la zone DNS de beloucif.com |
 | `scripts/setup_email_dns.py` | Lit les enregistrements exiges par Resend et les pose chez OVH, de facon idempotente |
 | `scripts/setup_dmarc.py` | Pose la politique DMARC de la zone, en simulation par defaut, `--apply` pour ecrire |
+| `scripts/setup_resend_webhook.py` | Cree le webhook des evenements Resend, idempotent, le secret va dans un fichier jamais affiche |
 | `scripts/check_encoding.py` | Garde : UTF-8 propre, sans BOM ni mojibake. Executee en CI |
 | `scripts/check_french.py` | Garde : accents manquants dans le texte visible. `--fix` pour appliquer. Executee en CI |
 | `scripts/clean_svg.py` | Retire les metadonnees des SVG exportes de Canva |
