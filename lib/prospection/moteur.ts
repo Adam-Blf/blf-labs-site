@@ -299,7 +299,8 @@ async function traiteUne(
 
   try {
     const retour = await resend.emails.send({
-      from: process.env.RESEND_FROM_PROSPECTION ?? `BLF Lab's <carnet@send.beloucif.com>`,
+      // Domaine verifie chez Resend, sinon 403. Voir lib/mail.ts.
+      from: process.env.RESEND_FROM_PROSPECTION ?? `BLF Lab's <carnet@beloucif.com>`,
       to: contact.email,
       replyTo: SITE.email,
       subject: message.sujet,

@@ -18,11 +18,19 @@ import {
  * demande client parce qu'une variable d'environnement manque serait la pire
  * des pannes silencieuses.
  *
- * L'expedition part d'un sous-domaine dedie (`send.beloucif.com`) pour ne pas
- * toucher aux enregistrements MX qui font fonctionner la boite adam@beloucif.com.
+ * L'ADRESSE D'EXPEDITION DOIT APPARTENIR A UN DOMAINE VERIFIE CHEZ RESEND.
+ * C'est `beloucif.com`, et lui seul. Le sous-domaine `send.beloucif.com` porte
+ * le chemin de retour et le SPF du montage Resend, mais il n'est PAS un domaine
+ * verifie : toute expedition depuis une adresse en `@send.beloucif.com` est
+ * refusee par l'API avec un 403.
+ *
+ * Le defaut precedent pointait justement la. Il n'avait jamais ete exerce, la
+ * base ne comptant aucune commande, et il serait apparu au premier client reel
+ * sous la forme d'un accuse de reception qui ne part pas. Mesure du 2026-08-25 :
+ * `The send.beloucif.com domain is not verified`.
  */
 
-const FROM = process.env.RESEND_FROM ?? "BLF Lab's <contact@send.beloucif.com>";
+const FROM = process.env.RESEND_FROM ?? "BLF Lab's <contact@beloucif.com>";
 
 /** Neutralise le HTML avant injection dans un email. */
 function esc(value: string): string {

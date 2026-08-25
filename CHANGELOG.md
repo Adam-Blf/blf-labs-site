@@ -6,6 +6,44 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.26.0 - 2026-08-25
+
+### Corrige
+
+- **Collision de numeros de facture, presente depuis la version 0.12.** Dans
+  Postgres, `lpad(chaine, 4, '0')` ne fait pas que completer : il TRONQUE ce qui
+  depasse. La sequence 10 000 rendait donc `1000`, exactement le meme numero que
+  la sequence 1 000. Mesure sur les 120 000 premieres sequences : l'ancienne
+  forme ne produisait que **9 999 valeurs distinctes**. Un numero de facture doit
+  etre unique, article 242 nonies A du CGI, et rien n'aurait proteste.
+  Le candidat de remplacement `to_char(v, 'FM0000')` echoue exactement de la
+  meme facon, 10 000 valeurs distinctes : il a ete teste, pas suppose.
+- **Un index unique protege desormais `invoices.number`.** La fonction juste
+  aujourd'hui peut etre reecrite demain ; la contrainte, elle, refuse le doublon
+  quoi qu'il arrive. Partielle, pour laisser coexister plusieurs brouillons sans
+  numero.
+- **L'adresse d'expedition par defaut pointait vers un domaine non verifie.**
+  `send.beloucif.com` porte le chemin de retour et le SPF du montage Resend,
+  mais n'est PAS un domaine verifie : l'API refuse en 403. Le defaut n'avait
+  jamais ete exerce, la base ne comptant aucune commande, et il serait apparu au
+  premier client reel sous la forme d'un accuse de reception qui ne part pas.
+  Constate en tentant un envoi reel.
+- **« Total a payer » s'imprimait sur une facture deja reglee**, ce qui est le
+  meilleur moyen de se faire payer deux fois. Le libelle suit maintenant l'etat
+  de la piece, et une facture acquittee affiche sa date de reglement au lieu
+  d'une echeance qui n'a plus d'objet.
+- **Les dates des PDF sortaient en ISO** sur un document francais. Elles passent
+  en JJ/MM/AAAA, formatees a la main pour ne pas dependre de la locale du
+  serveur qui genere la piece.
+
+### Modifie
+
+- **Le numero de facture porte la date d'emission** : `F-06062026-0001` au lieu
+  de `F-2026-0001`. Le compteur reste annuel et continu, la date est
+  informative : une numerotation qui repartirait a zero chaque jour resterait
+  unique mais briserait la continuite de la sequence, et c'est la continuite que
+  l'administration regarde.
+
 ## 0.25.0 - 2026-08-25
 
 ### Ajoute
