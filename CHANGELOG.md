@@ -6,6 +6,57 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.29.0 - 2026-08-25
+
+### Corrige
+
+- **La clause de responsabilite etait nulle de plein droit.** Elle plafonnait la
+  reparation au montant de la prestation, sans distinguer le client. Face a un
+  consommateur, c'est la clause noire de l'article R. 212-1, 6° du Code de la
+  consommation : presomption IRREFRAGABLE, clause reputee non ecrite, aucune
+  preuve contraire recevable. L'article R. 212-5 etendait le meme sort aux
+  non-professionnels, donc aux associations clientes. Le plafond est desormais
+  reserve aux clients professionnels, hors faute lourde, dol et dommage
+  corporel.
+- **La garantie de correction n'avait aucune limite.** Elle promettait de
+  corriger sans supplement toute non-conformite signalee apres la livraison,
+  sans duree, sans definition, sans plafond de volume. Sur le seul projet livre,
+  le suivi d'apres-livraison a coute 58 heures contre 26 heures de construction ;
+  ces heures ont ete offertes par choix, la clause permettait de les exiger.
+- **Les penalites de retard s'appliquaient aux particuliers.** Les articles
+  L. 441-10 et D. 441-5 relevent du Code de COMMERCE et ne regissent que les
+  relations entre professionnels. Opposees a un consommateur, elles n'ont aucun
+  fondement, et une penalite sans fondement de ce montant est presumee abusive
+  (R. 212-2, 3°). Le paragraphe leur est desormais reserve.
+
+### Ajoute
+
+- **Une recette de quinze jours**, qui borne le perimetre du projet sans toucher
+  aux garanties legales. C'est elle le vrai levier, et non la duree de garantie :
+  pendant DOUZE mois, le client n'a qu'a etablir l'existence du defaut, pas sa
+  date d'apparition (L. 224-25-16). Une garantie de trente jours ne reduisait
+  donc aucune charge reelle, elle en donnait l'illusion.
+- **Une garantie commerciale de quatre-vingt-dix jours**, declaree avec tout ce
+  que l'article L. 217-22 exige : contenu, modalites, prix, duree, etendue
+  territoriale et identite du garant. S'il en manque un seul, la garantie reste
+  due sans etre opposable.
+- **L'encadre obligatoire de l'article D. 211-3**, absent jusqu'ici. Le decret
+  n° 2022-946 en impose la presence dans les conditions generales, et D. 217-5
+  le rend obligatoire dans tout contrat de garantie commerciale portant sur du
+  numerique. Sa redaction est fixee par l'annexe au code et n'a pas ete
+  reformulee.
+
+### Note de methode
+
+Une premiere reecriture de la clause 6, ecrite le meme jour, bornait la
+correction gratuite a trente jours en ajoutant que « passe ce delai, les
+corrections font l'objet d'un devis distinct ». C'etait REDUIRE la garantie
+legale, gratuite pendant deux ans et d'ordre public : juridiquement PIRE que la
+clause illimitee qu'elle corrigeait. Elle n'a jamais ete publiee, l'audit
+juridique l'ayant refusee avant fusion. La lecon vaut d'etre gardee : borner une
+obligation contractuelle sans verifier ce que la loi rend indisponible ne borne
+rien, cela cree une clause reputee non ecrite et une preuve d'intention.
+
 ## 0.28.0 - 2026-08-25
 
 ### Corrige
