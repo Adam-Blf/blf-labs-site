@@ -1,5 +1,5 @@
 import { SITE } from "@/lib/site";
-import type { InvoiceLine, IssuerSnapshot } from "@/lib/admin-types";
+import type { InvoiceLine, IssuerSnapshot } from "@/lib/admin/types";
 
 /**
  * Fige l'identite legale de l'emetteur au moment de l'emission. Une facture

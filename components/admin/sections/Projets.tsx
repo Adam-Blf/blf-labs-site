@@ -1,10 +1,10 @@
-import { supabaseServer } from "@/lib/supabase-server";
+import { supabaseServer } from "@/lib/supabase/server";
 import {
   PROJECT_COLUMNS,
   formatEuros,
   type Project,
   type ProjectTask,
-} from "@/lib/admin-types";
+} from "@/lib/admin/types";
 import { KanbanBoard, type KanbanItem } from "@/components/admin/KanbanBoard";
 import { ProjectsPanel } from "@/components/admin/ProjectsPanel";
 import { updateProjectStatus } from "@/app/admin/actions";

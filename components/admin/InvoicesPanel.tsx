@@ -10,7 +10,7 @@ import {
   formatEuros,
   type Invoice,
   type InvoiceStatus,
-} from "@/lib/admin-types";
+} from "@/lib/admin/types";
 import {
   createInvoice,
   deleteInvoice,

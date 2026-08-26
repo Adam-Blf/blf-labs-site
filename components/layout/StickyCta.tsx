@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { identifiantMesure } from "@/lib/consent";
-import { useConsentement } from "@/lib/useConsent";
+import { identifiantMesure } from "@/lib/consentement/consent";
+import { useConsentement } from "@/lib/consentement/useConsent";
 
 /**
  * Appel a l'action persistant, sur telephone uniquement.

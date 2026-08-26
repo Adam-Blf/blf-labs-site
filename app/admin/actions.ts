@@ -1,11 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { db } from "@/lib/admin-db";
+import { db } from "@/lib/admin/db";
 // Treize imports de facturation trainaient ici depuis la scission du fichier
 // en actions.ts et actions-facturation.ts : du code mort qui laissait croire
 // que ce module touchait encore aux factures.
-import { type OrderStatus, type ProjectStatus } from "@/lib/admin-types";
+import { type OrderStatus, type ProjectStatus } from "@/lib/admin/types";
 
 /**
  * Mutations du back-office - activite commerciale.

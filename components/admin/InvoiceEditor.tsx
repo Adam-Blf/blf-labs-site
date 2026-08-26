@@ -8,8 +8,8 @@ import {
   type Invoice,
   type InvoiceLine,
   type ServiceItem,
-} from "@/lib/admin-types";
-import { lineTotalCents } from "@/lib/invoice";
+} from "@/lib/admin/types";
+import { lineTotalCents } from "@/lib/facturation/invoice";
 import { generatePaymentLink } from "@/app/admin/actions-paiement";
 import {
   addInvoiceLine,

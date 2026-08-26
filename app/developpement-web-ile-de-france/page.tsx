@@ -36,7 +36,7 @@ export default function ZonePage() {
     <>
       <Header />
 
-      <main>
+      <main id="contenu">
         <section className="rule-b">
           <div className="section mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
             <Breadcrumb miettes={[{ nom: "Île-de-France" }]} />

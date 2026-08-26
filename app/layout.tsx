@@ -83,6 +83,23 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
       </head>
       <body className="flex min-h-full flex-col bg-paper text-ink">
+        {/*
+          Lien d'evitement, premier element focalisable du document. C'est le
+          geste numero un de qui navigue au clavier ou au lecteur d'ecran, et
+          son absence obligeait a traverser les huit arrets de l'en-tete a
+          chaque page. Critere WCAG 2.4.1.
+
+          Il vise `#contenu`, pose sur le <main> de chaque page plutot que sur
+          un conteneur du gabarit : ici Header, main et Footer sont freres dans
+          le flux flex du <body>, et les envelopper aurait casse la mise en
+          page de tout le site pour un ancrage.
+        */}
+        <a
+          href="#contenu"
+          className="sr-only rounded-none focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:bg-ink focus:px-4 focus:py-3 focus:text-sm focus:font-semibold focus:text-paper"
+        >
+          Aller au contenu
+        </a>
         {children}
         {/*
           Les deux ne s'affichent que si NEXT_PUBLIC_GA_ID est configure. Sans

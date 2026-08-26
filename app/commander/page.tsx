@@ -21,7 +21,7 @@ export default async function CommanderPage({ searchParams }: PageProps) {
     <>
       <Header />
 
-      <main className="pt-24">
+      <main id="contenu" className="pt-24">
         <section>
           <div className="mx-auto max-w-3xl px-5 pt-8 pb-24">
             <h1 className="title text-3xl md:text-4xl">Commander un projet</h1>

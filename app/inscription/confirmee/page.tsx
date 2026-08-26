@@ -32,7 +32,7 @@ export default async function InscriptionConfirmeePage({
     <>
       <Header />
 
-      <main className="flex flex-1 items-center">
+      <main id="contenu" className="flex flex-1 items-center">
         <div className="section mx-auto w-full max-w-2xl px-4 sm:px-6 lg:px-8">
           {echec === "1" ? (
             <>

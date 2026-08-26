@@ -1,4 +1,4 @@
-import { supabaseServer } from "@/lib/supabase-server";
+import { supabaseServer } from "@/lib/supabase/server";
 
 /**
  * Le client Supabase lie a la SESSION, jamais la cle de service.

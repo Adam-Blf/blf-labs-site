@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { AuthShell } from "@/components/admin/AuthShell";
-import { supabaseBrowser } from "@/lib/supabase-browser";
+import { supabaseBrowser } from "@/lib/supabase/browser";
 
 /**
  * Verification du second facteur a chaque connexion. Le code valide fait passer

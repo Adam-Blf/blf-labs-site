@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { db } from "@/lib/admin-db";
+import { db } from "@/lib/admin/db";
 
 /**
  * CATALOGUE DE PRESTATIONS.

@@ -4,8 +4,8 @@ import {
   ecrireConsentement,
   identifiantMesure,
   type Consentement,
-} from "@/lib/consent";
-import { useConsentement } from "@/lib/useConsent";
+} from "@/lib/consentement/consent";
+import { useConsentement } from "@/lib/consentement/useConsent";
 
 const LIBELLES: Record<Consentement, string> = {
   accepte: "Vous avez accepté la mesure d'audience.",

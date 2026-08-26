@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ecrireConsentement, identifiantMesure } from "@/lib/consent";
-import { useConsentement } from "@/lib/useConsent";
+import { ecrireConsentement, identifiantMesure } from "@/lib/consentement/consent";
+import { useConsentement } from "@/lib/consentement/useConsent";
 
 /**
  * Bandeau de consentement a la mesure d'audience.

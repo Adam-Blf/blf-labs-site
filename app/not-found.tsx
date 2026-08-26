@@ -34,7 +34,7 @@ export default function NotFound() {
     <>
       <Header />
 
-      <main className="flex flex-1 items-center">
+      <main id="contenu" className="flex flex-1 items-center">
         <div className="section mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
           <p className="mono text-sm text-muted">Erreur 404</p>
 

@@ -1,5 +1,5 @@
 import { Resend } from "resend";
-import { serviceClient } from "@/lib/supabase";
+import { serviceClient } from "@/lib/supabase/clients";
 import { SITE } from "@/lib/site";
 import { creeJeton, litJeton } from "@/lib/prospection/jeton";
 import { corpsConfirmation, SUJET_CONFIRMATION } from "@/content/emails/confirmation";

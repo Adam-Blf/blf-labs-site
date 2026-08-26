@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import type { KeyboardEvent, ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useWizard, type WizardDirection } from "@/lib/useWizard";
+import { useWizard, type WizardDirection } from "@/lib/ui/useWizard";
 
 /**
  * Rail de progression + panneaux animes pour un formulaire en plusieurs etapes.

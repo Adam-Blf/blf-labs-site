@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { supabaseServer } from "@/lib/supabase-server";
-import { INVOICE_COLUMNS, type Invoice } from "@/lib/admin-types";
-import { livreDesRecettes } from "@/lib/urssaf";
+import { supabaseServer } from "@/lib/supabase/server";
+import { INVOICE_COLUMNS, type Invoice } from "@/lib/admin/types";
+import { livreDesRecettes } from "@/lib/facturation/urssaf";
 
 export const runtime = "nodejs";
 

@@ -44,7 +44,7 @@ export default async function OffrePage({ params }: PageProps) {
     <>
       <Header />
 
-      <main>
+      <main id="contenu">
         <section className="rule-b">
           <div className="section mx-auto max-w-4xl px-5">
             {/* Remplace l'ancien lien "Retour aux services" : meme role de

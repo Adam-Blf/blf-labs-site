@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { OFFRES } from "@/content/offres";
 import { OPTIONS } from "@/content/options";
-import { isSirenOrSiret, isVatNumber } from "@/lib/siren";
+import { isSirenOrSiret, isVatNumber } from "@/lib/facturation/siren";
 
 /**
  * Schema unique de la demande de commande, partage par le formulaire et par la

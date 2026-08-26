@@ -46,7 +46,7 @@ export default function Home() {
       <JsonLd />
       <Header />
 
-      <main>
+      <main id="contenu">
         <Hero />
 
         <section className="relative">

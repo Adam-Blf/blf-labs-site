@@ -16,7 +16,7 @@ export default function MethodePage() {
   return (
     <>
       <Header />
-      <main className="pt-24">
+      <main id="contenu" className="pt-24">
         <div className="mx-auto max-w-6xl px-4 pt-8 sm:px-6 lg:px-8">
           <Breadcrumb miettes={[{ nom: "Méthode" }]} />
         </div>

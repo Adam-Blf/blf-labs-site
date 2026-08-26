@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { clientIp, hashIp } from "@/lib/rate-limit";
-import { serviceClient } from "@/lib/supabase";
+import { serviceClient } from "@/lib/supabase/clients";
 import { inscrire } from "@/lib/prospection/inscription";
 import { TEXTES_CONSENTEMENT } from "@/content/consentement";
 

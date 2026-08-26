@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { PageHeading } from "@/components/admin/PageHeading";
 import { notFound } from "next/navigation";
-import { supabaseServer } from "@/lib/supabase-server";
+import { supabaseServer } from "@/lib/supabase/server";
 import {
   INVOICE_COLUMNS,
   SERVICE_ITEM_COLUMNS,
   type Invoice,
   type InvoiceLine,
   type ServiceItem,
-} from "@/lib/admin-types";
+} from "@/lib/admin/types";
 import { InvoiceEditor } from "@/components/admin/InvoiceEditor";
 import { InvoiceDocument } from "@/components/admin/InvoiceDocument";
 

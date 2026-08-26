@@ -194,6 +194,10 @@ export function RadioCards<T extends string>({
             <motion.label
               key={option.value}
               whileTap={reduit ? undefined : { scale: 0.98 }}
+              // Motion pose `tabindex="0"` sur tout element portant `whileTap`.
+              // Un <label> n'a pas de role : l'arret annoncait le texte sans dire
+              // que c'est un bouton radio, avant que le radio le reannonce.
+              tabIndex={-1}
               animate={reduit ? undefined : { scale: selected ? 1.015 : 1 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
               className={`blk-flat flex min-h-[44px] cursor-pointer items-start gap-3 p-4 transition-colors ${
@@ -260,6 +264,10 @@ export function CheckboxCards<T extends string>({
             <motion.label
               key={option.value}
               whileTap={reduit ? undefined : { scale: 0.99 }}
+              // Motion pose `tabindex="0"` sur tout element portant `whileTap`.
+              // Un <label> n'a pas de role : l'arret annoncait le texte sans dire
+              // que c'est un bouton radio, avant que le radio le reannonce.
+              tabIndex={-1}
               className={`blk-flat flex min-h-[44px] cursor-pointer items-start gap-4 p-4 transition-colors ${
                 checked ? "border-accent" : ""
               }`}

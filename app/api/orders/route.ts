@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { sendOrderEmails } from "@/lib/mail";
 import { raccordeCommande } from "@/lib/prospection/inscription";
 import { clientIp, hashIp, isRateLimited } from "@/lib/rate-limit";
-import { serviceClient } from "@/lib/supabase";
+import { serviceClient } from "@/lib/supabase/clients";
 import { orderSchemaChecked } from "@/lib/validation";
 
 /**

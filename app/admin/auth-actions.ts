@@ -1,8 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { adminEmails } from "@/lib/supabase";
-import { supabaseServer } from "@/lib/supabase-server";
+import { adminEmails } from "@/lib/supabase/clients";
+import { supabaseServer } from "@/lib/supabase/server";
 
 export type LoginState = { error?: string };
 export type PasswordState = { error?: string };

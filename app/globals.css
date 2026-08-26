@@ -73,17 +73,13 @@ body {
 }
 
 /* Titre etroit, pour les colonnes serrees ou un titre large deborderait. */
-.title-serre {
-  --title-width: 88;
-}
-
 /*
   Mot mis en avant dans un titre : il passe en violet plein.
   Pas de degrade - deux teintes qui se fondent dans un titre etaient
   precisement le tic visuel a supprimer.
 */
 .grad-text {
-  color: var(--violet);
+  color: var(--violet-encre);
 }
 
 /*
@@ -204,17 +200,6 @@ body {
     linear-gradient(to right, var(--line) 1px, transparent 1px),
     linear-gradient(to bottom, var(--line) 1px, transparent 1px);
   background-size: 72px 72px;
-}
-
-/*
-  Bloc signature : l'aplat sombre a coins arrondis du logo, decline en
-  interface. C'est le seul arrondi du site, tout le reste est a angle droit,
-  ce qui le garde distinctif.
-*/
-.bloc-marque {
-  background: var(--nuit);
-  color: var(--neige);
-  border-radius: 22px;
 }
 
 /*

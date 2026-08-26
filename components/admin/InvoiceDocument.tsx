@@ -3,9 +3,9 @@ import {
   formatEuros,
   type Invoice,
   type InvoiceLine,
-} from "@/lib/admin-types";
-import { issuerSnapshot, lineTotalCents } from "@/lib/invoice";
-import { RETRACTATION_INFO, retractationForm } from "@/lib/retractation";
+} from "@/lib/admin/types";
+import { issuerSnapshot, lineTotalCents } from "@/lib/facturation/invoice";
+import { RETRACTATION_INFO, retractationForm } from "@/lib/facturation/retractation";
 import { SITE } from "@/lib/site";
 
 /**

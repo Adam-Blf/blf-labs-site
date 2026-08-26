@@ -1,5 +1,5 @@
-import { supabaseServer } from "@/lib/supabase-server";
-import { ORDER_COLUMNS, type Lead } from "@/lib/admin-types";
+import { supabaseServer } from "@/lib/supabase/server";
+import { ORDER_COLUMNS, type Lead } from "@/lib/admin/types";
 import { KanbanBoard, type KanbanItem } from "@/components/admin/KanbanBoard";
 import { updateLeadStatus } from "@/app/admin/actions";
 
