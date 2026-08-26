@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { basculerTheme, useThemeSombre } from "@/lib/useTheme";
+import { basculerTheme, useThemeSombre } from "@/lib/ui/useTheme";
 
 /**
  * Bascule clair / sombre.

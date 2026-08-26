@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { formatEuros, type ServiceItem } from "@/lib/admin-types";
+import { formatEuros, type ServiceItem } from "@/lib/admin/types";
 import {
   createServiceItem,
   deleteServiceItem,

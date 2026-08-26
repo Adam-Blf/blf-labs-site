@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import { serviceClient } from "@/lib/supabase";
+import { serviceClient } from "@/lib/supabase/clients";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

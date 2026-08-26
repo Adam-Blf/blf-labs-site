@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { supabaseServer } from "@/lib/supabase-server";
+import { supabaseServer } from "@/lib/supabase/server";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { Logo } from "@/components/brand/Logo";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
@@ -73,7 +73,7 @@ export default async function AdminLayout({
           </div>
         </div>
       </header>
-      <main className="relative mx-auto max-w-6xl px-6 py-10">{children}</main>
+      <main id="contenu" className="relative mx-auto max-w-6xl px-6 py-10">{children}</main>
     </div>
   );
 }

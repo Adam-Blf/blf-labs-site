@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { serviceClient } from "@/lib/supabase";
+import { serviceClient } from "@/lib/supabase/clients";
 import { litJeton } from "@/lib/prospection/jeton";
 
 export const runtime = "nodejs";

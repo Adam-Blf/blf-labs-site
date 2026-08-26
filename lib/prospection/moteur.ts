@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { serviceClient } from "@/lib/supabase";
+import { serviceClient } from "@/lib/supabase/clients";
 import { SITE } from "@/lib/site";
 import { prepare } from "@/lib/prospection/gabarit";
 import { trouveSequence, type Sequence } from "@/content/emails/sequences";

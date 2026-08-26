@@ -34,9 +34,12 @@
 
   Contrastes mesures (ratio WCAG) :
     Clair  : #111016 sur #f7f7fa = 17,2:1 | gris #56525e = 6,8:1
+             --faint #736d80 sur #f7f7fa = 4,6:1 (AA texte)
+             --violet-encre #a83fc6 sur #f7f7fa = 4,7:1 (AA texte)
              #111016 sur violet  =  8,1:1 | #111016 sur citron = 15,4:1
     Sombre : #edeef1 sur #111016 = 16,3:1 | gris #9a94a6 = 7,4:1
              --faint #837e91 sur #111016 = 4,8:1 (AA texte)
+             --violet-encre #cb6ce6 sur #111016 = 6,2:1 (AA texte)
              #111016 sur violet  =  8,1:1 | #111016 sur citron = 15,4:1 (identiques,
              puisque les aplats et leur encre ne bougent pas)
 */
@@ -48,13 +51,27 @@
   --neige: #edeef1;
   --violet: #cb6ce6;
   --violet-clair: #e292ff;
+  /*
+    Le violet, assombri pour l'usage en TEXTE seulement. #cb6ce6 est une
+    teinte claire : en aplat avec encre noire il rend 8,1:1, mais pose en
+    texte sur --paper il tombe a 2,88:1, sous les 3:1 exiges d'un grand
+    titre. Il portait le H1 de presque toutes les pages.
+  */
+  --violet-encre: #a83fc6;
   --citron: #d9fb50;
 
   --paper: #f7f7fa;
   --ink: #111016;
   --muted: #56525e;
   --muted-strong: #2b2833;
-  --faint: #9a94a6;
+  /*
+    Mesure a 4,64:1 sur --paper et 4,97:1 sur blanc. La valeur precedente,
+    #9a94a6, rendait 2,74:1 : sous le seuil AA de 4,5:1 pour du texte courant,
+    sur les surtitres de section, le pied de page et le fil d'Ariane, donc sur
+    presque chaque page. Le mode SOMBRE avait recu ce meme correctif et son
+    commentaire plus bas le raconte - le mode clair ne l'avait jamais recu.
+  */
+  --faint: #736d80;
 
   /* Encres posees sur les aplats. Invariantes, elles aussi. */
   --accent: var(--violet);
@@ -97,6 +114,13 @@
      les titres du footer et le fil d'Ariane. Remonte a #837e91 = 4,83:1 (WCAG AA
      texte normal), tout en restant plus discret que --muted (#9a94a6, 6,45:1). */
   --faint: #837e91;
+
+  /* Le violet de marque, EN TEXTE, est lisible sur fond sombre : #cb6ce6 y rend
+     6,15:1. C'est en clair qu'il echoue, a 2,88:1. Le jeton d'encre bascule
+     donc par mode, comme --faint juste au-dessus : garder la valeur assombrie
+     du mode clair aurait fait retomber le H1 de chaque page a 3,78:1, une
+     REGRESSION par rapport a l'etat qu'on venait corriger. */
+  --violet-encre: #cb6ce6;
 
   /* Les quatre couleurs restent identiques : c'est ce qui tient l'identite
      d'un mode a l'autre. Seuls les fonds et l'encre s'inversent. */

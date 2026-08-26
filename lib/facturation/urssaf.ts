@@ -1,4 +1,4 @@
-import type { Invoice } from "@/lib/admin-types";
+import type { Invoice } from "@/lib/admin/types";
 
 /**
  * Taux de cotisation micro-entreprise. BLF Lab's = activite liberale non

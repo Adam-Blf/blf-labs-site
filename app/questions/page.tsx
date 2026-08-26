@@ -18,11 +18,11 @@ export default function QuestionsPage() {
     <>
       <Header />
       <FaqJsonLd />
-      <main className="pt-24">
+      <main id="contenu" className="pt-24">
         <div className="mx-auto max-w-6xl px-4 pt-8 sm:px-6 lg:px-8">
           <Breadcrumb miettes={[{ nom: "Questions fréquentes" }]} />
         </div>
-        <Faq />
+        <Faq niveau={1} />
         <CtaBand />
       </main>
       <Footer />

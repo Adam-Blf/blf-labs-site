@@ -2,16 +2,16 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { db } from "@/lib/admin-db";
+import { db } from "@/lib/admin/db";
 import { generatePaymentLink } from "@/app/admin/actions-paiement";
 import {
   defaultPaymentTerms,
   dueDateFrom,
   issuerSnapshot,
   validerDateEncaissement,
-} from "@/lib/invoice";
-import { isSirenOrSiret } from "@/lib/siren";
-import type { InvoiceKind, InvoiceStatus } from "@/lib/admin-types";
+} from "@/lib/facturation/invoice";
+import { isSirenOrSiret } from "@/lib/facturation/siren";
+import type { InvoiceKind, InvoiceStatus } from "@/lib/admin/types";
 
 /**
  * Mutations du back-office - devis, factures et paiements.

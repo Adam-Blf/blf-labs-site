@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import type { Invoice } from "@/lib/admin-types";
+import type { Invoice } from "@/lib/admin/types";
 import { SITE } from "@/lib/site";
 
 /**

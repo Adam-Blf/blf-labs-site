@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { serviceClient } from "@/lib/supabase";
+import { serviceClient } from "@/lib/supabase/clients";
 import { litJeton } from "@/lib/prospection/jeton";
 
 /**

@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { formatEuros, type Project, type ProjectTask } from "@/lib/admin-types";
+import { formatEuros, type Project, type ProjectTask } from "@/lib/admin/types";
 import { addTask, createProject, toggleTask } from "@/app/admin/actions";
 
 /** Creation d'un projet et gestion des taches (checklist). Separe du Kanban :

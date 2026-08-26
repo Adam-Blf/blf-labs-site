@@ -125,6 +125,7 @@ export function Header() {
               type="button"
               aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
               aria-expanded={open}
+              aria-controls="menu-mobile"
               onClick={() => setOpen((value) => !value)}
               className="flex h-11 w-11 items-center justify-center rounded-full text-ink md:hidden"
             >
@@ -148,7 +149,10 @@ export function Header() {
         </div>
 
         {open && (
-          <ul className="flex flex-col gap-1 border-t border-line px-5 py-4 md:hidden">
+          <ul
+            id="menu-mobile"
+            className="flex flex-col gap-1 border-t border-line px-5 py-4 md:hidden"
+          >
             {NAV.map((item) => (
               <li key={item.href}>
                 <Link

@@ -1,5 +1,5 @@
 import { type NextRequest } from "next/server";
-import { updateAdminSession } from "@/lib/supabase-proxy";
+import { updateAdminSession } from "@/lib/supabase/proxy";
 
 /**
  * Proxy (ex-middleware, renomme en Next 16). Restreint au back-office : le

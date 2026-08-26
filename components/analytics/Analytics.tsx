@@ -1,8 +1,8 @@
 "use client";
 
 import Script from "next/script";
-import { identifiantMesure } from "@/lib/consent";
-import { useConsentement } from "@/lib/useConsent";
+import { identifiantMesure } from "@/lib/consentement/consent";
+import { useConsentement } from "@/lib/consentement/useConsent";
 
 /**
  * Chargeur de Google Analytics 4, strictement conditionne au consentement.

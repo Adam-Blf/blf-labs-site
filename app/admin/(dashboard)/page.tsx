@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { supabaseServer } from "@/lib/supabase-server";
+import { supabaseServer } from "@/lib/supabase/server";
 import {
   INVOICE_COLUMNS,
   INVOICE_KIND_LABELS,
@@ -7,8 +7,8 @@ import {
   formatEuros,
   type Invoice,
   type Lead,
-} from "@/lib/admin-types";
-import { tresorerie } from "@/lib/urssaf";
+} from "@/lib/admin/types";
+import { tresorerie } from "@/lib/facturation/urssaf";
 import { PageHeading } from "@/components/admin/PageHeading";
 import { Vide } from "@/components/admin/Vide";
 

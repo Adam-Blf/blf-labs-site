@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { validerDateEncaissement } from "@/lib/invoice";
+import { validerDateEncaissement } from "@/lib/facturation/invoice";
 
 /**
  * La date d'encaissement commande le trimestre declare a l'URSSAF et la ligne

@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { supabaseServer } from "@/lib/supabase-server";
-import { INVOICE_COLUMNS, type Invoice, type InvoiceLine } from "@/lib/admin-types";
-import { renderInvoicePdf } from "@/lib/invoice-pdf";
+import { supabaseServer } from "@/lib/supabase/server";
+import { INVOICE_COLUMNS, type Invoice, type InvoiceLine } from "@/lib/admin/types";
+import { renderInvoicePdf } from "@/lib/facturation/invoice-pdf";
 
 // pdf-lib a besoin du runtime Node (pas Edge).
 export const runtime = "nodejs";

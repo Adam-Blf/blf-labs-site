@@ -1,13 +1,13 @@
 import { PDFDocument, StandardFonts, rgb, type PDFFont } from "pdf-lib";
 import { SITE } from "@/lib/site";
-import { issuerSnapshot, lineTotalCents } from "@/lib/invoice";
-import { RETRACTATION_INFO, retractationForm } from "@/lib/retractation";
-import { LOGO_PNG_BASE64, LOGO_PNG_WIDTH, LOGO_PNG_HEIGHT } from "@/lib/logo";
+import { issuerSnapshot, lineTotalCents } from "@/lib/facturation/invoice";
+import { RETRACTATION_INFO, retractationForm } from "@/lib/facturation/retractation";
+import { LOGO_PNG_BASE64, LOGO_PNG_WIDTH, LOGO_PNG_HEIGHT } from "@/lib/ui/logo";
 import {
   INVOICE_KIND_LABELS,
   type Invoice,
   type InvoiceLine,
-} from "@/lib/admin-types";
+} from "@/lib/admin/types";
 
 /**
  * Rendu PDF d'un devis / d'une facture, avec toutes les mentions obligatoires.

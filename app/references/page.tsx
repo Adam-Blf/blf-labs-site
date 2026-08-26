@@ -16,13 +16,13 @@ export default function ReferencesPage() {
   return (
     <>
       <Header />
-      <main>
+      <main id="contenu">
         <div className="mx-auto max-w-6xl px-4 pt-8 sm:px-6 lg:px-8">
           <Breadcrumb miettes={[{ nom: "Réalisations" }]} />
         </div>
         {/* `compact` reste faux ici : la page dediee montre le detail de chaque
             projet, la version courte est reservee a l'accueil. */}
-        <ReferencesSection />
+        <ReferencesSection niveau={1} />
         <CtaBand />
       </main>
       <Footer />

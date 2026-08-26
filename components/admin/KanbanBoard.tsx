@@ -10,7 +10,7 @@ import {
   useDroppable,
   type DragEndEvent,
 } from "@dnd-kit/core";
-import type { Column } from "@/lib/admin-types";
+import type { Column } from "@/lib/admin/types";
 
 /**
  * Tableau Kanban generique, partage entre les leads et les projets. Les colonnes

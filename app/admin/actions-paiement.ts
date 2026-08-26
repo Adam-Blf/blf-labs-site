@@ -2,10 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
-import { db } from "@/lib/admin-db";
+import { db } from "@/lib/admin/db";
 import { createInvoicePaymentLink } from "@/lib/stripe";
 import { sendInvoicePaymentEmail } from "@/lib/mail";
-import { formatEuros, INVOICE_COLUMNS, type Invoice } from "@/lib/admin-types";
+import { formatEuros, INVOICE_COLUMNS, type Invoice } from "@/lib/admin/types";
 
 /**
  * LIEN DE PAIEMENT ET RELANCE PAR EMAIL.

@@ -1,10 +1,10 @@
-import { supabaseServer } from "@/lib/supabase-server";
+import { supabaseServer } from "@/lib/supabase/server";
 import {
   INVOICE_COLUMNS,
   SERVICE_ITEM_COLUMNS,
   type Invoice,
   type ServiceItem,
-} from "@/lib/admin-types";
+} from "@/lib/admin/types";
 import { InvoicesPanel } from "@/components/admin/InvoicesPanel";
 import { ServiceItemsPanel } from "@/components/admin/ServiceItemsPanel";
 

@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import type Stripe from "stripe";
 import { getStripe } from "@/lib/stripe";
-import { serviceClient } from "@/lib/supabase";
+import { serviceClient } from "@/lib/supabase/clients";
 
 // Stripe a besoin du CORPS BRUT et du runtime Node pour verifier la signature.
 export const runtime = "nodejs";

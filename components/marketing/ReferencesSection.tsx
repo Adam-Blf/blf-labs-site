@@ -15,14 +15,28 @@ import { REFERENCES } from "@/content/references";
  * ligne puis convertie en WebP. La vignette s'agrandit legerement au survol et
  * son voile s'estompe : le mouvement sert a designer, pas a decorer.
  */
-export function ReferencesSection({ compact = false }: { compact?: boolean }) {
+export function ReferencesSection({
+  compact = false,
+  niveau = 2,
+}: {
+  compact?: boolean;
+  /**
+   * Niveau du titre. La section est montee sur l'accueil, ou le Hero porte
+   * deja le <h1>, et sur sa page dediee, ou elle est le sujet de la page.
+   * Sans ce reglage, la page dediee n'avait aucun <h1> : naviguer par titres,
+   * le geste le plus courant au lecteur d'ecran, n'y donnait aucun point
+   * d'entree.
+   */
+  niveau?: 1 | 2;
+}) {
+  const Titre = niveau === 1 ? "h1" : "h2";
   return (
     <section id="réalisations" className="relative">
       <div className="section mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-end justify-between gap-6">
-          <h2 className="title max-w-2xl text-4xl sm:text-5xl lg:text-6xl">
+          <Titre className="title max-w-2xl text-4xl sm:text-5xl lg:text-6xl">
             Déjà <span className="grad-text">en ligne</span>
-          </h2>
+          </Titre>
           <p className="max-w-sm font-light text-muted">
             Des projets livrés et consultables, pas des maquettes.
           </p>

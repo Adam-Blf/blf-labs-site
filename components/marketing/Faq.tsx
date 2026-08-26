@@ -16,15 +16,27 @@ import { FAQ } from "@/content/faq";
  * l'animation de fermeture, mais l'attribut `hidden` du bouton renseigne les
  * lecteurs d'ecran sans attendre.
  */
-export function Faq() {
+export function Faq({
+  niveau = 2,
+}: {
+  /**
+   * Niveau du titre. La section est montee sur l'accueil, ou le Hero porte
+   * deja le <h1>, et sur sa page dediee, ou elle est le sujet de la page.
+   * Sans ce reglage, la page dediee n'avait aucun <h1> : naviguer par titres,
+   * le geste le plus courant au lecteur d'ecran, n'y donnait aucun point
+   * d'entree.
+   */
+  niveau?: 1 | 2;
+} = {}) {
+  const Titre = niveau === 1 ? "h1" : "h2";
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
     <section id="faq" className="rule-b">
       <div className="section mx-auto max-w-3xl px-5">
-        <h2 className="title text-4xl sm:text-5xl lg:text-6xl">
+        <Titre className="title text-4xl sm:text-5xl lg:text-6xl">
           Ce qu&rsquo;on <span className="grad-text">nous demande</span>
-        </h2>
+        </Titre>
 
         <ul className="mt-10 space-y-3">
           {FAQ.map((item, index) => {

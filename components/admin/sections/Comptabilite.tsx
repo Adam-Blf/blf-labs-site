@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { supabaseServer } from "@/lib/supabase-server";
-import { INVOICE_COLUMNS, formatEuros, type Invoice } from "@/lib/admin-types";
+import { supabaseServer } from "@/lib/supabase/server";
+import { INVOICE_COLUMNS, formatEuros, type Invoice } from "@/lib/admin/types";
 import {
   URSSAF_RATE_BNC,
   CFP_RATE,
@@ -8,7 +8,7 @@ import {
   recapUrssaf,
   tresorerie,
   type Granularite,
-} from "@/lib/urssaf";
+} from "@/lib/facturation/urssaf";
 
 /** Comptabilite : tresorerie, recap URSSAF et livre des recettes, derives des
  * factures. Prepare les montants a declarer ; ne soumet rien a l'URSSAF. */

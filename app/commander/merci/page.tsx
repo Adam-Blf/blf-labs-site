@@ -35,7 +35,7 @@ export default function MerciPage() {
     <>
       <Header />
 
-      <main className="flex flex-1 items-center">
+      <main id="contenu" className="flex flex-1 items-center">
         <div className="section mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8">
           <p className="mono text-sm text-muted">Demande enregistrée</p>
 
