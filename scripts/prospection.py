@@ -819,7 +819,63 @@ def _verifie_une(ligne: dict) -> tuple[dict, str, str, str]:
     return ligne, "", "", ""
 
 
-def verifie(lignes: list[dict], parallele: int = 24) -> None:
+def _ecarte_les_domaines_partages(lignes: list[dict]) -> None:
+    """Retire les sites revendiques par PLUSIEURS structures differentes.
+
+    LE MOTIF QUE LES GARDES PRECEDENTES NE POUVAIENT PAS VOIR.
+
+    Chaque devinette est evaluee isolement, et confirmee isolement : la page
+    parle bien d'un « centre communal d'action sociale », donc elle passe. Vue
+    ligne a ligne, aucune anomalie. Vue d'ensemble, `centre-communal-action-
+    sociale.fr` etait rattache a DIX-SEPT structures differentes, `autoecole.fr`
+    a cinq, `etudiants.com` a quatre.
+
+    Ce sont des noms de METIER generiques, et aucune liste de mots interdits ne
+    les rattrape : le nom legal de la structure EST le nom du metier, et il n'y
+    a rien de suspect dans un mot pris seul.
+
+    Le signal, lui, est mecanique : **un domaine revendique par plusieurs
+    structures distinctes n'appartient a aucune d'elles.** C'est un controle
+    GLOBAL, et c'est pour cela qu'il passe apres la recolte et non pendant :
+    une garde locale ne peut pas voir une collision entre deux lignes qu'elle
+    n'examine jamais ensemble.
+
+    Le seuil est a DEUX, pas a trois. Deux etablissements d'un meme groupe
+    peuvent legitimement partager un site, et on en ecarte alors a tort - mais
+    la ligne retombe a « a verifier », qui est l'etat SUR, et le motif est
+    ecrit dans la note plutot que perdu. Un faux positif garde, lui, sort le
+    prospect de la liste sans rien dire.
+    """
+    par_domaine: dict[str, list[dict]] = {}
+    for l in lignes:
+        site = (l.get("site_web") or "").strip()
+        if not site:
+            continue
+        domaine = site.split("//", 1)[-1].split("/", 1)[0].lower()
+        par_domaine.setdefault(domaine, []).append(l)
+
+    ecartes = 0
+    for domaine, groupe in par_domaine.items():
+        sirens = {l.get("siren") for l in groupe}
+        if len(sirens) < 2:
+            continue
+        for l in groupe:
+            l["site_web"] = ""
+            l["a_deja_un_site"] = "à vérifier"
+            l["email_generique"] = ""
+            note = (l.get("note") or "").strip()
+            motif = "site ecarte : {} etait rattache a {} structures".format(
+                domaine, len(sirens))
+            l["note"] = (note + " | " + motif) if note else motif
+            ecartes += 1
+    if ecartes:
+        print("  {} lignes ramenees a « a verifier » : leur domaine etait "
+              "partage par plusieurs structures.".format(ecartes),
+              file=sys.stderr)
+
+
+def verifie(lignes: list[dict], parallele: int = 24,
+            sortie: str = "") -> None:
     """Renseigne `site_web` et `a_deja_un_site`.
 
     N'ecrit JAMAIS « non ». On peut prouver qu'un site existe, jamais qu'il
@@ -832,6 +888,13 @@ def verifie(lignes: list[dict], parallele: int = 24) -> None:
     Le parallelisme reste modere - deux douzaines de fils - et chaque requete
     porte un agent utilisateur explicite : on interroge des serveurs qui n'ont
     rien demande, autant le faire discretement.
+
+    ET IL ECRIT AU FIL DE L'EAU. Une passe sur 3 400 structures dure environ
+    une demi-heure. Ne materialiser le resultat qu'a la derniere ligne
+    transforme la moindre interruption - une coupure, un arret, une erreur au
+    dernier pourcent - en perte totale, alors que le travail est fait et tient
+    en memoire. La recherche avait deja paye cette lecon le meme jour, la
+    verification l'ignorait encore.
     """
     from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -849,6 +912,8 @@ def verifie(lignes: list[dict], parallele: int = 24) -> None:
                 ligne, trouve, generique, quelconque = taches[tache], "", "", ""
             ligne["site_web"] = trouve
             ligne["a_deja_un_site"] = "oui" if trouve else "à vérifier"
+            if sortie and n % 100 == 0:
+                ecris(sortie, lignes)
             if generique:
                 ligne["email_generique"] = generique
                 avec_email += 1
@@ -865,6 +930,8 @@ def verifie(lignes: list[dict], parallele: int = 24) -> None:
             if n % 200 == 0:
                 print("  {} / {} verifiees, {} sites, {} emails".format(
                     n, len(a_faire), confirmes, avec_email), file=sys.stderr)
+
+    _ecarte_les_domaines_partages(lignes)
 
     print("{} sites confirmes sur {}.".format(confirmes, len(a_faire)),
           file=sys.stderr)
@@ -1074,7 +1141,7 @@ def main() -> int:
 
     if a.commande == "verifier":
         lignes = lis(a.fichier)
-        verifie(lignes, a.parallele)
+        verifie(lignes, a.parallele, a.fichier)
         ecris(a.fichier, lignes)
         return 0
 
