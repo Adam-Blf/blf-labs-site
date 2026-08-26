@@ -52,6 +52,8 @@ import sys
 import time
 import urllib.error
 import urllib.parse
+import concurrent.futures
+import threading
 import urllib.request
 
 API = "https://recherche-entreprises.api.gouv.fr/search"
@@ -197,24 +199,166 @@ def interroge(params: dict, essais: int = 3) -> dict:
     return {"_erreur": "epuise"}
 
 
-def cherche(perimetre: dict, par_section: int, inclure_ei: bool) -> list[dict]:
-    lignes: list[dict] = []
-    vus: set[str] = set()
+# Les 101 departements. La Corse porte 2A et 2B et non 20, et les cinq
+# departements d'outre-mer ont un code a trois chiffres : une simple boucle de
+# 1 a 95 en manque sept, dont la Reunion et la Martinique.
+DEPARTEMENTS = (
+    ["{:02d}".format(i) for i in range(1, 20)]
+    + ["2A", "2B"]
+    + ["{:02d}".format(i) for i in range(21, 96)]
+    + ["971", "972", "973", "974", "976"]
+)
 
-    for section, (libelle, proposition) in SECTIONS.items():
-        page, pris = 1, 0
+
+class Cadence:
+    """Limiteur de debit partage entre les fils.
+
+    L'API Recherche d'entreprises est un service public gratuit, sans cle, et
+    sa limite documentee est de 7 appels par seconde. On se tient volontairement
+    en dessous : un outil de prospection qui fait tomber l'annuaire public prive
+    tout le monde de la donnee, y compris nous.
+    """
+
+    def __init__(self, par_seconde: float) -> None:
+        self._intervalle = 1.0 / par_seconde
+        self._verrou = threading.Lock()
+        self._prochain = 0.0
+
+    def attends(self) -> None:
+        with self._verrou:
+            maintenant = time.monotonic()
+            if self._prochain > maintenant:
+                time.sleep(self._prochain - maintenant)
+                maintenant = time.monotonic()
+            self._prochain = maintenant + self._intervalle
+
+
+# Niches nommees, avec les codes NAF qui les delimitent VRAIMENT.
+#
+# POURQUOI CES CODES ET PAS LES SECTIONS.
+#
+# Une section d'activite est trop large pour preparer un message. La section Q,
+# « Sante humaine et action sociale », contient l'hopital, l'EHPAD, l'infirmier
+# liberal et le sophrologue : quatre metiers qui n'achetent pas la meme chose,
+# et dont trois n'achetent rien a un studio de deux personnes. Le code NAF
+# descend au metier, ce qui est le niveau ou un message cesse d'etre generique.
+NICHES = {
+    "bien-etre": (
+        "Praticiens du bien-etre et therapies",
+        "8690F,8690E,8690D",
+        "Prise de rendez-vous avec gestion des creneaux, rappel automatique la "
+        "veille et remise en ligne immediate du creneau libere. Exactement ce "
+        "qui a ete livre et mesure pour un cabinet d'hypnose.",
+    ),
+    "coiffure-esthetique": (
+        "Coiffure et esthetique",
+        "9602A,9602B",
+        "Prise de rendez-vous en ligne et rappel automatique, pour que le "
+        "telephone cesse de sonner pendant les prestations.",
+    ),
+    "batiment": (
+        "Artisans du batiment",
+        "4322A,4322B,4321A,4399C,4332A,4334Z,4391B",
+        "Formulaire de devis structure - type de travaux, adresse, photo, "
+        "delai - qui qualifie avant l'appel et supprime les deplacements de "
+        "chiffrage inutiles.",
+    ),
+    "formation": (
+        "Organismes de formation et enseignement prive",
+        "8559A,8559B,8551Z,8552Z,8553Z",
+        "Inscriptions en ligne avec paiement, plannings et documents a "
+        "telecharger, au lieu d'un echange de courriels par famille.",
+    ),
+    "restauration": (
+        "Restauration",
+        "5610A,5610C,5630Z",
+        "Reservation en ligne, carte a jour sans repasser par un prestataire, "
+        "et empreinte bancaire sur les grandes tablees.",
+    ),
+    "immobilier": (
+        "Agences immobilieres et syndics",
+        "6831Z,6832A,6832B",
+        "Portail de biens a jour, prise de rendez-vous de visite, et espace "
+        "proprietaire pour les documents recurrents.",
+    ),
+}
+
+
+def _perimetres(perimetre: dict) -> list[dict]:
+    """Decoupe le perimetre demande en requetes qui tiennent dans l'API.
+
+    POURQUOI CE DECOUPAGE EXISTE.
+
+    La pagination de l'API s'arrete a la page 400, soit 10 000 fiches par
+    REQUETE. Une recherche nationale sur une section d'activite bute donc a
+    10 000, et rien ne le signale : on recoit un fichier plein, simplement
+    tronque. Neuf sections plafonnaient ainsi le gisement national a 90 000,
+    et la version precedente s'arretait bien plus tot encore.
+
+    Partitionner par departement supprime le mur : chaque couple
+    departement-section a son propre budget de 10 000, et les departements
+    sont disjoints, donc aucune fiche n'est comptee deux fois pour cette
+    raison. Le dedoublonnage sur le SIREN reste en place pour les autres.
+    """
+    if perimetre.get("departement"):
+        return [{"departement": d.strip()}
+                for d in perimetre["departement"].split(",") if d.strip()]
+    if perimetre.get("region"):
+        # Une region ne se decoupe pas ici : l'API n'accepte pas les deux
+        # criteres ensemble, et une region depasse rarement le plafond.
+        return [perimetre]
+    return [{"departement": d} for d in DEPARTEMENTS]
+
+
+def cherche(perimetre: dict, par_section: int, inclure_ei: bool,
+            parallele: int = 5, sortie: str = "",
+            niche: str = "") -> list[dict]:
+    """Interroge l'annuaire public, un couple departement-section a la fois.
+
+    `par_section` s'entend PAR DEPARTEMENT quand le perimetre en couvre
+    plusieurs. C'est ce qui permet d'annoncer un volume atteignable : 120 par
+    section et par departement font 101 x 9 x 120, soit environ 109 000 fiches
+    avant dedoublonnage, la ou l'ancien plafond global rendait 300 par section.
+    """
+    zones = _perimetres(perimetre)
+    if niche:
+        libelle, codes, proposition = NICHES[niche]
+        cibles = {c: (libelle, proposition) for c in codes.split(",")}
+        cle_api = "activite_principale"
+    else:
+        cibles = SECTIONS
+        cle_api = "section_activite_principale"
+    taches = [(z, c) for z in zones for c in cibles]
+    # DEUX par seconde, pas cinq. La limite documentee est de sept, et cinq
+    # paraissait donc prudent : un tir soutenu de quarante-cinq minutes a
+    # pourtant fini par se faire fermer la connexion par l'hote. Une limite
+    # affichee vaut par requete instantanee, pas par heure de martelement, et
+    # ce service est gratuit, public, et utilise par d'autres.
+    cadence = Cadence(par_seconde=2.0)
+    verrou = threading.Lock()
+    vus: set[str] = set()
+    lignes: list[dict] = []
+    faits = [0]
+
+    def une_tache(zone_section) -> None:
+        zone, section = zone_section
+        libelle, proposition = cibles[section]
+        page, pris, recolte = 1, 0, []
+
         while pris < par_section:
+            cadence.attends()
             data = interroge({
-                **perimetre,
-                "section_activite_principale": section,
+                **zone,
+                cle_api: section,
                 "etat_administratif": "A",
                 "tranche_effectif_salarie": "01,02,03,11",
                 "per_page": 25,
                 "page": page,
             })
             if "_erreur" in data:
-                print("  ! section {} : {}".format(section, data["_erreur"]),
-                      file=sys.stderr)
+                print("  ! {} section {} : {}".format(
+                    zone.get("departement") or zone.get("region"), section,
+                    data["_erreur"]), file=sys.stderr)
                 break
             resultats = data.get("results") or []
             if not resultats:
@@ -222,18 +366,17 @@ def cherche(perimetre: dict, par_section: int, inclure_ei: bool) -> list[dict]:
 
             for e in resultats:
                 siren = e.get("siren")
-                if not siren or siren in vus:
+                if not siren:
                     continue
                 if (not inclure_ei
                         and e.get("nature_juridique") == NATURE_PERSONNE_PHYSIQUE):
                     continue
-                siege = e.get("siege") or {}
                 if e.get("statut_diffusion") != DIFFUSIBLE:
                     continue
+                siege = e.get("siege") or {}
                 if siege.get("statut_diffusion_etablissement") != DIFFUSIBLE:
                     continue
-                vus.add(siren)
-                lignes.append({
+                recolte.append({
                     "siren": siren,
                     "organisation": e.get("nom_complet") or "",
                     "secteur": libelle,
@@ -259,11 +402,41 @@ def cherche(perimetre: dict, par_section: int, inclure_ei: bool) -> list[dict]:
 
             if page * 25 >= data.get("total_results", 0):
                 break
+            # La pagination de l'API s'arrete la. Continuer rendrait une erreur,
+            # pas une page vide : sans cette borne, chaque couple sature en
+            # renvoyant une erreur au lieu de passer au suivant.
+            if page >= 400:
+                break
             page += 1
-            time.sleep(PAUSE)
 
-        print("  {:10} cumul {}".format(section, len(lignes)), file=sys.stderr)
-        time.sleep(PAUSE)
+        # Le dedoublonnage se fait au moment du versement, pas pendant la
+        # recolte : garder le verrou le temps d'une requete reseau serialiserait
+        # tous les fils et annulerait le parallelisme.
+        with verrou:
+            for ligne in recolte:
+                if ligne["siren"] in vus:
+                    continue
+                vus.add(ligne["siren"])
+                lignes.append(ligne)
+            faits[0] += 1
+            # ECRITURE AU FIL DE L'EAU, et ce n'est pas un confort.
+            #
+            # La version precedente n'ecrivait qu'a la toute fin. Une recherche
+            # nationale de quarante-cinq minutes s'est fait fermer la connexion
+            # par l'API et a ete arretee : tout le travail deja fait est parti
+            # avec, alors qu'il etait en memoire, complet et utilisable.
+            #
+            # Un traitement long qui ne materialise rien avant sa derniere
+            # ligne transforme n'importe quel incident en perte totale.
+            if sortie and (faits[0] % 25 == 0 or faits[0] == len(taches)):
+                ecris(sortie, lignes)
+            if faits[0] % 25 == 0 or faits[0] == len(taches):
+                print("  {}/{} requetes, {} structures{}".format(
+                    faits[0], len(taches), len(lignes),
+                    " (ecrites)" if sortie else ""), file=sys.stderr)
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=parallele) as pool:
+        list(pool.map(une_tache, taches))
 
     return lignes
 
@@ -353,28 +526,141 @@ def cherche_bde(perimetre: dict, par_requete: int, inclure_ei: bool) -> list[dic
 # --------------------------------------------------------------------------
 
 def jetons(nom: str) -> list[str]:
+    """Mots distinctifs d'un nom, DEDOUBLONNES et dans l'ordre.
+
+    Le dedoublonnage n'est pas cosmetique. L'annuaire rend souvent le nom
+    legal suivi du nom d'usage entre parentheses - « GO SPORT FRANCE (GO
+    SPORT) », « NELL KA (NELL KA) » - et sans lui les devinettes produisaient
+    `sportsport.com` et `nellnell.com`, des domaines qui n'existent pour
+    personne quand ils ne sont pas pris par un tiers.
+    """
     n = re.sub(r"[^a-z0-9 ]", " ", nom.lower())
-    return [m for m in n.split() if len(m) > 2 and m not in MOTS_VIDES]
+    out: list[str] = []
+    for m in n.split():
+        if len(m) > 2 and m not in MOTS_VIDES and m not in out:
+            out.append(m)
+    return out
+
+
+# Mots de METIER, trop courants pour fonder a eux seuls une devinette de
+# domaine. `plomberie.fr` ou `boulangerie.com` existent et appartiennent a des
+# tiers : les essayer seuls ne coute pas seulement des requetes inutiles, ca
+# fabrique un faux positif qui marque un vrai prospect comme deja equipe et le
+# SORT de la liste. C'est la pire des deux erreurs, et elle est silencieuse.
+#
+# Ils restent parfaitement valables COMBINES a un autre mot :
+# `plomberie-martin.fr` est une devinette raisonnable.
+MOTS_TROP_COURANTS = {
+    "plomberie", "boulangerie", "patisserie", "boucherie", "charcuterie",
+    "coiffure", "esthetique", "restaurant", "brasserie", "pizzeria", "hotel",
+    "garage", "auto", "automobile", "taxi", "transport", "transports",
+    "batiment", "construction", "renovation", "menuiserie", "electricite",
+    "peinture", "maconnerie", "couverture", "chauffage", "isolation",
+    "immobilier", "agence", "conseil", "services", "service", "solutions",
+    "consulting", "formation", "developpement", "distribution", "commerce",
+    "medical", "sante", "pharmacie", "optique", "dentaire", "veterinaire",
+    "creche", "ecole", "college", "lycee", "sport", "fitness", "danse",
+    "studio", "atelier", "boutique", "magasin", "epicerie", "primeur",
+    "fleuriste", "jardin", "paysage", "nettoyage", "proprete", "securite",
+    "informatique", "digital", "numerique", "web", "communication",
+    "bistrot", "cafe", "bar", "traiteur", "institut", "clinique", "centre",
+}
 
 
 def candidats(nom: str) -> list[str]:
+    """Devine les domaines possibles d'une structure a partir de son nom.
+
+    CE QUI A CHANGE, ET POURQUOI.
+
+    La version precedente ne tentait que le nom COMPLET, accole puis trait
+    d'union, en .fr et .com : quatre devinettes. Mesure sur 360 structures du
+    Val-de-Marne, elle confirmait 107 sites, soit 30 %.
+
+    Le defaut se voit sur un exemple. Pour « BOULANGERIE PATISSERIE LEDUC »
+    elle essayait `boulangeriepatisserieleduc.fr`, un domaine que personne
+    n'achete. Les vrais candidats sont `boulangerie-leduc.fr` et `leduc.fr` :
+    le nom LEGAL est plus long que le nom d'usage, et c'est le cas courant.
+
+    D'ou trois familles en plus - premier avec dernier mot, deux premiers mots,
+    un mot distinctif seul - ET UN ORDRE. L'ordre compte autant que les
+    familles : un premier elargissement les avait ajoutees en queue, le
+    plafond etait mange par les variantes longues, et `leduc` n'etait jamais
+    tente. Une famille qu'on n'atteint pas ne sert a rien.
+
+    CE QUI REND CET ELARGISSEMENT SUR : la page trouvee est ensuite confirmee
+    par `parle_de()`, qui exige qu'elle mentionne la structure. Un mot de
+    metier seul reste malgre tout ecarte d'avance, et un nom qui se REDUIT a
+    un mot de metier ne produit aucune devinette du tout - `plomberie.fr`
+    appartient a quelqu'un, et le faux positif sortirait un vrai prospect de
+    la liste.
+    """
     m = jetons(nom)
     if not m:
         return []
-    bases = ["".join(m)[:30], "-".join(m)[:30]]
-    # Un mot unique ne fonde une devinette que s'il est assez distinctif.
-    if len(m) == 1 and len(m[0]) >= 5:
-        bases.append(m[0])
-    out, vus = [], set()
-    for b in bases:
-        if len(b) < 5:
+
+    def utilisable_seul(mot: str) -> bool:
+        # SEPT lettres, et non cinq. Le seuil a cinq a ete mesure : il a
+        # ramene la mairie de Lille pour « LILLE DEVELOPPEMENT SAS », le
+        # tourisme champenois pour « MIROITERIE DU VAL DE MARNE », et le meme
+        # `sushi.fr` pour quatre restaurants differents. Tous les faux positifs
+        # de ce releve reposaient sur un mot de cinq lettres : lille, marne,
+        # sushi, shiva, logic, datex, chick, blanc, eeudf.
+        #
+        # Un mot court est presque toujours un lieu, un mot courant ou un
+        # sigle, donc un domaine deja pris par un tiers. Et le faux positif est
+        # la pire des deux erreurs : il marque un vrai prospect comme deja
+        # equipe et le SORT de la liste, en silence.
+        return len(mot) >= 7 and mot not in MOTS_TROP_COURANTS
+
+    # Par vraisemblance decroissante. Le nom complet reste en tete parce qu'il
+    # est juste chaque fois que le nom legal EST le nom d'usage, ce qui reste
+    # le cas le plus frequent pris isolement.
+    familles: list[list[str]] = [m]
+    if len(m) >= 3:
+        familles.append([m[0], m[-1]])
+        familles.append(m[:2])
+    # PAS DE FAMILLE A UN SEUL MOT, et c'est une decision mesuree.
+    #
+    # Elle a ete essayee, avec un seuil a cinq lettres puis a sept, et les deux
+    # fois le releve manuel a montre qu'elle rapportait surtout du faux :
+    # `miroiterie.fr` pour « MIROITERIE DU VAL DE MARNE », `imagerie.fr` pour
+    # « IMAGERIE MEDICALE CMSM », `sebastien.fr` pour « PASCAL SEBASTIEN ».
+    # Aucune liste de mots interdits ne rattrape ca : le probleme n'est pas que
+    # ces mots soient courants, c'est qu'un domaine d'un seul mot appartient
+    # presque toujours a quelqu'un d'autre.
+    #
+    # Les familles a DEUX mots, elles, tiennent : `eiffelmetallerie.fr`,
+    # `maisons-cbi.fr`, `alliancepvc.fr`, `lamn-sushi.fr` sont tous justes.
+    # C'est la combinaison qui distingue, pas la longueur.
+
+    bases: list[str] = []
+    for mots in familles:
+        # Un nom qui se reduit a un seul mot de metier ne fonde rien, meme
+        # arrive ici par la famille du nom complet.
+        if len(mots) == 1 and not utilisable_seul(mots[0]):
             continue
-        for tld in (".fr", ".com"):
+        for assemble in ("".join(mots), "-".join(mots)):
+            b = assemble[:30]
+            if len(b) >= 5 and b not in bases:
+                bases.append(b)
+
+    # TOUS les .fr d'abord, les .com ensuite. Parcourir domaine par domaine
+    # semblait naturel et coutait la famille la plus utile : sur
+    # « BOULANGERIE PATISSERIE LEDUC », les variantes longues consommaient les
+    # dix places en .fr ET en .com, et `leduc.fr` - la devinette la plus
+    # plausible de toutes - tombait juste apres la coupe. Un TPE francais est
+    # de toute facon bien plus souvent en .fr qu'en .com.
+    out: list[str] = []
+    vus: set[str] = set()
+    for tld in (".fr", ".com"):
+        for b in bases:
             d = b + tld
             if d not in vus:
                 vus.add(d)
                 out.append(d)
-    return out[:4]
+    # Dix au lieu de quatre. Chaque devinette coute une resolution DNS et au
+    # plus une requete : c'est le prix du gain, et il se mesure.
+    return out[:10]
 
 
 def _corps(url: str, taille: int = 200_000) -> str:
@@ -468,13 +754,28 @@ def cherche_emails(racine: str, domaine: str) -> tuple[str, str]:
     return generique, quelconque
 
 
-def parle_de(url: str, nom: str) -> bool:
+def parle_de(url: str, nom: str, domaine: str = "") -> bool:
     """La page doit PARLER de l'entreprise, sinon c'est un homonyme.
 
     Sans ce controle, la devinette de domaine rendait 8 sites sur 10, dont
     `les.fr`, `union.fr` et `soc.fr` : des domaines appartenant a des tiers.
     Un faux positif est le pire des deux, parce qu'il marque un vrai prospect
     comme deja equipe et le SORT de la liste.
+
+    LE DEFAUT QUE CETTE VERSION CORRIGE, ET QU'IL A FALLU MESURER POUR VOIR.
+
+    La version precedente exigeait qu'un mot du nom figure sur la page. Or un
+    mot deja ecrit DANS LE DOMAINE y figure forcement : « sushi » est sur
+    `sushi.fr` quoi qu'il arrive, et « SUSHI TOJO » etait donc confirme sans
+    que rien n'ait ete verifie. Quatre restaurants distincts se sont ainsi
+    retrouves rattaches au meme site.
+
+    Un jeton present dans le domaine ne compte donc plus comme preuve : la
+    confirmation doit porter sur ce que le domaine N'ANNONCE PAS.
+
+    Le cas ou il ne reste rien a confirmer n'est pas un echec, c'est le
+    contraire : le domaine reprend alors TOUS les mots distinctifs du nom, ce
+    qui est la meilleure preuve disponible.
     """
     try:
         req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
@@ -483,7 +784,13 @@ def parle_de(url: str, nom: str) -> bool:
     except Exception:
         return False
     m = jetons(nom)
-    return sum(1 for j in m if j in corps) >= max(1, len(m) // 2)
+    if not m:
+        return False
+    nu = re.sub(r"[^a-z0-9]", "", domaine.rsplit(".", 1)[0].lower())
+    utiles = [j for j in m if j not in nu]
+    if not utiles:
+        return True
+    return sum(1 for j in utiles if j in corps) >= max(1, len(utiles) // 2)
 
 
 def _verifie_une(ligne: dict) -> tuple[dict, str, str, str]:
@@ -506,7 +813,7 @@ def _verifie_une(ligne: dict) -> tuple[dict, str, str, str]:
             continue
         for schema in ("https://", "http://"):
             racine = schema + d
-            if parle_de(racine, ligne["organisation"]):
+            if parle_de(racine, ligne["organisation"], d):
                 generique, quelconque = cherche_emails(racine, d)
                 return ligne, racine, generique, quelconque
     return ligne, "", "", ""
@@ -684,9 +991,19 @@ def main() -> int:
     perimetre.add_argument("--region", help="code de region, ex 11 pour l'Ile-de-France")
     perimetre.add_argument("--national", action="store_true", help="toute la France")
     c.add_argument("--par-section", type=int, default=25,
-                   help="entreprises retenues par section d'activite")
+                   help="entreprises retenues par section d'activite ET PAR "
+                        "DEPARTEMENT. 120 donne environ 109 000 fiches sur "
+                        "toute la France avant dedoublonnage.")
     c.add_argument("--inclure-entreprises-individuelles", action="store_true",
                    help="leve l'exclusion des personnes physiques (lire l'entete avant)")
+    c.add_argument("--niche", choices=sorted(NICHES),
+                   help="cible une niche par codes NAF plutot que par section "
+                        "d'activite. Une section melange des metiers qui "
+                        "n'achetent pas la meme chose.")
+    c.add_argument("--parallele", type=int, default=5,
+                   help="requetes en vol. L'API publique tolere 7/s, on reste "
+                        "en dessous : la faire tomber priverait tout le monde "
+                        "de la donnee.")
     c.add_argument("--sortie", required=True, help="CSV a ecrire, HORS du depot")
 
     b = sous.add_parser("bde", help="cherche les associations etudiantes")
@@ -723,7 +1040,8 @@ def main() -> int:
             perim = {"region": a.region}
         else:
             perim = {}
-        lignes = cherche(perim, a.par_section, a.inclure_entreprises_individuelles)
+        lignes = cherche(perim, a.par_section, a.inclure_entreprises_individuelles,
+                         a.parallele, a.sortie, a.niche)
         if not lignes:
             print("Aucun resultat.", file=sys.stderr)
             return 1
