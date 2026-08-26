@@ -6,6 +6,47 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.31.0 - 2026-08-26
+
+### Corrige
+
+- **La garde de controle avant lancement annoncait vert un point qu'elle
+  n'avait jamais mesure.** Le motif `G-[A-Z0-9]{8,}` etait applique avec le
+  drapeau d'insensibilite a la casse, ce qui le fait correspondre a
+  `bg-gradient`, present sur toute page Tailwind. Le controle rendait donc
+  « mesure d'audience : OK » sur un site ou aucun traceur n'est charge.
+  Reproduit avant correctif, puis reverifie dans les deux sens.
+  Deuxieme fois que le meme defaut se paie : une garde se valide en la voyant
+  ROUGE, jamais en la relisant.
+- **Le meme controle sanctionnait un site pour avoir respecte la regle de
+  Google.** Le point « avis » cherchait un balisage `Review` et rendait ABSENT
+  sinon, ce qui punissait deux comportements corrects et opposes : un depot qui
+  refuse d'inventer un temoignage, et un autre qui refuse d'emettre un
+  `aggregateRating` sur des avis repris d'une plateforme tierce, ce que Google
+  interdit. Le point a desormais trois verdicts, et une page de collecte en
+  attente compte comme tenue.
+
+### Ajoute
+
+- **`scripts/controle_avant_lancement.py`**, qui verifie vingt points sur un
+  site EN LIGNE plutot que sur une liste a cocher. Chaque verdict porte sa
+  preuve : le code HTTP obtenu, la balise trouvee, le nombre d'occurrences.
+  Trois verdicts et non deux : « a la main » est le seul honnete pour ce
+  qu'aucune requete ne tranche, comme la fiche d'etablissement ou la sincerite
+  d'un avis.
+- **L'element signature est enfin utilise la ou son propre en-tete dit qu'il
+  va.** `Graduation` annonce depuis le premier jour qu'il apparait « au bas du
+  hero et en tete des grandes sections » ; il n'apparaissait qu'une fois, dans
+  le pied de page, a 60 % d'opacite. La documentation decrivait un site qui
+  n'existait pas.
+
+  C'est aussi la reponse a l'audit design, qui reprochait onze pages baties sur
+  un gabarit recopie sans rien qui les signe. Le remede n'etait pas d'importer
+  un separateur de catalogue : les six composants de tarifs proposes par le
+  catalogue sont des grilles SaaS a trois paliers, qui auraient oblige a
+  inventer deux offres indefendables. Le remede etait d'utiliser ce qui etait
+  deja ecrit.
+
 ## 0.30.1 - 2026-08-26
 
 ### Ajoute
