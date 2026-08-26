@@ -9,6 +9,7 @@ import { ZoneCouverte } from "@/components/marketing/ZoneCouverte";
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Reveal } from "@/components/motion/Reveal";
+import { Graduation } from "@/components/ui/Graduation";
 import { OFFRES } from "@/content/offres";
 
 /**
@@ -50,6 +51,13 @@ export default function Home() {
 
         <section className="relative">
           <div className="section mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            {/*
+              Deuxieme et derniere apparition de la regle sur cette page. Un
+              element signature repete a chaque section cesse d'etre une
+              signature et devient un fond d'ecran : ce qui le rend
+              reconnaissable, c'est sa rarete.
+            */}
+            <Graduation className="mb-12 opacity-40" />
             <h2 className="title max-w-3xl text-4xl sm:text-5xl">
               Par où <span className="grad-text">commencer</span>
             </h2>

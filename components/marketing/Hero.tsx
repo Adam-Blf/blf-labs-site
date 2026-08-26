@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { HeroSceneMount } from "@/components/three/HeroSceneMount";
+import { Graduation } from "@/components/ui/Graduation";
 
 /**
  * Hero, dimensionne pour tenir dans le premier ecran.
@@ -61,6 +62,21 @@ export function Hero() {
             Voir les services
           </Link>
         </div>
+
+        {/*
+          L'element signature, au bas du hero.
+
+          Son propre en-tete l'annonce depuis le premier jour : « il apparait au
+          bas du hero et en tete des grandes sections ». Il n'apparaissait qu'une
+          fois, dans le pied de page, a 60 % d'opacite. La documentation
+          decrivait un site qui n'existait pas.
+
+          C'est aussi la reponse a l'audit design, qui reprochait au site d'avoir
+          onze pages baties sur un gabarit recopie sans rien qui les signe : le
+          remede n'etait pas d'importer un separateur de catalogue, c'etait
+          d'utiliser celui qu'on avait deja ecrit.
+        */}
+        <Graduation className="mt-16" />
       </div>
     </section>
   );
