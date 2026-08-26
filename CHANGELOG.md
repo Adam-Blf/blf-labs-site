@@ -6,6 +6,46 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.32.0 - 2026-08-26
+
+### Ajoute
+
+- **Trois paliers de prix, en colonnes.** Le site n'en publiait qu'un. Les deux
+  nouveaux ne sont pas des nombres choisis pour remplir une grille : ce sont
+  des produits d'un taux horaire decide et d'un volume d'heures rattache a un
+  perimetre nomme - 20 h, 44 h, 100 h a 30 EUR. Les 44 heures viennent de
+  l'effort MESURE sur le seul projet livre.
+- **Une garde sur les mentions de la page des budgets.** Elle couvre la
+  qualification du prix, les exclusions, la date d'effet, le mode de calcul et
+  les mentions substantielles de l'invitation a l'achat. Chaque palier est
+  verifie : « a partir de » present, ni « HT » ni « nets de TVA », exclusions
+  nommees.
+
+### Corrige
+
+- **Un decoupage de fichier avait supprime deux blocs juridiques** de la page
+  des budgets : le mode de calcul exige par L112-3 pour les prestations sans
+  plancher, et les mentions substantielles de L121-3. **Rien n'a proteste** -
+  typecheck, lint, build et 46 tests sont restes verts, parce que la garde
+  existante ne couvrait que les conditions generales. Le defaut a ete trouve
+  par hasard, en cherchant pourquoi deux imports etaient devenus inutilises.
+  Une garde qui protege une page ne protege pas l'autre.
+
+### Note de methode
+
+La mise en page vient d'un composant du catalogue 21st.dev, **le code non**.
+Le composant d'origine tire cinq dependances absentes du depot et deux
+primitives qui existent deja ici sous une autre interface ; c'est par ailleurs
+une grille d'abonnement SaaS a mensualite, quand il n'y a ici ni abonnement ni
+mensualite. Trois raisons de ne pas copier son code : la licence suit le code
+et la voie shadcn le copie dans un depot public sous MIT, plusieurs composants
+de catalogue chargent une police depuis un domaine tiers, et aucun ne porte la
+direction artistique du site.
+
+Meme angle mort paye deux fois dans la meme journee : une mention qui vit dans
+une constante partagee echappe a une garde qui ne lit que le balisage. La garde
+des CGV l'avait deja rencontre ; il a fallu le repayer ici pour le voir.
+
 ## 0.31.0 - 2026-08-26
 
 ### Corrige
