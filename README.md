@@ -225,6 +225,26 @@ voie professionnelle. Elle n&rsquo;appelle pas Resend, elle pose une echeance ; 
 `--confirmer` elle se contente d&rsquo;annoncer ce qu&rsquo;elle ferait. Le CSV vit **hors
 du depot**, et le script refuse d&rsquo;ecrire dedans.
 
+**Hors de France, une autre source et une autre loi.** L&rsquo;annuaire public
+est francais, et le courriel a froid n&rsquo;a pas une loi mais une par pays. La
+table `regimes_pays` porte le regime de chacun avec son fondement et sa date de
+lecture, **un pays absent est refuse**, et la garde de sortie repose la question
+avant chaque envoi - un pays retire cesse de recevoir immediatement. Allemagne,
+Autriche, Espagne, Italie et Canada y sont inscrits comme FERMES : ils exigent
+un consentement prealable, meme entre professionnels.
+
+`prospection_monde.py` collecte via OpenStreetMap, qui couvre le monde et publie
+le **site** des commerces. L&rsquo;adresse, elle, continue d&rsquo;etre lue sur ce
+site et jamais moissonnee depuis la carte : une balise peut avoir ete posee par
+un tiers, et l&rsquo;article 14 oblige a annoncer une origine que le destinataire
+peut verifier.
+
+```
+python scripts/prospection_monde.py --pays GB,IE,BE --villes 4 --sortie monde.csv
+python scripts/prospection.py verifier --fichier monde.csv
+python scripts/prospection.py importer --fichier monde.csv
+```
+
 **Deux pieges de l&rsquo;annuaire public**, payes le 27 aout 2026. Le code NAF ne
 s&rsquo;accepte qu&rsquo;avec son point (`86.90F`), sinon la reponse est un 400 que la
 commande lisait comme un marche vide. Et le parametre `departement` retient une
@@ -268,6 +288,8 @@ Tout asset genere a son script reproductible, aucun n&rsquo;embarque de secret :
 | `scripts/setup_dmarc.py` | Pose la politique DMARC de la zone, en simulation par defaut, `--apply` pour ecrire |
 | `scripts/setup_resend_webhook.py` | Cree le webhook des evenements Resend, idempotent, le secret va dans un fichier jamais affiche |
 | `scripts/prospection.py` | Constitue la base professionnelle : `chercher`, `verifier`, `exporter`, `importer`, `engager`. N&rsquo;envoie rien, voir ci-dessous |
+| `scripts/prospection_monde.py` | Meme base, HORS de France : OpenStreetMap donne le site, l&rsquo;adresse se lit dessus |
+| `scripts/check_prospection.py` | Garde : la liste blanche des adresses generiques ne doit pas diverger entre le SQL et le script. Executee en CI |
 | `scripts/check_encoding.py` | Garde : UTF-8 propre, sans BOM ni mojibake. Executee en CI |
 | `scripts/check_french.py` | Garde : accents manquants dans le texte visible. `--fix` pour appliquer. Executee en CI |
 | `scripts/clean_svg.py` | Retire les metadonnees des SVG exportes de Canva |

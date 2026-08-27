@@ -6,6 +6,57 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.34.0 - 2026-08-27
+
+### Ajoute
+
+- **Le prix se dit par tache, plus a l'heure.** Un taux horaire vend du temps :
+  le client compare des taux, se demande combien d'heures on mettra, et tout
+  depassement devient une discussion. Un prix par tache vend un resultat nomme -
+  la prise de rendez-vous avec creneaux et rappel, 320 EUR - qui se compare a ce
+  qu'elle rapporte. Les trois planchers publies ne bougent pas : les taches en
+  sont la DECOMPOSITION, et une garde de test verifie que leur somme fait
+  exactement le plancher. Six taches a la carte chiffrent enfin ce que la page
+  annoncait jusqu'ici comme non compris sans dire combien.
+- **La prospection sort de France, sous garde.** Le courriel a froid n'a pas une
+  loi, il en a une par pays. Une table porte le regime de chacun, avec son
+  fondement et sa date de lecture, et un pays qui n'y figure pas est refuse.
+  L'Allemagne, l'Autriche, l'Espagne, l'Italie et le Canada y figurent
+  explicitement comme fermes : le refus est ecrit, pas seulement obtenu par
+  absence.
+- **Les Etats-Unis sont fermes, et pas parce que la loi l'interdit.** Le
+  CAN-SPAM Act admet parfaitement l'opposition ; il exige une adresse postale
+  physique valide dans CHAQUE message commercial, et la sequence n'en porte
+  aucune. La seule adresse immatriculee est un domicile, que la regle du strict
+  minimum interdit de publier a des inconnus sans necessite. Le pays se rouvre
+  le jour ou une domiciliation existe et ou la signature la porte : d'ici la, le
+  refus est ECRIT plutot que laisse a la vigilance de qui lancera la collecte.
+- **Un collecteur international, par OpenStreetMap.** L'annuaire francais est
+  France seulement et n'a pas d'equivalent gratuit et uniforme ailleurs.
+  OpenStreetMap couvre le monde et publie le SITE des commerces ; l'adresse,
+  elle, continue d'etre lue sur ce site, jamais moissonnee depuis la carte. Une
+  balise peut avoir ete posee par un tiers, et l'article 14 oblige a dire une
+  origine que le destinataire peut verifier. Douze pays, quatre a six villes
+  chacun, six metiers.
+- **Une garde sur la liste blanche des adresses generiques.** Elle est ecrite
+  deux fois, en SQL et en Python, et la divergence dans le sens « script plus
+  strict que la base » perd des contacts licites sans rien signaler. Elle s'est
+  produite. La garde tourne en integration continue.
+
+### Corrige
+
+- **`verifier` considerait comme faite toute fiche portant deja un site.** La
+  regle convenait tant que toutes les fiches venaient de l'annuaire francais,
+  qui n'en publie aucun. Une fiche OpenStreetMap arrive avec son site
+  renseigne : son adresse n'etait donc jamais lue, et une passe complete sur un
+  fichier etranger rendait zero adresse sans une ligne pour le dire. Le travail
+  restant se definit desormais par l'adresse manquante, pas par le site
+  manquant.
+- **La colonne `pays` aurait ete effacee par la sous-commande `verifier`.**
+  Elle relit puis reecrit le CSV, en ne conservant que les colonnes nommees dans
+  une liste ou `pays` ne figurait pas. L'import suivant se serait fait refuser
+  par la base sans que rien n'explique pourquoi.
+
 ## 0.33.0 - 2026-08-27
 
 ### Ajoute
