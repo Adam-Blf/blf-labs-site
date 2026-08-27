@@ -6,6 +6,26 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.37.0 - 2026-08-27
+
+### Ajoute
+
+- **Un domaine qui n'accepte aucun courrier est ecarte avant l'import.** Requete
+  DNS reelle, sans dependance et sans lire de texte traduit.
+
+  La premiere version lisait la sortie de `nslookup` et cherchait « mail
+  exchanger » et « can't find ». Sur une machine Windows en francais, la reponse
+  est « ne parvient pas a trouver » : aucun motif ne correspondait, et la garde
+  rendait VRAI pour tout, y compris pour un domaine inexistant. Une garde qui
+  lit une chaine traduite n'est pas une garde, c'est un pari sur la langue du
+  systeme. Le protocole, lui, ne se traduit pas.
+
+  **Ce qu'elle ne fait pas, et il faut le savoir.** Les quatre domaines qui ont
+  reellement rebondi annoncent TOUS un serveur de messagerie : cette garde n'en
+  aurait ecarte aucun. Ce qui manquait n'etait pas le domaine mais la boite. Elle
+  est gardee parce qu'elle est gratuite et qu'un corpus plus large contiendra des
+  domaines morts, mais elle ne repond pas au probleme observe.
+
 ## 0.36.0 - 2026-08-27
 
 ### Ajoute
