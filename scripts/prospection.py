@@ -404,6 +404,8 @@ def cherche(perimetre: dict, par_section: int, inclure_ei: bool,
     # l'ecriture au fil de l'eau devait empecher. Une garde reglee sur une
     # constante plus grande que le travail qu'elle protege ne protege rien.
     JALON = max(1, min(25, len(taches) // 4))
+    # Voir la borne de travail dans la boucle de pagination.
+    PAGES_MAX = min(400, max(8, (par_section // 25 + 1) * 4))
     # DEUX par seconde, pas cinq. La limite documentee est de sept, et cinq
     # paraissait donc prudent : un tir soutenu de quarante-cinq minutes a
     # pourtant fini par se faire fermer la connexion par l'hote. Une limite
@@ -492,6 +494,19 @@ def cherche(perimetre: dict, par_section: int, inclure_ei: bool,
             # pas une page vide : sans cette borne, chaque couple sature en
             # renvoyant une erreur au lieu de passer au suivant.
             if page >= 400:
+                break
+            # BORNE DE TRAVAIL, distincte de la borne de l'API.
+            #
+            # Les filtres appliques APRES la reponse - entreprise individuelle,
+            # opposition a la diffusion, siege hors zone - font que le compteur
+            # `pris` monte moins vite qu'une page. Un couple pauvre en fiches
+            # retenues paginait donc jusqu'a la borne de l'API en consommant le
+            # debit partage : la niche batiment tenait le tir pendant un quart
+            # d'heure sans rien produire de plus.
+            #
+            # Quatre fois le nombre de pages qu'il faudrait si tout etait garde.
+            # Au-dela, ce couple est pauvre, et le temps sert mieux le suivant.
+            if page >= PAGES_MAX:
                 break
             page += 1
 
