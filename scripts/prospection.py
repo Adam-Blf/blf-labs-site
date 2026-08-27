@@ -370,8 +370,16 @@ def _siege_dans_la_zone(zone: dict, code_postal: str) -> bool:
     de conclure sans une table de correspondance qu'il faudrait maintenir.
     """
     departement = zone.get("departement")
-    if not departement or not code_postal:
+    if not departement:
         return True
+    # PAS DE CODE POSTAL, PAS DE PREUVE. Un defaut permissif ici a laisse passer
+    # 136 sieges A L'ETRANGER - Inde, Etats-Unis, Madagascar, Bresil - qui ont un
+    # etablissement en Ile-de-France et donc repondent au parametre de recherche,
+    # mais dont l'adresse du siege n'a pas de code postal francais. Le message
+    # s'ouvre sur « independant en Ile-de-France » : ne pas savoir ou est le
+    # siege, c'est ne pas pouvoir l'ecrire.
+    if not code_postal:
+        return False
     if departement in ("2A", "2B"):
         return code_postal.startswith("20")
     return code_postal.startswith(departement)
