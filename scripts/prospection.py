@@ -51,6 +51,8 @@ import json
 import os
 import re
 import socket
+import struct
+import subprocess
 import sys
 import time
 import unicodedata
@@ -903,6 +905,118 @@ def cherche_emails(racine: str, domaine: str) -> tuple[str, str, str]:
     return generique, quelconque, "\n".join(corpus)
 
 
+# Domaines dont le MX a deja ete releve, pour ne pas interroger le DNS deux
+# fois pour la meme boite. Le cache vaut le temps d'une passe.
+_MX_CONNUS: dict[str, bool] = {}
+_VERROU_MX = threading.Lock()
+
+
+def _interroge_dns(domaine: str, type_enregistrement: int) -> bool:
+    """Pose une vraie question DNS et lit la reponse, sans passer par un texte.
+
+    POURQUOI PAS `nslookup`. La premiere version lisait sa sortie et cherchait
+    « mail exchanger » et « can't find ». Sur la machine d'Adam, Windows repond
+    en francais : « ne parvient pas a trouver ». Aucun des deux motifs ne
+    correspondait, la garde rendait donc VRAI pour tout, y compris pour un
+    domaine qui n'existe pas. Une garde qui lit une chaine traduite n'est pas
+    une garde, c'est un pari sur la langue du systeme.
+
+    Le protocole, lui, ne se traduit pas : on compte les reponses dans l'en-tete
+    du paquet. 15 = MX, 1 = A.
+    """
+    import random
+    identifiant = random.randint(0, 0xFFFF)
+    entete = struct.pack(">HHHHHH", identifiant, 0x0100, 1, 0, 0, 0)
+    question = b"".join(
+        bytes([len(part)]) + part.encode("idna")
+        for part in domaine.split(".") if part
+    ) + b"\x00" + struct.pack(">HH", type_enregistrement, 1)
+
+    for serveur in ("1.1.1.1", "8.8.8.8"):
+        prise = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        prise.settimeout(4)
+        try:
+            prise.sendto(entete + question, (serveur, 53))
+            reponse, _ = prise.recvfrom(2048)
+        except Exception:
+            continue
+        finally:
+            prise.close()
+        if len(reponse) < 12:
+            continue
+        _, drapeaux, _, reponses, _, _ = struct.unpack(">HHHHHH", reponse[:12])
+        code = drapeaux & 0x000F
+        # 3 = NXDOMAIN, le domaine n'existe pas. Reponse ferme et sans appel.
+        if code == 3:
+            return False
+        if code == 0:
+            return reponses > 0
+    # Aucun serveur n'a repondu : c'est une panne de notre cote, pas une preuve
+    # d'absence. On ne condamne pas une adresse sur notre propre reseau.
+    raise OSError("aucun resolveur DNS n'a repondu pour " + domaine)
+
+
+# Domaines deja releves, pour ne pas reposer la meme question au DNS.
+_MX_CONNUS: dict[str, bool] = {}
+_VERROU_MX = threading.Lock()
+
+
+def domaine_accepte_du_courrier(domaine: str) -> bool:
+    """Le domaine peut-il recevoir du courrier ?
+
+    POURQUOI CE CONTROLE EXISTE, ET CE QU'IL A COUTE DE NE PAS L'AVOIR.
+
+    Les quarante premiers messages ont produit QUATRE rebonds durs, soit 10 %.
+    Le seuil au-dela duquel Google et Microsoft degradent un expediteur est de
+    3 %, et le coupe-circuit du moteur a coupe les envois en production le jour
+    meme. Une adresse lue sur un site n'est pas une adresse qui recoit : le site
+    survit a la boite, le domaine change de main, la page de contact date de
+    2019.
+
+    CE QU'IL PROUVE, ET CE QU'IL NE PROUVE PAS. Un domaine sans MX ni A ne peut
+    recevoir aucun courrier : c'est un rebond certain, et l'ecarter est gratuit.
+    La presence d'un MX ne prouve pas que la BOITE existe - seul un envoi le
+    dirait.
+
+    MESURE, ET IL FAUT LA LIRE AVANT DE CROIRE CETTE GARDE UTILE. Les quatre
+    domaines qui ont reellement rebondi le 27 aout - climtech.fr,
+    optimaacademy.fr, pizza-poeta.fr, mcm-academy.fr - annoncent TOUS un serveur
+    de messagerie. Cette fonction n'en aurait ecarte AUCUN. Ce qui manquait
+    n'etait pas le domaine, c'etait la boite : une adresse `contact@` publiee
+    sur un site dont plus personne ne releve le courrier.
+
+    Elle est gardee quand meme parce qu'elle est gratuite et qu'un corpus plus
+    large contiendra des domaines morts. Mais elle ne repond pas au probleme
+    observe, et le vrai garde-fou contre les rebonds reste le coupe-circuit du
+    moteur, qui a coupe les envois en production le jour meme. Ce qui reduirait
+    reellement le taux serait un service de verification d'adresses, payant, ou
+    un plafond quotidien bas tant que la base n'a pas fait ses preuves.
+
+    AUCUNE VERIFICATION PAR SMTP. Ouvrir une connexion vers le serveur d'un
+    tiers pour lui demander si une boite existe est mal vu, souvent bloque, et
+    c'est precisement le comportement qui fait classer un expediteur.
+    """
+    domaine = (domaine or "").lower().strip().rstrip(".")
+    if not domaine or "." not in domaine:
+        return False
+    with _VERROU_MX:
+        connu = _MX_CONNUS.get(domaine)
+    if connu is not None:
+        return connu
+
+    try:
+        # Un MX suffit. Sinon, la RFC 5321 autorise la remise sur l'adresse A
+        # du domaine lui-meme : c'est rare, mais ce n'est pas un rebond.
+        accepte = _interroge_dns(domaine, 15) or _interroge_dns(domaine, 1)
+    except OSError:
+        # Le DNS injoignable n'est pas une preuve d'absence.
+        return True
+
+    with _VERROU_MX:
+        _MX_CONNUS[domaine] = accepte
+    return accepte
+
+
 def _sans_accent(texte: str) -> str:
     return unicodedata.normalize("NFKD", texte or "").encode(
         "ascii", "ignore").decode("ascii").lower()
@@ -1249,6 +1363,7 @@ def importe(lignes: list[dict], sans_preuve: bool = False) -> int:
 
     a_envoyer, ecartees = [], 0
     sans_preuve_comptees = [0]
+    sans_boite = [0]
     for l in lignes:
         email = (l.get("email_generique") or "").strip().lower()
         if not email or "@" not in email:
@@ -1272,6 +1387,17 @@ def importe(lignes: list[dict], sans_preuve: bool = False) -> int:
             sans_preuve_comptees[0] += 1
             ecartees += 1
             continue
+        # UNE ADRESSE DONT LE DOMAINE N'ACCEPTE PAS DE COURRIER EST UN REBOND
+        # CERTAIN, et un rebond certain se refuse gratuitement. Les quarante
+        # premiers envois en ont produit quatre, soit 10 %, la ou le seuil de
+        # degradation est de 3 % : le coupe-circuit du moteur a coupe le jour
+        # meme, en production.
+        if not domaine_accepte_du_courrier(email.split("@", 1)[1]):
+            print("  ecartee, le domaine n'accepte pas de courrier : {}".format(email),
+                  file=sys.stderr)
+            sans_boite[0] += 1
+            ecartees += 1
+            continue
         a_envoyer.append({
             "email": email,
             "organisation": l.get("organisation") or None,
@@ -1289,6 +1415,11 @@ def importe(lignes: list[dict], sans_preuve: bool = False) -> int:
             "statut": "en_attente",
             "source": l.get("source") or "annuaire-entreprises.data.gouv.fr",
         })
+
+    if sans_boite[0]:
+        print("  {} adresse(s) ecartee(s) : leur domaine n'annonce aucun serveur "
+              "de messagerie, l'envoi aurait rebondi a coup sur.".format(sans_boite[0]),
+              file=sys.stderr)
 
     if sans_preuve_comptees[0]:
         print("  {} ligne(s) ecartee(s) faute de PREUVE d'appartenance : le "
