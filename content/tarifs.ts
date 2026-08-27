@@ -90,14 +90,182 @@ export type Fourchette = {
 };
 
 /**
- * Unite de facturation publiee.
+ * Unite de facturation publiee : LA TACHE, et non plus l'heure.
  *
- * C'est un TAUX HORAIRE et non un taux journalier, deliberement. Un taux
- * journalier invite le client a convertir en journees ouvrees, et le studio ne
- * travaille pas en journees : annoncer « cinq jours » pour ce qui prend cinq
- * semaines calendaires serait un mensonge sur le calendrier, pas sur le prix.
+ * Decide par Adam le 27 aout 2026. Le taux de 30 EUR/h qui figurait ici reste
+ * la METHODE DE CALCUL interne des montants - il est ecrit plus haut, dans la
+ * derivation des trois planchers - mais il n'est plus ce que le client achete,
+ * et il n'est plus publie.
+ *
+ * Ce qui a change, et pourquoi ce n'est pas qu'un habillage. Un taux horaire
+ * vend du TEMPS : le client compare des taux, se demande combien d'heures on
+ * mettra, et tout depassement devient une discussion. Un prix par tache vend un
+ * RESULTAT nomme - « la prise de rendez-vous avec creneaux et rappel, 320 EUR »
+ * - qui se compare a ce qu'elle rapporte, pas a la vitesse de celui qui la
+ * pose. Le devis devient une addition de lignes que le client peut retirer une
+ * par une pour tenir son budget, au lieu d'un forfait a prendre ou a laisser.
+ *
+ * LES DEUX GRILLES DOIVENT S'ADDITIONNER, ET C'EST UNE CONTRAINTE DURE.
+ *
+ * Les paliers publies plus haut ne bougent pas. Les taches ci-dessous sont donc
+ * la DECOMPOSITION de ces memes montants, pas une seconde grille : la somme des
+ * taches d'un palier fait exactement son plancher. Une page qui afficherait un
+ * forfait a 600 EUR et des taches totalisant 700 EUR annoncerait un prix
+ * auquel elle ne peut pas fournir, ce que l'article L121-4 repute trompeur en
+ * toutes circonstances. Une garde de test verifie cette addition.
  */
-export const TAUX_HORAIRE = "30 €";
+export type Tache = {
+  /** Le palier auquel cette tache appartient, ou "option" si elle est a la carte. */
+  palier: string;
+  /** Le resultat livre, nomme du point de vue du client. */
+  intitule: string;
+  /** Prix de la tache, en euros, total a payer. */
+  prix: number;
+  /** Ce qui est reellement fait, en une phrase. */
+  detail: string;
+};
+
+/**
+ * Les taches qui composent les paliers. La somme par palier fait le plancher.
+ */
+export const TACHES: Tache[] = [
+  // Site de presentation : 120 + 260 + 90 + 70 + 60 = 600
+  {
+    palier: "Site de présentation",
+    intitule: "Maquette validée avant le code",
+    prix: 120,
+    detail:
+      "Les écrans dessinés et validés avec vous, pour que rien ne se découvre à la livraison.",
+  },
+  {
+    palier: "Site de présentation",
+    intitule: "Le site, jusqu'à cinq pages",
+    prix: 260,
+    detail:
+      "Intégration, lisibilité sur téléphone comme sur écran large, formulaire de contact.",
+  },
+  {
+    palier: "Site de présentation",
+    intitule: "Conformité de mise en ligne",
+    prix: 90,
+    detail:
+      "Mentions légales, politique de confidentialité, bandeau de consentement.",
+  },
+  {
+    palier: "Site de présentation",
+    intitule: "Référencement technique",
+    prix: 70,
+    detail:
+      "Balises, plan du site, données structurées, indexation demandée aux moteurs.",
+  },
+  {
+    palier: "Site de présentation",
+    intitule: "Mise en ligne",
+    prix: 60,
+    detail:
+      "Hébergement configuré, nom de domaine raccordé, certificat, sauvegardes.",
+  },
+
+  // Site avec reservation et paiement : 600 + 320 + 240 + 140 = 1 300
+  {
+    palier: "Site avec réservation et paiement",
+    intitule: "Prise de rendez-vous",
+    prix: 320,
+    detail:
+      "Créneaux, règles de disponibilité, rappel automatique la veille, créneau libéré remis en ligne.",
+  },
+  {
+    palier: "Site avec réservation et paiement",
+    intitule: "Paiement en ligne",
+    prix: 240,
+    detail:
+      "Encaissement sécurisé, reçu automatique, suivi des paiements côté administration.",
+  },
+  {
+    palier: "Site avec réservation et paiement",
+    intitule: "Espace d'administration",
+    prix: 140,
+    detail:
+      "Vos textes, vos demandes et vos rendez-vous modifiables sans nous rappeler.",
+  },
+
+  // Application sur mesure : 1 300 + 200 + 450 + 700 + 350 = 3 000
+  {
+    palier: "Application sur mesure",
+    intitule: "Cadrage chiffré poste par poste",
+    prix: 200,
+    detail:
+      "Vos processus réels écrits et chiffrés avant tout engagement. Déduit du devis si vous poursuivez.",
+  },
+  {
+    palier: "Application sur mesure",
+    intitule: "Comptes et droits",
+    prix: 450,
+    detail:
+      "Espace client, rôles, permissions, et ce que chacun peut voir ou modifier.",
+  },
+  {
+    palier: "Application sur mesure",
+    intitule: "Back-office métier",
+    prix: 700,
+    detail:
+      "L'outil construit autour de ce que vous faites déjà, pas l'inverse.",
+  },
+  {
+    palier: "Application sur mesure",
+    intitule: "Reprise de données et documentation",
+    prix: 350,
+    detail:
+      "Vos données existantes importées, et de quoi permettre à un autre de reprendre.",
+  },
+];
+
+/**
+ * Les taches a la carte, chacune une ligne au devis.
+ *
+ * Elles correspondent une a une aux postes que `hors_forfait` annonce comme
+ * non compris. Les annoncer sans prix reviendrait a dire « cela coute en plus »
+ * sans dire combien, ce qui est exactement le supplement decouvert a la fin que
+ * ce fichier s'interdit.
+ */
+export const OPTIONS: Tache[] = [
+  {
+    palier: "option",
+    intitule: "Page supplémentaire",
+    prix: 60,
+    detail: "Au-delà des cinq pages comprises, par page réellement différente.",
+  },
+  {
+    palier: "option",
+    intitule: "Rédaction des contenus",
+    prix: 80,
+    detail: "Par page, si vous ne fournissez pas les textes.",
+  },
+  {
+    palier: "option",
+    intitule: "Reprise d'un site existant",
+    prix: 250,
+    detail: "Récupération des contenus, des adresses et des redirections.",
+  },
+  {
+    palier: "option",
+    intitule: "Connexion à un outil que vous utilisez déjà",
+    prix: 180,
+    detail: "Par outil, s'il expose une interface documentée.",
+  },
+  {
+    palier: "option",
+    intitule: "Identité visuelle",
+    prix: 300,
+    detail: "Logo, palette, typographies, et le fichier source vous reste.",
+  },
+  {
+    palier: "option",
+    intitule: "Formation à l'édition",
+    prix: 120,
+    detail: "Deux heures en visioconférence, et un mémo écrit qui reste.",
+  },
+];
 
 const MENTION_PRIX =
   "Prix total à payer. TVA non applicable, article 293 B du Code général des impôts : aucune taxe ne s'ajoute à ce montant, et il n'ouvre droit à aucune déduction de TVA.";
@@ -173,3 +341,38 @@ export const FOURCHETTES: Fourchette[] = [
     date_effet: DATE_EFFET,
   },
 ];
+
+/**
+ * Les taches regroupees par palier, avec les deux totaux qui comptent.
+ *
+ * POURQUOI DEUX TOTAUX ET NON UN.
+ *
+ * Les paliers sont CUMULATIFS : le site avec reservation comprend tout le site
+ * de presentation. Afficher « 1 300 EUR » en face des trois seules taches qui
+ * lui sont propres - 320 + 240 + 140 = 700 - donnerait une addition fausse sous
+ * les yeux du lecteur, et c'est exactement le genre d'ecart qui fait passer une
+ * page de prix pour un piege.
+ *
+ * `ajoute` est donc la somme des taches PROPRES au palier, et `total` le cumul
+ * depuis le premier. Le second doit egaler le plancher publie : c'est ce que la
+ * garde de test verifie.
+ */
+export type PalierDeTaches = {
+  nom: string;
+  taches: Tache[];
+  /** Somme des taches propres a ce palier. */
+  ajoute: number;
+  /** Cumul depuis le premier palier. Doit egaler le plancher publie. */
+  total: number;
+};
+
+export const PALIERS_DE_TACHES: PalierDeTaches[] = (() => {
+  const noms = FOURCHETTES.map((f) => f.nom);
+  let cumul = 0;
+  return noms.map((nom) => {
+    const taches = TACHES.filter((t) => t.palier === nom);
+    const ajoute = taches.reduce((n, t) => n + t.prix, 0);
+    cumul += ajoute;
+    return { nom, taches, ajoute, total: cumul };
+  });
+})();

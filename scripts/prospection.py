@@ -197,8 +197,13 @@ MOTS_VIDES = {
     "generale", "general", "nouvelle", "nouveau", "saint", "sainte",
 }
 
+# `pays` figure dans cette liste et ce n'est pas un detail : `ecris` ne conserve
+# QUE les colonnes qui y sont nommees. Sans elle, passer un fichier etranger par
+# la sous-commande `verifier` - qui relit puis reecrit le CSV - effacerait le
+# pays en silence, et l'import suivant se ferait refuser par la base sans que
+# rien n'explique pourquoi.
 COLONNES = [
-    "siren", "organisation", "secteur", "naf", "commune", "code_postal",
+    "siren", "pays", "organisation", "secteur", "naf", "commune", "code_postal",
     "adresse", "date_creation", "effectif", "nature_juridique",
     "statut_diffusion", "site_web", "a_deja_un_site", "proposition",
     "email_generique", "statut", "note", "source",
@@ -474,6 +479,7 @@ def cherche(perimetre: dict, par_section: int, inclure_ei: bool,
                     continue
                 recolte.append({
                     "siren": siren,
+                    "pays": "FR",
                     "organisation": e.get("nom_complet") or "",
                     "secteur": libelle,
                     "naf": e.get("activite_principale") or "",
@@ -624,6 +630,7 @@ def cherche_bde(perimetre: dict, par_requete: int, inclure_ei: bool) -> list[dic
                 vus.add(siren)
                 lignes.append({
                     "siren": siren,
+                    "pays": "FR",
                     "organisation": e.get("nom_complet") or "",
                     "secteur": "Association etudiante",
                     "naf": e.get("activite_principale") or "",
@@ -941,7 +948,22 @@ def _verifie_une(ligne: dict) -> tuple[dict, str, str, str]:
     suivants, y compris les factures. Une adresse LUE sur le site de la
     structure existe, elle est publiee par elle, et elle est destinee a etre
     utilisee.
+
+    QUAND LE SITE EST DEJA CONNU, il n'y a rien a deviner : c'est le cas des
+    fiches venues d'OpenStreetMap, dont la balise `website` designe le site sans
+    ambiguite. On saute donc la devinette et on va lire l'adresse directement.
+    La confirmation par `parle_de` n'a pas d'objet ici : elle sert a verifier
+    qu'un domaine DEVINE appartient bien a la structure, or celui-ci n'a pas ete
+    devine.
     """
+    connu = (ligne.get("site_web") or "").strip()
+    if connu:
+        racine = connu if "//" in connu else "https://" + connu
+        racine = racine.rstrip("/")
+        hote = urllib.parse.urlsplit(racine).netloc.lower()
+        generique, quelconque = cherche_emails(racine, hote)
+        return ligne, racine, generique, quelconque
+
     for d in candidats(ligne.get("organisation") or ""):
         try:
             socket.gethostbyname(d)
@@ -1035,7 +1057,16 @@ def verifie(lignes: list[dict], parallele: int = 24,
     from concurrent.futures import ThreadPoolExecutor, as_completed
 
     socket.setdefaulttimeout(6)
-    a_faire = [l for l in lignes if not l.get("site_web")]
+    # Le travail restant, c'est une ADRESSE manquante, pas un site manquant.
+    #
+    # La version precedente ne reprenait que les lignes sans site. Elle
+    # convenait tant que toutes les fiches venaient de l'annuaire francais, qui
+    # n'en publie aucun. Une fiche OpenStreetMap arrive avec son site DEJA
+    # renseigne : elle etait donc consideree comme faite, et son adresse n'etait
+    # jamais lue. Une passe complete sur un fichier etranger rendait zero
+    # adresse, sans une ligne pour le dire.
+    a_faire = [l for l in lignes
+               if not l.get("site_web") or not l.get("email_generique")]
     confirmes = 0
 
     avec_email, avec_nominative = 0, 0
@@ -1084,9 +1115,26 @@ def verifie(lignes: list[dict], parallele: int = 24,
 # importer
 # --------------------------------------------------------------------------
 
+# RECOPIE DE LA CONTRAINTE `contacts_b2b_strict`, migration 0022.
+#
+# Deux listes en deux langages, et donc un risque de divergence. Il est assume,
+# parce que le seul moyen de n'en avoir qu'une serait d'interroger la base avant
+# chaque ligne. Ce qu'il faut savoir sur le sens de la divergence :
+#
+#   Python plus LARGE que la base  -> la base refuse, bruyamment, a l'import.
+#   Python plus STRICT que la base -> des contacts licites sont perdus, EN
+#                                     SILENCE, et personne ne le remarque.
+#
+# C'est le second cas qui s'est produit : la base a ouvert `support`, `office`,
+# `hola` et les autres formes anglaises et espagnoles pour l'international, et
+# cette liste-ci est restee francaise. `support@samsbarbers.com`, adresse
+# parfaitement fonctionnelle d'un salon de Dublin, etait ecartee a l'import avec
+# le motif « partie locale non generique ».
 LOCALES_ACCEPTEES = {
     "contact", "info", "bonjour", "hello", "accueil",
     "direction", "secretariat", "commercial", "admin",
+    "office", "enquiries", "hi", "team", "sales", "support",
+    "hola", "buzon", "administracion", "comercial",
 }
 
 

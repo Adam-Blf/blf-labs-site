@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { FOURCHETTES, TAUX_HORAIRE } from "@/content/tarifs";
+import { FOURCHETTES, OPTIONS, PALIERS_DE_TACHES, TACHES } from "@/content/tarifs";
 
 /**
  * GARDE SUR LES MENTIONS DE LA PAGE DES BUDGETS.
@@ -42,9 +42,14 @@ const MENTIONS: Array<[string, string]> = [
     "293 B",
     "franchise en base : le visiteur doit savoir qu'aucune taxe ne s'ajoute",
   ],
+  // L'article L112-3 impose un MODE DE CALCUL pour toute prestation dont le
+  // prix n'est pas calculable a l'avance. Il en faut donc un de publie, mais il
+  // n'a jamais eu a etre horaire : le taux de 30 EUR/h a ete retire de la page
+  // le 27 aout, l'unite vendue est desormais la tache. Ce que la garde surveille
+  // n'est pas le mot « heure », c'est qu'un mode de calcul soit ecrit.
   [
-    "de l&rsquo;heure",
-    "taux horaire, seul mode de calcul publie pour les familles sans plancher (L112-3)",
+    "tâche par tâche",
+    "mode de calcul publie pour les familles sans plancher (L112-3)",
   ],
   [
     "quatorze jours",
@@ -108,7 +113,67 @@ describe("coherence des paliers publies", () => {
     }
   });
 
-  it("le taux horaire est publie et chiffre", () => {
-    expect(TAUX_HORAIRE).toMatch(/\d/);
+  /**
+   * LA GARDE QUI TIENT LES DEUX GRILLES ENSEMBLE.
+   *
+   * Les taches ne sont pas une seconde grille, ce sont les MEMES montants
+   * decomposes. Si la somme s'ecarte du plancher publie, la page annonce un
+   * prix auquel elle ne peut pas fournir - pratique reputee trompeuse en
+   * toutes circonstances par l'article L121-4 - et rien d'autre ne le
+   * signalerait : deux nombres coherents et deux nombres incoherents
+   * s'affichent exactement pareil.
+   */
+  it("la somme des taches d'un palier fait son plancher publie", () => {
+    for (const palier of PALIERS_DE_TACHES) {
+      const publie = FOURCHETTES.find((f) => f.nom === palier.nom);
+      expect(publie, palier.nom).toBeDefined();
+      const chiffres = publie!.plancher.replace(/[^0-9]/g, "");
+      expect(Number(chiffres), `${palier.nom} : plancher publie`).toBe(
+        palier.total,
+      );
+    }
+  });
+
+  it("chaque palier publie a au moins une tache", () => {
+    for (const f of FOURCHETTES) {
+      const taches = TACHES.filter((t) => t.palier === f.nom);
+      expect(taches.length, f.nom).toBeGreaterThan(0);
+    }
+  });
+
+  /**
+   * Une tache rattachee a un palier qui n'existe pas ne s'afficherait nulle
+   * part : elle disparaitrait de la page sans erreur, et le total du palier
+   * auquel on croyait l'avoir mise serait faux.
+   */
+  it("aucune tache n'est rattachee a un palier inconnu", () => {
+    const noms = new Set(FOURCHETTES.map((f) => f.nom));
+    for (const t of TACHES) {
+      expect(noms.has(t.palier), `${t.intitule} -> ${t.palier}`).toBe(true);
+    }
+  });
+
+  it("toute tache porte un prix strictement positif", () => {
+    for (const t of [...TACHES, ...OPTIONS]) {
+      expect(t.prix, t.intitule).toBeGreaterThan(0);
+      expect(Number.isInteger(t.prix), t.intitule).toBe(true);
+    }
+  });
+
+  /**
+   * Les options existent pour chiffrer ce que `hors_forfait` annonce comme non
+   * compris. Annoncer un supplement sans son prix, c'est le supplement
+   * decouvert a la fin que la page s'interdit.
+   */
+  it("les postes hors forfait ont tous une option chiffree", () => {
+    const intitules = OPTIONS.map((o) => o.intitule.toLowerCase()).join(" | ");
+    for (const attendu of [
+      "rédaction des contenus",
+      "identité visuelle",
+      "reprise d",
+      "formation",
+    ]) {
+      expect(intitules, attendu).toContain(attendu);
+    }
   });
 });

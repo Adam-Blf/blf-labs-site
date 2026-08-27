@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Graduation } from "@/components/ui/Graduation";
-import { FOURCHETTES, TAUX_HORAIRE } from "@/content/tarifs";
+import { FOURCHETTES, OPTIONS, PALIERS_DE_TACHES } from "@/content/tarifs";
 import { SITE } from "@/lib/site";
 
 /**
@@ -151,17 +151,115 @@ export function Tarifs() {
         </div>
 
         {/*
+          LE DETAIL PAR TACHE.
+
+          Ce bloc n'est pas une seconde grille : c'est la DECOMPOSITION des
+          planchers ci-dessus, et la somme des taches d'un palier fait
+          exactement son plancher. La garde de test le verifie a chaque
+          execution. Annoncer un forfait a 600 EUR et des taches totalisant
+          davantage reviendrait a annoncer un prix auquel on ne peut pas
+          fournir, ce que l'article L121-4 repute trompeur en toutes
+          circonstances.
+
+          Pourquoi l'afficher. Un client qui doit tenir un budget peut retirer
+          une ligne, pas negocier un forfait : le detail transforme un refus en
+          arbitrage.
+        */}
+        <div className="mt-16">
+          <h3 className="title text-2xl">Ce que chaque tâche coûte</h3>
+          <p className="mt-6 max-w-2xl leading-relaxed text-muted">
+            Chaque palier ci-dessus est une addition, et la voici. Vous pouvez
+            retirer une ligne dont vous n&rsquo;avez pas besoin, ou n&rsquo;en
+            prendre qu&rsquo;une. Le prix de la tâche ne dépend pas du temps
+            qu&rsquo;elle nous prend.
+          </p>
+
+          <div className="mt-8 space-y-10">
+            {PALIERS_DE_TACHES.map((palier) => (
+              <div key={palier.nom}>
+                <div className="flex flex-wrap items-baseline justify-between gap-x-4 border-b border-hair pb-2">
+                  <h4 className="title text-lg">{palier.nom}</h4>
+                  <p className="text-sm text-muted">
+                    {palier.ajoute === palier.total ? (
+                      <>
+                        soit{" "}
+                        <strong className="text-ink">
+                          {palier.total.toLocaleString("fr-FR")} &euro;
+                        </strong>
+                      </>
+                    ) : (
+                      <>
+                        s&rsquo;ajoute au palier précédent :{" "}
+                        <strong className="text-ink">
+                          +{palier.ajoute.toLocaleString("fr-FR")} &euro;
+                        </strong>
+                        , soit {palier.total.toLocaleString("fr-FR")} &euro; au
+                        total
+                      </>
+                    )}
+                  </p>
+                </div>
+                <ul className="mt-4 space-y-3">
+                  {palier.taches.map((t) => (
+                    <li
+                      key={t.intitule}
+                      className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1"
+                    >
+                      <span className="max-w-xl">
+                        <strong className="text-ink">{t.intitule}</strong>
+                        <span className="block text-sm leading-relaxed text-muted">
+                          {t.detail}
+                        </span>
+                      </span>
+                      <span className="tabular-nums text-ink">
+                        {t.prix.toLocaleString("fr-FR")} &euro;
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+
+            <div>
+              <div className="flex flex-wrap items-baseline justify-between gap-x-4 border-b border-hair pb-2">
+                <h4 className="title text-lg">À la carte</h4>
+                <p className="text-sm text-muted">une ligne au devis, chacune</p>
+              </div>
+              <ul className="mt-4 space-y-3">
+                {OPTIONS.map((t) => (
+                  <li
+                    key={t.intitule}
+                    className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1"
+                  >
+                    <span className="max-w-xl">
+                      <strong className="text-ink">{t.intitule}</strong>
+                      <span className="block text-sm leading-relaxed text-muted">
+                        {t.detail}
+                      </span>
+                    </span>
+                    <span className="tabular-nums text-ink">
+                      {t.prix.toLocaleString("fr-FR")} &euro;
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/*
           LES FAMILLES SANS PLANCHER.
 
           L'article L112-3 du Code de la consommation impose un mode de calcul
           pour TOUTE prestation dont le prix n'est pas calculable a l'avance,
           pas seulement pour celles ou l'on a une reference livree. Les
           applications mobiles et les traitements de donnees n'ont pas de
-          plancher publie, faute de projet livre : le taux horaire est donc
-          publie a la place, parce que c'est une DECISION et non une
-          extrapolation, et qu'il se verifie.
+          plancher publie, faute de projet livre. Le mode de calcul publie est
+          desormais la TACHE et non plus l'heure : le cadrage nomme chaque
+          tache et lui attache un prix avant tout engagement, et ce cadrage est
+          lui-meme une tache chiffree ci-dessus.
         */}
-        <div className="mt-12">
+        <div className="mt-16">
           <h3 className="title text-2xl">Les autres prestations</h3>
           <p className="mt-6 max-w-2xl leading-relaxed text-muted">
             Les applications mobiles et les traitements de données ne portent pas
@@ -170,12 +268,11 @@ export function Tarifs() {
             derrière serait une promesse que le premier devis contredirait.
           </p>
           <p className="mt-4 max-w-2xl leading-relaxed text-muted">
-            Leur prix se calcule de la même façon dans tous les cas :{" "}
-            <strong className="text-ink">{TAUX_HORAIRE} de l&rsquo;heure</strong>,
-            multiplié par le nombre d&rsquo;heures estimé lors du cadrage, auquel
-            s&rsquo;ajoutent les postes facturés à part listés plus haut. Le
-            cadrage détaille les heures poste par poste, pour que vous puissiez
-            refaire le calcul vous-même. Ce montant est un prix total : la TVA
+            Leur prix se calcule comme tout le reste :{" "}
+            <strong className="text-ink">tâche par tâche</strong>. Le cadrage
+            nomme chacune d&rsquo;elles et lui attache un prix avant que vous ne
+            vous engagiez, de sorte que vous pouvez en retirer une, ou vous
+            arrêter au cadrage. Ce montant est un prix total : la TVA
             n&rsquo;est pas applicable et rien ne s&rsquo;y ajoute.
           </p>
         </div>

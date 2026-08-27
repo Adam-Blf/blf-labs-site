@@ -71,6 +71,14 @@ jobs:
         if: always()
         run: npm run check:french
 
+      # La liste blanche des adresses generiques est ecrite deux fois : dans la
+      # contrainte de la migration 0022 et dans le script d'import. Une
+      # divergence ou le script est plus strict que la base perd des contacts
+      # licites SANS RIEN SIGNALER.
+      - name: Liste blanche de prospection coherente
+        if: always()
+        run: npm run check:prospection
+
       # Le build en dernier : c'est l'etape la plus lente, et une erreur de
       # type ou de lint aura deja ete signalee plus haut, plus vite.
       - name: Build
