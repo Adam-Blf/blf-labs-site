@@ -1124,6 +1124,13 @@ def importe(lignes: list[dict]) -> int:
             "siren": l.get("siren") or None,
             "nature_juridique": l.get("nature_juridique") or None,
             "statut_diffusion": l.get("statut_diffusion") or None,
+            # Le pays designe la LOI applicable a l'envoi, et la base refuse une
+            # fiche professionnelle qui n'en porte pas. Ce collecteur-ci lit
+            # l'annuaire francais : ses fiches sont francaises par construction.
+            # Un collecteur etranger renseigne sa propre colonne `pays`, jamais
+            # cette valeur en dur.
+            "pays": (l.get("pays") or "FR").upper(),
+            "identifiant_national": l.get("siren") or None,
             "regime": "b2b_generique",
             "statut": "en_attente",
             "source": l.get("source") or "annuaire-entreprises.data.gouv.fr",
