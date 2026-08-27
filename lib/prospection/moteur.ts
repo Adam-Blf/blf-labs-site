@@ -295,12 +295,27 @@ async function traiteUne(
     }),
     email: contact.email,
     base: SITE.url,
+    // Un premier contact professionnel part vers UNE adresse et attend une
+    // reponse d'une ligne : il se presente comme une lettre, pas comme une
+    // campagne. Voir `Allure` dans le gabarit.
+    allure: sequence.audience === "b2b" ? "lettre" : "campagne",
   });
 
   try {
     const retour = await resend.emails.send({
       // Domaine verifie chez Resend, sinon 403. Voir lib/mail.ts.
-      from: process.env.RESEND_FROM_PROSPECTION ?? `BLF Lab's <carnet@beloucif.com>`,
+      /*
+       * L'EXPEDITEUR EST UNE PERSONNE, PAS UNE MARQUE.
+       *
+       * Le defaut etait `BLF Lab's <carnet@beloucif.com>`. Deux fautes dans une
+       * ligne. Un nom de marque et une adresse `carnet@` annoncent une lettre
+       * d'information avant que le lecteur ait lu un mot, alors que le message
+       * est ecrit par une personne a une autre. Et `carnet@` sert AUSSI a la
+       * sequence consentie : les plaintes du demarchage seraient allees abimer
+       * la reputation de l'adresse qui porte le carnet, sur un domaine qui
+       * envoie egalement les factures.
+       */
+      from: process.env.RESEND_FROM_PROSPECTION ?? `Adam Beloucif <${SITE.email}>`,
       to: contact.email,
       replyTo: SITE.email,
       subject: message.sujet,

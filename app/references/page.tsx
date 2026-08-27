@@ -8,7 +8,7 @@ import { ReferencesSection } from "@/components/marketing/ReferencesSection";
 export const metadata: Metadata = {
   title: "Réalisations",
   description:
-    "Les projets livrés par BLF Lab's : Bacchana, application de jeu publiée sur le web, iOS et Android, et Ohypnozen, site vitrine livré pour un cabinet de thérapie.",
+    "Les projets livrés par BLF Lab's : Bacchana, application de jeu publiée sur le web, iOS et Android, et Ohypnozen, prise de rendez-vous et paiement en ligne pour un cabinet d'hypnose.",
   alternates: { canonical: "/references" },
 };
 

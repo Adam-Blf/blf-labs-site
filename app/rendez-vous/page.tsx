@@ -64,14 +64,38 @@ export default function RendezVousPage() {
               qu&rsquo;un formulaire.
             </p>
 
-            <a
-              href={`mailto:${SITE.email}?subject=${encodeURIComponent(
-                "Prendre rendez-vous",
-              )}`}
-              className="btn-pill mt-10 inline-flex min-h-[56px] items-center bg-accent px-8 text-lg font-bold text-accent-ink"
-            >
-              Demander un créneau
-            </a>
+            {/*
+              DEUX CHEMINS, ET LE SECOND N'EST PAS UN ORNEMENT.
+
+              Cette page n'offrait qu'un `mailto:`. Sur un poste ou la
+              messagerie vit dans un navigateur - la situation ordinaire d'un
+              artisan, d'un coiffeur, d'un restaurateur - `mailto:` ouvre un
+              logiciel jamais configure, ou n'ouvre rien. L'unique appel a
+              l'action de la page ne faisait donc rien pour une partie des
+              visiteurs, sans que rien ne le signale ni ici ni dans le
+              back-office.
+
+              Le telephone n'existait quant a lui que dans les mentions
+              legales. Or pour les metiers vises, appeler est le geste naturel,
+              et ecrire un courriel est celui qu'on remet a plus tard. On
+              retirait le seul geste qu'ils font volontiers.
+            */}
+            <div className="mt-10 flex flex-wrap items-center gap-4">
+              <a
+                href={`tel:${SITE.phone.replace(/\s/g, "")}`}
+                className="btn-pill inline-flex min-h-[56px] items-center bg-accent px-8 text-lg font-bold text-accent-ink"
+              >
+                Appeler le {SITE.phone}
+              </a>
+              <a
+                href={`mailto:${SITE.email}?subject=${encodeURIComponent(
+                  "Prendre rendez-vous",
+                )}`}
+                className="btn-pill inline-flex min-h-[56px] items-center border border-line px-8 text-lg font-bold text-ink"
+              >
+                Écrire un message
+              </a>
+            </div>
 
             <p className="mt-6 text-sm text-muted">
               Gratuit et sans engagement. Si vous ne donnez pas suite, vous
