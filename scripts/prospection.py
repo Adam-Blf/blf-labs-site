@@ -1,11 +1,12 @@
-"""Outil de prospection : chercher, qualifier, exporter, importer.
+"""Outil de prospection : chercher, qualifier, exporter, importer, engager.
 
-Quatre sous-commandes, dans l'ordre ou on s'en sert :
+Cinq sous-commandes, dans l'ordre ou on s'en sert :
 
     python scripts/prospection.py chercher --departements 94,92 --sortie base.csv
     python scripts/prospection.py verifier --fichier base.csv
     python scripts/prospection.py exporter --fichier base.csv --sortie liste.xlsx
     python scripts/prospection.py importer --fichier base.csv
+    python scripts/prospection.py engager --confirmer
 
 CE QUE CET OUTIL N'ENVOIE PAS, ET POURQUOI.
 
@@ -15,8 +16,10 @@ un clic (RFC 8058), battement par GitHub Actions, purge a trois ans. Ecrire un
 second chemin d'envoi ici reviendrait a contourner toutes ces gardes, et c'est
 exactement comme ca qu'on se retrouve a ecrire a quelqu'un qui s'est desinscrit.
 
-La sous-commande `importer` alimente donc la table `contacts`, et c'est le
-moteur du site qui envoie, avec ses regles.
+La sous-commande `importer` alimente donc la table `contacts`, `engager` cree
+l'inscription a la sequence, et c'est le moteur du site qui envoie, avec ses
+regles. `engager` n'appelle pas Resend : elle ecrit une echeance, le moteur
+decide.
 
 SOURCE. API Recherche d'entreprises (recherche-entreprises.api.gouv.fr),
 service public gratuit, sans cle, adossee aux bases Sirene et RNE. Elle ne
@@ -57,9 +60,35 @@ import threading
 import urllib.request
 
 API = "https://recherche-entreprises.api.gouv.fr/search"
+
+# Tranches d'effectif retenues, et ce que chacune apporte.
+#
+#   NN  effectif non renseigne     01  1 a 2      03  6 a 9
+#   00  aucun salarie              02  3 a 5      11  10 a 19
+#
+# POURQUOI « NN » PESE PLUS QUE TOUT LE RESTE. Le filtre d'origine ne gardait
+# que 01, 02, 03 et 11 : les structures qui declarent au moins un salarie. Sur
+# le Val-de-Marne, code 86.90F, cela ramenait SEIZE fiches. Avec 00 et NN, la
+# meme requete en rend 1 941. Une societe sans salarie declare - le gerant seul,
+# le cabinet a deux associes - n'est pas une coquille vide : c'est exactement le
+# client d'un studio de cette taille, et il etait invisible.
+#
+# La borne haute ne bouge pas : au-dela de vingt salaries, la structure a deja
+# un prestataire.
+TRANCHES_VISEES = "NN,00,01,02,03,11"
+
 PAUSE = 1.0
 DIFFUSIBLE = "O"
 NATURE_PERSONNE_PHYSIQUE = "1000"
+
+
+class CiblageRefuse(Exception):
+    """L'API a refuse les criteres de recherche eux-memes.
+
+    Distincte d'un gisement vide, et c'est tout l'interet : une recherche qui
+    ne ramene rien parce que le parametre est invalide ne doit pas se lire
+    comme une recherche qui ne ramene rien parce qu'il n'y a personne.
+    """
 
 # Sections d'activite ou un site sert reellement a vendre, avec ce qu'on peut
 # proposer concretement. Le libelle de proposition sert a preparer un message :
@@ -190,6 +219,12 @@ def interroge(params: dict, essais: int = 3) -> dict:
             if err.code == 429 and tentative < essais - 1:
                 time.sleep(2 * (tentative + 1))
                 continue
+            # Un 400 dit que le CIBLAGE est invalide, pas que le reseau a
+            # hoquete : reessayer ne peut pas le reparer, et le corps de la
+            # reponse nomme le parametre fautif. On le remonte tel quel, tronque.
+            if err.code == 400:
+                detail = err.read().decode("utf-8", "ignore")[:220]
+                return {"_erreur": "HTTP 400", "_fatal": True, "_detail": detail}
             return {"_erreur": "HTTP {}".format(err.code)}
         except Exception as err:
             if tentative < essais - 1:
@@ -242,42 +277,49 @@ class Cadence:
 # liberal et le sophrologue : quatre metiers qui n'achetent pas la meme chose,
 # et dont trois n'achetent rien a un studio de deux personnes. Le code NAF
 # descend au metier, ce qui est le niveau ou un message cesse d'etre generique.
+#
+# LE POINT DANS LE CODE N'EST PAS COSMETIQUE. L'API n'accepte le code NAF que
+# sous la forme « 86.90F ». Ecrit « 8690F », elle rend un 400 et la liste
+# complete des valeurs admises. Les six niches etaient toutes ecrites sans le
+# point : AUCUNE ne ramenait quoi que ce soit, et l'outil annoncait « Aucun
+# resultat » - un marche vide, pas un parametre invalide. Voir la garde de
+# `une_tache`, qui refuse desormais de rendre zero ligne apres un 400.
 NICHES = {
     "bien-etre": (
         "Praticiens du bien-etre et therapies",
-        "8690F,8690E,8690D",
+        "86.90F,86.90E,86.90D",
         "Prise de rendez-vous avec gestion des creneaux, rappel automatique la "
         "veille et remise en ligne immediate du creneau libere. Exactement ce "
         "qui a ete livre et mesure pour un cabinet d'hypnose.",
     ),
     "coiffure-esthetique": (
         "Coiffure et esthetique",
-        "9602A,9602B",
+        "96.02A,96.02B",
         "Prise de rendez-vous en ligne et rappel automatique, pour que le "
         "telephone cesse de sonner pendant les prestations.",
     ),
     "batiment": (
         "Artisans du batiment",
-        "4322A,4322B,4321A,4399C,4332A,4334Z,4391B",
+        "43.22A,43.22B,43.21A,43.99C,43.32A,43.34Z,43.91B",
         "Formulaire de devis structure - type de travaux, adresse, photo, "
         "delai - qui qualifie avant l'appel et supprime les deplacements de "
         "chiffrage inutiles.",
     ),
     "formation": (
         "Organismes de formation et enseignement prive",
-        "8559A,8559B,8551Z,8552Z,8553Z",
+        "85.59A,85.59B,85.51Z,85.52Z,85.53Z",
         "Inscriptions en ligne avec paiement, plannings et documents a "
         "telecharger, au lieu d'un echange de courriels par famille.",
     ),
     "restauration": (
         "Restauration",
-        "5610A,5610C,5630Z",
+        "56.10A,56.10C,56.30Z",
         "Reservation en ligne, carte a jour sans repasser par un prestataire, "
         "et empreinte bancaire sur les grandes tablees.",
     ),
     "immobilier": (
         "Agences immobilieres et syndics",
-        "6831Z,6832A,6832B",
+        "68.31Z,68.32A,68.32B",
         "Portail de biens a jour, prise de rendez-vous de visite, et espace "
         "proprietaire pour les documents recurrents.",
     ),
@@ -310,6 +352,31 @@ def _perimetres(perimetre: dict) -> list[dict]:
     return [{"departement": d} for d in DEPARTEMENTS]
 
 
+def _siege_dans_la_zone(zone: dict, code_postal: str) -> bool:
+    """Le siege releve-t-il vraiment du departement demande ?
+
+    POURQUOI CE FILTRE EXISTE. Le parametre `departement` de l'API retient une
+    entreprise des qu'un de ses ETABLISSEMENTS s'y trouve, alors que la fiche
+    qu'on garde est celle du SIEGE. Une recherche sur le Val-de-Marne rendait
+    ainsi des sieges dans le Gers, le Nord et le Finistere - un sur cinq. Le
+    message, lui, s'ouvre sur « developpeur independant en Ile-de-France » : la
+    zone demandee et l'adresse ecrite doivent designer le meme endroit.
+
+    Ce que le filtre ecarte volontairement : l'enseigne multi-sites dont le
+    siege est ailleurs. A moins de vingt salaries elle est rare, et son
+    prestataire se choisit au siege.
+
+    Une recherche par REGION n'est pas filtree : le code postal ne permet pas
+    de conclure sans une table de correspondance qu'il faudrait maintenir.
+    """
+    departement = zone.get("departement")
+    if not departement or not code_postal:
+        return True
+    if departement in ("2A", "2B"):
+        return code_postal.startswith("20")
+    return code_postal.startswith(departement)
+
+
 def cherche(perimetre: dict, par_section: int, inclure_ei: bool,
             parallele: int = 5, sortie: str = "",
             niche: str = "") -> list[dict]:
@@ -329,6 +396,14 @@ def cherche(perimetre: dict, par_section: int, inclure_ei: bool,
         cibles = SECTIONS
         cle_api = "section_activite_principale"
     taches = [(z, c) for z in zones for c in cibles]
+    # Materialisation au fil de l'eau : tous les JALON couples termines.
+    #
+    # La valeur etait figee a 25. Une niche de trois codes NAF sur huit
+    # departements ne fait que 24 couples : le test n'etait jamais vrai, et rien
+    # n'etait ecrit avant la toute derniere ligne - precisement ce que
+    # l'ecriture au fil de l'eau devait empecher. Une garde reglee sur une
+    # constante plus grande que le travail qu'elle protege ne protege rien.
+    JALON = max(1, min(25, len(taches) // 4))
     # DEUX par seconde, pas cinq. La limite documentee est de sept, et cinq
     # paraissait donc prudent : un tir soutenu de quarante-cinq minutes a
     # pourtant fini par se faire fermer la connexion par l'hote. Une limite
@@ -336,6 +411,11 @@ def cherche(perimetre: dict, par_section: int, inclure_ei: bool,
     # ce service est gratuit, public, et utilise par d'autres.
     cadence = Cadence(par_seconde=2.0)
     verrou = threading.Lock()
+    # Le premier refus de ciblage rencontre. Voir la garde apres le pool.
+    ciblage_refuse: list[str] = []
+    # Couples qui se sont soldes par une erreur, quelle qu'elle soit. Sert a
+    # distinguer un gisement vide d'un reseau tombe.
+    en_erreur: list[str] = []
     vus: set[str] = set()
     lignes: list[dict] = []
     faits = [0]
@@ -351,7 +431,7 @@ def cherche(perimetre: dict, par_section: int, inclure_ei: bool,
                 **zone,
                 cle_api: section,
                 "etat_administratif": "A",
-                "tranche_effectif_salarie": "01,02,03,11",
+                "tranche_effectif_salarie": TRANCHES_VISEES,
                 "per_page": 25,
                 "page": page,
             })
@@ -359,6 +439,10 @@ def cherche(perimetre: dict, par_section: int, inclure_ei: bool,
                 print("  ! {} section {} : {}".format(
                     zone.get("departement") or zone.get("region"), section,
                     data["_erreur"]), file=sys.stderr)
+                with verrou:
+                    en_erreur.append(str(data["_erreur"]))
+                    if data.get("_fatal") and not ciblage_refuse:
+                        ciblage_refuse.append(data.get("_detail") or "")
                 break
             resultats = data.get("results") or []
             if not resultats:
@@ -375,6 +459,8 @@ def cherche(perimetre: dict, par_section: int, inclure_ei: bool,
                     continue
                 siege = e.get("siege") or {}
                 if siege.get("statut_diffusion_etablissement") != DIFFUSIBLE:
+                    continue
+                if not _siege_dans_la_zone(zone, siege.get("code_postal") or ""):
                     continue
                 recolte.append({
                     "siren": siren,
@@ -428,15 +514,42 @@ def cherche(perimetre: dict, par_section: int, inclure_ei: bool,
             #
             # Un traitement long qui ne materialise rien avant sa derniere
             # ligne transforme n'importe quel incident en perte totale.
-            if sortie and (faits[0] % 25 == 0 or faits[0] == len(taches)):
+            # `lignes` non vide : sans ce test, un ciblage entierement refuse
+            # laissait derriere lui un CSV reduit a son en-tete, qui se relit
+            # une heure plus tard comme une recherche honnete et bredouille.
+            if sortie and lignes and (faits[0] % JALON == 0 or faits[0] == len(taches)):
                 ecris(sortie, lignes)
-            if faits[0] % 25 == 0 or faits[0] == len(taches):
+            if faits[0] % JALON == 0 or faits[0] == len(taches):
                 print("  {}/{} requetes, {} structures{}".format(
                     faits[0], len(taches), len(lignes),
-                    " (ecrites)" if sortie else ""), file=sys.stderr)
+                    " (ecrites)" if (sortie and lignes) else ""), file=sys.stderr)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=parallele) as pool:
         list(pool.map(une_tache, taches))
+
+    # LA GARDE QUI MANQUAIT, ET CE QU'ELLE A COUTE.
+    #
+    # Un 400 se contentait d'une ligne sur la sortie d'erreur, puis la boucle
+    # passait au couple suivant. Quand le ciblage entier est refuse - les six
+    # niches ecrites sans le point dans le code NAF - chaque couple echouait de
+    # la meme facon et la commande finissait sur « Aucun resultat », qui se lit
+    # comme un marche vide. Un parametre invalide et un gisement vide ne sont
+    # pas la meme nouvelle, et rien ne les distinguait.
+    #
+    # On refuse donc de rendre une liste vide apres un refus de ciblage : c'est
+    # une erreur, elle porte le message de l'API, et l'appelant ne doit surtout
+    # pas ecrire de fichier.
+    if ciblage_refuse and not lignes:
+        raise CiblageRefuse(ciblage_refuse[0])
+
+    # MEME RAISONNEMENT, AUTRE CAUSE. Une coupure reseau a fait echouer les
+    # seize requetes de la niche « coiffure-esthetique » le 27 aout : chaque
+    # couple a imprime son erreur, la commande a conclu « Aucun resultat », et
+    # la niche entiere est passee a la trappe dans une boucle qui enchainait
+    # sur la suivante. Un reseau tombe n'est pas un marche vide non plus.
+    if len(en_erreur) == len(taches) and not lignes:
+        raise CiblageRefuse(
+            "toutes les requetes ont echoue, derniere erreur : " + en_erreur[-1])
 
     return lignes
 
@@ -1023,6 +1136,156 @@ def importe(lignes: list[dict]) -> int:
     print("Rien ne part pour autant : c'est le moteur du site qui envoie, avec "
           "ses sequences, sa liste de suppression et sa desinscription en un "
           "clic.", file=sys.stderr)
+    print("Pour qu'il ait quelque chose a envoyer, inscrire les fiches a la "
+          "sequence : python scripts/prospection.py engager --confirmer",
+          file=sys.stderr)
+    return 0
+
+
+# --------------------------------------------------------------------------
+# engager
+# --------------------------------------------------------------------------
+#
+# LE CHAINON QUI MANQUAIT.
+#
+# Tout etait en place sauf ceci. `importer` remplit `contacts`, le moteur lit
+# `enrollments`, et RIEN dans le depot ne creait la ligne entre les deux pour la
+# voie professionnelle : ni route, ni ecran d'administration, ni script. La
+# sequence `premier-contact` existait, sa garde `peut_recevoir(..., 'b2b')`
+# existait, et aucun message n'aurait jamais pu partir.
+#
+# CE QUE CETTE COMMANDE N'EST PAS. Ce n'est pas un second chemin d'envoi : elle
+# n'appelle pas Resend et n'ecrit pas une ligne de journal d'envoi. Elle inscrit,
+# et c'est le moteur du site qui decide ensuite s'il envoie - liste de
+# suppression, plafond du jour, garde de sortie par audience.
+#
+# POURQUOI `--confirmer` EST OBLIGATOIRE. Inscrire, c'est decider d'ecrire a des
+# gens. Une commande qui le fait par defaut le fera un jour par megarde, sur un
+# fichier dix fois plus gros que prevu.
+
+
+def slug_sequence_b2b() -> str:
+    """Lit le slug de la sequence professionnelle dans sa source TypeScript.
+
+    On pourrait le recopier ici. On ne le fait pas : deux copies d'une meme
+    chaine divergent au premier renommage, et la divergence produirait des
+    inscriptions vers une sequence inexistante - que le moteur arreterait, en
+    silence, une par une. Lire la source fait echouer le script tout de suite.
+    """
+    chemin = os.path.join(os.path.dirname(os.path.dirname(
+        os.path.abspath(__file__))), "content", "emails", "sequences.ts")
+    with io.open(chemin, encoding="utf-8") as f:
+        source = f.read()
+    trouve = re.search(r'const PREMIER_CONTACT: Sequence = \{\s*slug: "([^"]+)"',
+                       source)
+    if not trouve:
+        raise RuntimeError(
+            "slug de la sequence professionnelle introuvable dans "
+            "content/emails/sequences.ts")
+    return trouve.group(1)
+
+
+def _appelle_supabase(url: str, cle: str, chemin: str, methode: str = "GET",
+                      corps: object = None, entetes: dict | None = None) -> tuple[int, str]:
+    requete = urllib.request.Request(
+        url.rstrip("/") + chemin,
+        data=json.dumps(corps).encode("utf-8") if corps is not None else None,
+        method=methode,
+        headers={
+            "apikey": cle,
+            "Authorization": "Bearer " + cle,
+            "Content-Type": "application/json",
+            **(entetes or {}),
+        },
+    )
+    try:
+        with urllib.request.urlopen(requete, timeout=60) as r:
+            return r.status, r.read().decode("utf-8", "ignore")
+    except urllib.error.HTTPError as err:
+        return err.code, err.read().decode("utf-8", "ignore")[:600]
+
+
+def engage(limite: int, confirme_: bool) -> int:
+    """Inscrit les fiches professionnelles a la sequence de premier contact."""
+    url = os.environ.get("SUPABASE_URL")
+    cle = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+    if not url or not cle:
+        print("SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY doivent etre dans "
+              "l'environnement.", file=sys.stderr)
+        return 2
+
+    slug = slug_sequence_b2b()
+
+    # Les fiches eligibles. Le statut `en_attente` est le statut normal d'une
+    # fiche professionnelle : la voie B2B n'attend aucune confirmation, c'est
+    # `peut_recevoir(..., 'b2b')` qui le dit.
+    statut, corps = _appelle_supabase(
+        url, cle,
+        "/rest/v1/contacts?select=id,email,organisation"
+        "&regime=eq.b2b_generique&statut=in.(en_attente,confirme)"
+        "&order=created_at.asc&limit={}".format(max(limite, 1)))
+    if statut >= 300:
+        print("Lecture des contacts refusee : HTTP {} - {}".format(statut, corps),
+              file=sys.stderr)
+        return 1
+    fiches = json.loads(corps or "[]")
+    if not fiches:
+        print("Aucune fiche professionnelle a inscrire.", file=sys.stderr)
+        return 1
+
+    # Ce qui est deja inscrit. L'unicite (contact_id, sequence_slug) le
+    # refuserait de toute facon, mais on veut ANNONCER un chiffre juste avant
+    # d'ecrire, pas le deduire d'un conflit.
+    statut, corps = _appelle_supabase(
+        url, cle,
+        "/rest/v1/enrollments?select=contact_id&sequence_slug=eq." +
+        urllib.parse.quote(slug))
+    deja = {e["contact_id"] for e in json.loads(corps or "[]")} if statut < 300 else set()
+
+    # La liste de suppression prime sur tout. Le moteur la reverifie avant
+    # chaque envoi ; on ne cree simplement pas l'inscription.
+    statut, corps = _appelle_supabase(url, cle, "/rest/v1/suppression_list?select=email")
+    retires = {e["email"].lower() for e in json.loads(corps or "[]")} if statut < 300 else set()
+
+    a_inscrire = [f for f in fiches
+                  if f["id"] not in deja
+                  and (f.get("email") or "").lower() not in retires]
+
+    print("{} fiche(s) professionnelle(s), {} deja inscrite(s), {} retiree(s) "
+          "de la liste.".format(len(fiches), len(deja & {f['id'] for f in fiches}),
+                                len(fiches) - len(a_inscrire) -
+                                len(deja & {f['id'] for f in fiches})),
+          file=sys.stderr)
+
+    if not a_inscrire:
+        print("Rien a inscrire.", file=sys.stderr)
+        return 0
+
+    if not confirme_:
+        print("\n{} inscription(s) a la sequence « {} ».".format(len(a_inscrire), slug),
+              file=sys.stderr)
+        for f in a_inscrire[:10]:
+            print("  {}  {}".format(f["email"], f.get("organisation") or ""),
+                  file=sys.stderr)
+        if len(a_inscrire) > 10:
+            print("  ... et {} autres".format(len(a_inscrire) - 10), file=sys.stderr)
+        print("\nRien n'a ete ecrit. Relancer avec --confirmer pour inscrire.",
+              file=sys.stderr)
+        return 0
+
+    statut, corps = _appelle_supabase(
+        url, cle, "/rest/v1/enrollments", "POST",
+        [{"contact_id": f["id"], "sequence_slug": slug, "etape": 0}
+         for f in a_inscrire],
+        {"Prefer": "resolution=ignore-duplicates,return=minimal"})
+    if statut >= 300:
+        print("Refus de la base : HTTP {} - {}".format(statut, corps), file=sys.stderr)
+        return 1
+
+    print("{} inscription(s) creee(s) sur « {} ». HTTP {}".format(
+        len(a_inscrire), slug, statut), file=sys.stderr)
+    print("Le battement du depot traite les echeances toutes les quinze "
+          "minutes, dans la limite du plafond du jour.", file=sys.stderr)
     return 0
 
 
@@ -1094,6 +1357,15 @@ def main() -> int:
     i = sous.add_parser("importer", help="charge les lignes qualifiees en base")
     i.add_argument("--fichier", required=True)
 
+    g = sous.add_parser("engager",
+                        help="inscrit les fiches professionnelles a la sequence "
+                             "de premier contact")
+    g.add_argument("--limite", type=int, default=500,
+                   help="nombre maximum de fiches examinees")
+    g.add_argument("--confirmer", action="store_true",
+                   help="ecrit vraiment. Sans lui, la commande se contente "
+                        "d'annoncer ce qu'elle ferait.")
+
     a = p.parse_args()
 
     if a.commande == "chercher":
@@ -1107,8 +1379,15 @@ def main() -> int:
             perim = {"region": a.region}
         else:
             perim = {}
-        lignes = cherche(perim, a.par_section, a.inclure_entreprises_individuelles,
-                         a.parallele, a.sortie, a.niche)
+        try:
+            lignes = cherche(perim, a.par_section, a.inclure_entreprises_individuelles,
+                             a.parallele, a.sortie, a.niche)
+        except CiblageRefuse as refus:
+            print("La recherche a ECHOUE, ce n'est pas un marche vide.\n"
+                  "Cause : {}\n"
+                  "Aucun fichier n'a ete ecrit.".format(refus),
+                  file=sys.stderr)
+            return 2
         if not lignes:
             print("Aucun resultat.", file=sys.stderr)
             return 1
@@ -1155,6 +1434,9 @@ def main() -> int:
 
     if a.commande == "importer":
         return importe(lis(a.fichier))
+
+    if a.commande == "engager":
+        return engage(a.limite, a.confirmer)
 
     return 1
 

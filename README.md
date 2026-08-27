@@ -197,7 +197,7 @@ flowchart LR
   F1[Formulaire commande<br/>case facultative] --> C[(contacts)]
   F2[Pied de page] --> DOI[Double opt-in] --> C
   IMP[Import professionnel<br/>SIREN + adresse generique] --> C
-  C --> E[(enrollments)]
+  C -->|engager| E[(enrollments)]
   CRON[GitHub Actions<br/>15 min] -->|Bearer CRON_SECRET| API[/api/cron/sequences/]
   API --> E
   API --> G{peut_recevoir}
@@ -207,6 +207,30 @@ flowchart LR
   UNSUB[/desinscription/] --> SUP
   SUP --> G
 ```
+
+**Comment la voie professionnelle se remplit.** Cinq etapes, et aucune n&rsquo;envoie
+de message :
+
+```
+python scripts/prospection.py chercher --departements 94,92 --niche bien-etre --sortie base.csv
+python scripts/prospection.py verifier --fichier base.csv     # devine le site, y releve une adresse generique
+python scripts/prospection.py exporter --fichier base.csv --sortie liste.xlsx
+python scripts/prospection.py importer --fichier base.csv     # remplit contacts
+python scripts/prospection.py engager --confirmer             # remplit enrollments
+```
+
+`engager` est le chainon qui manquait : sans lui, `contacts` se remplissait, le
+moteur lisait `enrollments`, et rien ne creait la ligne entre les deux pour la
+voie professionnelle. Elle n&rsquo;appelle pas Resend, elle pose une echeance ; sans
+`--confirmer` elle se contente d&rsquo;annoncer ce qu&rsquo;elle ferait. Le CSV vit **hors
+du depot**, et le script refuse d&rsquo;ecrire dedans.
+
+**Deux pieges de l&rsquo;annuaire public**, payes le 27 aout 2026. Le code NAF ne
+s&rsquo;accepte qu&rsquo;avec son point (`86.90F`), sinon la reponse est un 400 que la
+commande lisait comme un marche vide. Et le parametre `departement` retient une
+entreprise des qu&rsquo;un de ses etablissements s&rsquo;y trouve, alors que la fiche gardee
+est celle du siege : un siege sur cinq tombait hors zone, le filtre les ecarte
+desormais.
 
 **Ou vit quoi.** Le contenu des messages est en TypeScript dans
 `content/emails/sequences.ts`, pas en base : il passe ainsi la garde
@@ -243,6 +267,7 @@ Tout asset genere a son script reproductible, aucun n&rsquo;embarque de secret :
 | `scripts/setup_email_dns.py` | Lit les enregistrements exiges par Resend et les pose chez OVH, de facon idempotente |
 | `scripts/setup_dmarc.py` | Pose la politique DMARC de la zone, en simulation par defaut, `--apply` pour ecrire |
 | `scripts/setup_resend_webhook.py` | Cree le webhook des evenements Resend, idempotent, le secret va dans un fichier jamais affiche |
+| `scripts/prospection.py` | Constitue la base professionnelle : `chercher`, `verifier`, `exporter`, `importer`, `engager`. N&rsquo;envoie rien, voir ci-dessous |
 | `scripts/check_encoding.py` | Garde : UTF-8 propre, sans BOM ni mojibake. Executee en CI |
 | `scripts/check_french.py` | Garde : accents manquants dans le texte visible. `--fix` pour appliquer. Executee en CI |
 | `scripts/clean_svg.py` | Retire les metadonnees des SVG exportes de Canva |
