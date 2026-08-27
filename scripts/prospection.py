@@ -1283,8 +1283,30 @@ def _appelle_supabase(url: str, cle: str, chemin: str, methode: str = "GET",
         return err.code, err.read().decode("utf-8", "ignore")[:600]
 
 
-def engage(limite: int, confirme_: bool) -> int:
-    """Inscrit les fiches professionnelles a la sequence de premier contact."""
+def engage(limite: int, confirme_: bool, fichier: str = "") -> int:
+    """Inscrit les fiches professionnelles a la sequence de premier contact.
+
+    `fichier` restreint l'inscription aux adresses qu'il enumere, une par ligne.
+
+    POURQUOI CETTE RESTRICTION EXISTE, ET CE QU'ELLE A COUTE DE NE PAS L'AVOIR.
+
+    Le 27 aout, la premiere base prete a partir portait 159 adresses, dont
+    VINGT ET UNE appartenaient a quelqu'un d'autre que le prospect : l'editeur
+    du site du prospect, l'agence qui l'a fait, un domaine generique achete par
+    un tiers, et deux domaines qui n'existent pas. `contact@simplebo.fr` etait
+    l'editeur du site d'une therapeute ; `hello@wavy.co` le logiciel de caisse
+    d'un barbier ; `info@stagheaddesigns.com` un bijoutier americain, rattache a
+    DEUX salons franciliens differents.
+
+    Ecrire « votre site ne permet pas de prendre rendez-vous » a l'agence qui a
+    fait ce site n'est pas seulement inutile : c'est une plainte pour pourriel
+    sur un domaine qui envoie aussi les factures.
+
+    La devinette de domaine ne sait pas toujours a qui appartient ce qu'elle
+    trouve. Cette option permet de n'envoyer qu'a un sous-ensemble PROUVE - par
+    exemple les sites qui nomment la commune de la structure - pendant que le
+    reste attend une garde meilleure.
+    """
     url = os.environ.get("SUPABASE_URL")
     cle = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
     if not url or not cle:
@@ -1325,14 +1347,42 @@ def engage(limite: int, confirme_: bool) -> int:
     statut, corps = _appelle_supabase(url, cle, "/rest/v1/suppression_list?select=email")
     retires = {e["email"].lower() for e in json.loads(corps or "[]")} if statut < 300 else set()
 
+    # La restriction se lit AVANT le reste : une adresse absente du fichier
+    # n'est pas « pas encore inscrite », elle est hors perimetre, et la
+    # distinction doit se voir dans le compte annonce.
+    permises: set[str] | None = None
+    if fichier:
+        with io.open(fichier, encoding="utf-8") as f:
+            permises = {l.strip().lower() for l in f if l.strip()}
+        if not permises:
+            print("Le fichier {} ne contient aucune adresse.".format(fichier),
+                  file=sys.stderr)
+            return 2
+        print("Perimetre restreint a {} adresse(s) enumerees dans {}.".format(
+            len(permises), fichier), file=sys.stderr)
+
     a_inscrire = [f for f in fiches
                   if f["id"] not in deja
-                  and (f.get("email") or "").lower() not in retires]
+                  and (f.get("email") or "").lower() not in retires
+                  and (permises is None
+                       or (f.get("email") or "").lower() in permises)]
 
-    print("{} fiche(s) professionnelle(s), {} deja inscrite(s), {} retiree(s) "
-          "de la liste.".format(len(fiches), len(deja & {f['id'] for f in fiches}),
-                                len(fiches) - len(a_inscrire) -
-                                len(deja & {f['id'] for f in fiches})),
+    # CHAQUE MOTIF EST COMPTE SEPAREMENT, et ce n'est pas de la cosmetique.
+    #
+    # Le compteur d'origine deduisait « retirees de la liste » par soustraction.
+    # Des l'ajout de --fichier, il s'est mis a compter comme desinscrites 90
+    # fiches qui etaient simplement hors perimetre : un chiffre faux, et faux
+    # sur le sujet ou l'on a le moins le droit de se tromper.
+    identifiants = {f["id"] for f in fiches}
+    deja_ici = len(deja & identifiants)
+    sur_liste = sum(1 for f in fiches
+                    if (f.get("email") or "").lower() in retires)
+    hors_perimetre = 0 if permises is None else sum(
+        1 for f in fiches if (f.get("email") or "").lower() not in permises)
+
+    print("{} fiche(s) professionnelle(s) : {} a inscrire, {} deja inscrite(s), "
+          "{} retiree(s) de la liste, {} hors perimetre.".format(
+              len(fiches), len(a_inscrire), deja_ici, sur_liste, hors_perimetre),
           file=sys.stderr)
 
     if not a_inscrire:
@@ -1443,6 +1493,10 @@ def main() -> int:
     g.add_argument("--confirmer", action="store_true",
                    help="ecrit vraiment. Sans lui, la commande se contente "
                         "d'annoncer ce qu'elle ferait.")
+    g.add_argument("--fichier",
+                   help="n'inscrit QUE les adresses enumerees dans ce fichier, "
+                        "une par ligne. Sert a n'envoyer qu'a un sous-ensemble "
+                        "prouve pendant que le reste attend une verification.")
 
     a = p.parse_args()
 
@@ -1514,7 +1568,7 @@ def main() -> int:
         return importe(lis(a.fichier))
 
     if a.commande == "engager":
-        return engage(a.limite, a.confirmer)
+        return engage(a.limite, a.confirmer, a.fichier or "")
 
     return 1
 

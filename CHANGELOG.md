@@ -6,6 +6,32 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.35.0 - 2026-08-27
+
+### Corrige
+
+- **Vingt et une des 159 adresses pretes a partir appartenaient a quelqu'un
+  d'autre que le prospect.** L'editeur du site du prospect, l'agence qui l'a
+  fait, un domaine generique achete par un tiers, deux domaines qui n'existent
+  pas. `contact@simplebo.fr` etait l'editeur du site d'une therapeute,
+  `hello@wavy.co` le logiciel de caisse d'un barbier, et
+  `info@stagheaddesigns.com` - un bijoutier americain - etait rattache a DEUX
+  salons franciliens differents. Ecrire « votre site ne permet pas de prendre
+  rendez-vous » a l'agence qui a fait ce site n'est pas seulement inutile :
+  c'est une plainte pour pourriel sur le domaine qui envoie aussi les factures.
+- **Le compteur d'`engager` deduisait « retirees de la liste » par
+  soustraction.** Des l'ajout d'un perimetre restreint, il annoncait 90 fiches
+  desinscrites qui etaient simplement hors perimetre. Chaque motif est desormais
+  compte pour lui-meme.
+
+### Ajoute
+
+- **`engager --fichier`, pour n'envoyer qu'a un sous-ensemble prouve.** La
+  devinette de domaine ne sait pas toujours a qui appartient ce qu'elle trouve.
+  L'option permet d'ecrire aux seules fiches dont le site nomme la commune ou le
+  code postal de la structure - preuve directe qu'il lui appartient - pendant
+  que le reste attend une garde meilleure.
+
 ## 0.34.0 - 2026-08-27
 
 ### Ajoute
