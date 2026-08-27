@@ -6,6 +6,35 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.36.0 - 2026-08-27
+
+### Ajoute
+
+- **La preuve d'appartenance entre dans la chaine, et conditionne l'import.**
+  Le controle qui a evite d'ecrire a vingt et une adresses de tiers vivait dans
+  un script jetable, hors du depot : il ne s'appliquait donc pas, et il ne se
+  serait plus applique le lendemain. Il est desormais calcule par `verifier`,
+  ecrit dans une colonne `preuve`, et `importer` REFUSE ce qui n'en porte pas.
+  Une garde qui n'est pas sur le chemin ne garde rien.
+
+  Le signal : un commerce local nomme sa commune, parce que c'est ainsi qu'on le
+  trouve ; un prestataire ne nomme pas la commune de son client. Son absence ne
+  prouve pas que le site appartient a un tiers - beaucoup de petits sites ne
+  nomment leur ville nulle part - elle dit seulement qu'on ne sait pas, et un
+  « je ne sais pas » n'autorise pas un envoi. `--sans-preuve` force le passage
+  en connaissance de cause.
+
+### Corrige
+
+- **La reconnaissance de commune ratait les noms que Sirene ecrit autrement que
+  les sites.** Le repertoire ecrit « LE PRE-SAINT-GERVAIS » et
+  « SAINT-OUEN-SUR-SEINE », les sites ecrivent « Pre-Saint-Gervais » et
+  « Saint Ouen sur Seine ». Les deux cotes sont maintenant ramenes a la meme
+  forme, articles et separateurs compris. Une preuve qui rate se lit comme une
+  absence de preuve, et ecarte alors un prospect legitime.
+- Neuf cas de preuve tournent en integration continue, avec la garde de liste
+  blanche. Vus rouges en cassant la normalisation.
+
 ## 0.35.0 - 2026-08-27
 
 ### Corrige
