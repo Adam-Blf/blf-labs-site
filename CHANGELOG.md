@@ -6,6 +6,46 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.33.0 - 2026-08-27
+
+### Ajoute
+
+- **`prospection.py engager`, le chainon qui manquait.** `importer` remplissait
+  `contacts`, le moteur lisait `enrollments`, et RIEN dans le depot ne creait la
+  ligne entre les deux pour la voie professionnelle : ni route, ni ecran
+  d'administration, ni script. La sequence `premier-contact` existait, sa garde
+  aussi, et aucun message n'aurait jamais pu partir. La commande inscrit, elle
+  n'envoie pas : le moteur garde la main sur la liste de suppression, le plafond
+  du jour et la garde de sortie. Sans `--confirmer`, elle annonce ce qu'elle
+  ferait et n'ecrit rien.
+
+### Corrige
+
+- **Les six niches ne ramenaient rien, et l'outil disait « Aucun resultat ».**
+  L'API n'accepte le code NAF qu'avec son point, `86.90F` et non `8690F`. Les
+  six etaient ecrites sans, chaque requete rendait un 400, et la commande
+  concluait sur un marche vide. Le ciblage refuse leve desormais une erreur
+  distincte, avec la reponse du service, et n'ecrit aucun fichier. Meme
+  traitement quand TOUTES les requetes echouent sur le reseau : une coupure DNS
+  a fait disparaitre une niche entiere dans une boucle qui enchainait sur la
+  suivante.
+- **Le filtre d'effectif ecartait le coeur de cible.** Il ne gardait que les
+  structures declarant au moins un salarie. Sur le Val-de-Marne, code 86.90F,
+  cela rendait SEIZE fiches la ou l'ajout des tranches « aucun salarie » et
+  « non renseigne » en rend 1 941. Une societe sans salarie declare n'est pas
+  une coquille vide, c'est le client type d'un studio de cette taille.
+- **Un siege sur cinq tombait hors de la zone demandee.** Le parametre
+  `departement` retient une entreprise des qu'un de ses etablissements s'y
+  trouve, alors que la fiche gardee est celle du siege : une recherche sur le
+  Val-de-Marne rendait des sieges dans le Gers et le Finistere. Le message
+  s'ouvre sur « developpeur independant en Ile-de-France », la zone et l'adresse
+  doivent designer le meme endroit.
+- **L'ecriture au fil de l'eau ne se declenchait pas sur les petits lots.** Le
+  jalon etait fige a vingt-cinq couples ; une niche de trois codes NAF sur huit
+  departements n'en fait que vingt-quatre, et rien n'etait donc materialise
+  avant la derniere ligne - exactement ce que cette ecriture devait empecher. Le
+  jalon suit desormais la taille du travail.
+
 ## 0.32.0 - 2026-08-26
 
 ### Ajoute
