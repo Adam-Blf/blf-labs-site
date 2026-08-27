@@ -93,9 +93,15 @@ PAUSE = 6.0
 # le droit d'utiliser.
 PAYS_OUVERTS = {
     "BE": "Belgique", "LU": "Luxembourg", "NL": "Pays-Bas", "PT": "Portugal",
-    "CH": "Suisse", "GB": "Royaume-Uni", "IE": "Irlande", "US": "Etats-Unis",
+    "CH": "Suisse", "GB": "Royaume-Uni", "IE": "Irlande",
     "MX": "Mexique", "AR": "Argentine", "CL": "Chili", "FR": "France",
 }
+
+# Les Etats-Unis manquent a cette liste, et pas parce que la loi l'interdit. Le
+# CAN-SPAM Act admet l'opposition ; il exige une ADRESSE POSTALE PHYSIQUE dans
+# chaque message, que la sequence ne porte pas et que le domicile d'Adam ne peut
+# pas fournir sans enfreindre la regle du strict minimum. Le pays est ferme en
+# base pour la meme raison. Il se rouvre des qu'une domiciliation existe.
 
 # Villes visees, par pays, de la plus grande a la plus petite. Le rayon est en
 # metres et suit l'etalement reel de l'agglomeration : Los Angeles n'a pas la

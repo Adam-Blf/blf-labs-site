@@ -77,10 +77,21 @@ values
   ('IE', 'Irlande', true,
    'SI 336/2011, opposition admise vers une adresse professionnelle',
    '2026-08-27', null),
-  ('US', 'Etats-Unis', true,
-   'CAN-SPAM Act, opposition admise avec retrait fonctionnel',
+  -- LES ETATS-UNIS SONT FERMES, ET PAS PARCE QUE LA LOI L'INTERDIT.
+  --
+  -- Le CAN-SPAM Act admet parfaitement l'opposition. Il exige en revanche une
+  -- ADRESSE POSTALE PHYSIQUE valide dans CHAQUE message commercial, et la
+  -- sequence `premier-contact` n'en porte aucune. La seule adresse immatriculee
+  -- est le domicile d'Adam, que la regle du strict minimum interdit de publier
+  -- a des inconnus sans necessite.
+  --
+  -- Ce pays se rouvre le jour ou une domiciliation ou une boite postale existe
+  -- et ou la signature la porte. D'ici la, le refus est ecrit ici plutot que
+  -- laisse a la vigilance de celui qui lancera la collecte.
+  ('US', 'Etats-Unis', false,
+   'CAN-SPAM Act, opposition admise mais adresse postale physique exigee dans chaque message',
    '2026-08-27',
-   'Exige une adresse postale physique valide dans CHAQUE message. Voir la sequence.'),
+   'FERME EN ATTENTE D''UNE ADRESSE POSTALE, pas par interdiction. La sequence n''en porte aucune, et la seule adresse immatriculee est un domicile.'),
   ('MX', 'Mexique', true,
    'LFPDPPP, opposition admise avec avis de confidentialite',
    '2026-08-27', null),

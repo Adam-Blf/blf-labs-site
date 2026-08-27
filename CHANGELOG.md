@@ -24,6 +24,13 @@ est dans les messages de commit et les pull requests.
   L'Allemagne, l'Autriche, l'Espagne, l'Italie et le Canada y figurent
   explicitement comme fermes : le refus est ecrit, pas seulement obtenu par
   absence.
+- **Les Etats-Unis sont fermes, et pas parce que la loi l'interdit.** Le
+  CAN-SPAM Act admet parfaitement l'opposition ; il exige une adresse postale
+  physique valide dans CHAQUE message commercial, et la sequence n'en porte
+  aucune. La seule adresse immatriculee est un domicile, que la regle du strict
+  minimum interdit de publier a des inconnus sans necessite. Le pays se rouvre
+  le jour ou une domiciliation existe et ou la signature la porte : d'ici la, le
+  refus est ECRIT plutot que laisse a la vigilance de qui lancera la collecte.
 - **Un collecteur international, par OpenStreetMap.** L'annuaire francais est
   France seulement et n'a pas d'equivalent gratuit et uniforme ailleurs.
   OpenStreetMap couvre le monde et publie le SITE des commerces ; l'adresse,
