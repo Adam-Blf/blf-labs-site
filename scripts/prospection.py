@@ -53,6 +53,7 @@ import re
 import socket
 import sys
 import time
+import unicodedata
 import urllib.error
 import urllib.parse
 import concurrent.futures
@@ -206,7 +207,7 @@ COLONNES = [
     "siren", "pays", "organisation", "secteur", "naf", "commune", "code_postal",
     "adresse", "date_creation", "effectif", "nature_juridique",
     "statut_diffusion", "site_web", "a_deja_un_site", "proposition",
-    "email_generique", "statut", "note", "source",
+    "email_generique", "preuve", "statut", "note", "source",
 ]
 
 
@@ -861,7 +862,7 @@ CHEMINS_CONTACT = [
 ]
 
 
-def cherche_emails(racine: str, domaine: str) -> tuple[str, str]:
+def cherche_emails(racine: str, domaine: str) -> tuple[str, str, str]:
     """Cherche une adresse sur le site, en privilegiant une adresse GENERIQUE.
 
     Rend (adresse generique, adresse quelconque). La premiere est la seule
@@ -873,10 +874,15 @@ def cherche_emails(racine: str, domaine: str) -> tuple[str, str]:
     ailleurs (un prestataire, un reseau social) ne designe pas la structure.
     """
     generique, quelconque = "", ""
+    # Le texte de tout ce qu'on a lu, garde pour la PREUVE D'APPARTENANCE
+    # ci-dessous. Le refaire en une seconde passe doublerait le nombre de
+    # requetes vers des serveurs qui n'ont rien demande.
+    corpus: list[str] = []
     for chemin in [""] + CHEMINS_CONTACT:
         corps = _corps(racine + chemin)
         if not corps:
             continue
+        corpus.append(corps)
         for brut in MOTIF_EMAIL.findall(corps):
             adresse = brut.lower().strip(".")
             if EMAILS_A_IGNORER.search(adresse):
@@ -894,7 +900,77 @@ def cherche_emails(racine: str, domaine: str) -> tuple[str, str]:
                 quelconque = adresse
         if generique:
             break
-    return generique, quelconque
+    return generique, quelconque, "\n".join(corpus)
+
+
+def _sans_accent(texte: str) -> str:
+    return unicodedata.normalize("NFKD", texte or "").encode(
+        "ascii", "ignore").decode("ascii").lower()
+
+
+def preuve_dappartenance(corpus: str, commune: str, code_postal: str) -> str:
+    """Le site lu appartient-il VRAIMENT a la structure ?
+
+    Rend `commune`, `code_postal`, ou `aucune`.
+
+    CE QUE CETTE FONCTION EXISTE POUR EMPECHER, et qui est arrive.
+
+    Le 27 aout, sur 159 adresses pretes a partir, VINGT ET UNE appartenaient a
+    quelqu'un d'autre que le prospect : l'editeur du site du prospect, l'agence
+    qui l'a fait, son logiciel de caisse, un domaine generique achete par un
+    tiers. `contact@simplebo.fr` etait l'editeur du site d'une therapeute.
+    `info@stagheaddesigns.com`, un bijoutier americain, etait rattache a DEUX
+    salons franciliens differents.
+
+    Ecrire « votre site ne permet pas de prendre rendez-vous » a l'agence qui a
+    fait ce site n'est pas seulement inutile : c'est une plainte pour pourriel
+    sur le domaine qui envoie aussi les factures.
+
+    LE SIGNAL RETENU, ET POURQUOI CELUI-LA. Un commerce local NOMME sa commune,
+    parce que c'est ainsi qu'on le trouve. Un prestataire ne nomme pas la
+    commune de son client. Le signal est direct, il ne se devine pas, et il ne
+    coute aucune requete de plus : le texte a deja ete lu pour y chercher
+    l'adresse.
+
+    CE QU'IL NE PROUVE PAS. Son absence ne prouve pas que le site est celui d'un
+    tiers : beaucoup de petits sites ne nomment leur ville nulle part. Un
+    `aucune` veut dire « je ne sais pas », et c'est pour cela qu'il n'autorise
+    pas l'envoi plutot que de l'interdire au motif d'une faute prouvee.
+
+    Paris est traite comme les autres : c'est le CODE POSTAL qui y designe
+    l'arrondissement, et c'est lui qui porte l'information utile.
+    """
+    if not corpus:
+        return "aucune"
+
+    # DEUX ECRITURES DU MEME NOM, ET AUCUNE N'EST FAUSSE.
+    #
+    # Le repertoire Sirene ecrit « LE PRE-SAINT-GERVAIS » et
+    # « SAINT-OUEN-SUR-SEINE ». Les sites ecrivent « Le Pre-Saint-Gervais »,
+    # « Pre Saint Gervais », « Saint-Ouen sur Seine ». Comparer les chaines
+    # telles quelles fait echouer la reconnaissance sur des communes que le site
+    # nomme pourtant en toutes lettres, et une preuve qui rate se lit comme une
+    # absence de preuve : on ecarte alors un prospect legitime.
+    #
+    # On ramene donc les deux cotes a la meme forme - sans accent, separateurs
+    # unifies - et on essaie aussi le nom prive de son article initial.
+    def forme(texte: str) -> str:
+        return re.sub(r"[^a-z0-9]+", " ", _sans_accent(texte)).strip()
+
+    texte = forme(corpus)
+    ville = forme(commune)
+    variantes = {ville}
+    sans_article = re.sub(r"^(le|la|les|l) ", "", ville)
+    variantes.add(sans_article)
+
+    # Sous quatre lettres, un nom de commune se retrouve par hasard dans
+    # n'importe quel texte : « Eu », « Y », « Bu » existent vraiment.
+    for v in variantes:
+        if v and len(v) >= 4 and v in texte:
+            return "commune"
+    if code_postal and code_postal in corpus:
+        return "code_postal"
+    return "aucune"
 
 
 def parle_de(url: str, nom: str, domaine: str = "") -> bool:
@@ -936,7 +1012,7 @@ def parle_de(url: str, nom: str, domaine: str = "") -> bool:
     return sum(1 for j in utiles if j in corps) >= max(1, len(utiles) // 2)
 
 
-def _verifie_une(ligne: dict) -> tuple[dict, str, str, str]:
+def _verifie_une(ligne: dict) -> tuple[dict, str, str, str, str]:
     """Cherche le site d'une structure, puis son adresse de contact dessus.
 
     Rend (ligne, site confirme, email generique, email quelconque).
@@ -956,13 +1032,17 @@ def _verifie_une(ligne: dict) -> tuple[dict, str, str, str]:
     qu'un domaine DEVINE appartient bien a la structure, or celui-ci n'a pas ete
     devine.
     """
+    def preuve(corpus: str) -> str:
+        return preuve_dappartenance(corpus, ligne.get("commune") or "",
+                                    ligne.get("code_postal") or "")
+
     connu = (ligne.get("site_web") or "").strip()
     if connu:
         racine = connu if "//" in connu else "https://" + connu
         racine = racine.rstrip("/")
         hote = urllib.parse.urlsplit(racine).netloc.lower()
-        generique, quelconque = cherche_emails(racine, hote)
-        return ligne, racine, generique, quelconque
+        generique, quelconque, corpus = cherche_emails(racine, hote)
+        return ligne, racine, generique, quelconque, preuve(corpus)
 
     for d in candidats(ligne.get("organisation") or ""):
         try:
@@ -972,9 +1052,9 @@ def _verifie_une(ligne: dict) -> tuple[dict, str, str, str]:
         for schema in ("https://", "http://"):
             racine = schema + d
             if parle_de(racine, ligne["organisation"], d):
-                generique, quelconque = cherche_emails(racine, d)
-                return ligne, racine, generique, quelconque
-    return ligne, "", "", ""
+                generique, quelconque, corpus = cherche_emails(racine, d)
+                return ligne, racine, generique, quelconque, preuve(corpus)
+    return ligne, "", "", "", "aucune"
 
 
 def _ecarte_les_domaines_partages(lignes: list[dict]) -> None:
@@ -1069,21 +1149,25 @@ def verifie(lignes: list[dict], parallele: int = 24,
                if not l.get("site_web") or not l.get("email_generique")]
     confirmes = 0
 
-    avec_email, avec_nominative = 0, 0
+    avec_email, avec_nominative, avec_preuve = 0, 0, 0
     with ThreadPoolExecutor(max_workers=parallele) as pool:
         taches = {pool.submit(_verifie_une, l): l for l in a_faire}
         for n, tache in enumerate(as_completed(taches), 1):
             try:
-                ligne, trouve, generique, quelconque = tache.result()
+                ligne, trouve, generique, quelconque, preuve = tache.result()
             except Exception:
-                ligne, trouve, generique, quelconque = taches[tache], "", "", ""
+                ligne, trouve, generique, quelconque, preuve = (
+                    taches[tache], "", "", "", "aucune")
             ligne["site_web"] = trouve
             ligne["a_deja_un_site"] = "oui" if trouve else "à vérifier"
+            ligne["preuve"] = preuve
             if sortie and n % 100 == 0:
                 ecris(sortie, lignes)
             if generique:
                 ligne["email_generique"] = generique
                 avec_email += 1
+                if preuve != "aucune":
+                    avec_preuve += 1
             elif quelconque:
                 # Conservee pour information, PAS importable : une adresse
                 # nominative designe une personne physique, et la contrainte de
@@ -1102,8 +1186,16 @@ def verifie(lignes: list[dict], parallele: int = 24,
 
     print("{} sites confirmes sur {}.".format(confirmes, len(a_faire)),
           file=sys.stderr)
-    print("{} adresses GENERIQUES relevees sur ces sites : celles-la sont "
-          "importables.".format(avec_email), file=sys.stderr)
+    print("{} adresses GENERIQUES relevees sur ces sites.".format(avec_email),
+          file=sys.stderr)
+    print("{} d'entre elles portent une PREUVE d'appartenance - le site nomme "
+          "la commune ou le code postal de la structure. Seules celles-la sont "
+          "importables.".format(avec_preuve), file=sys.stderr)
+    if avec_email > avec_preuve:
+        print("Les {} autres ne sont pas prouvees FAUSSES : beaucoup de petits "
+              "sites ne nomment leur ville nulle part. Elles ne partent pas "
+              "pour autant, `importer --sans-preuve` les force en connaissance "
+              "de cause.".format(avec_email - avec_preuve), file=sys.stderr)
     print("{} adresses nominatives notees pour information : elles designent "
           "une personne physique, la base les refuse.".format(avec_nominative),
           file=sys.stderr)
@@ -1138,7 +1230,7 @@ LOCALES_ACCEPTEES = {
 }
 
 
-def importe(lignes: list[dict]) -> int:
+def importe(lignes: list[dict], sans_preuve: bool = False) -> int:
     """Ecrit les lignes qualifiees dans `public.contacts` via l'API Supabase.
 
     Ne prend que les lignes qui portent une adresse email GENERIQUE. La base
@@ -1156,6 +1248,7 @@ def importe(lignes: list[dict]) -> int:
         return 2
 
     a_envoyer, ecartees = [], 0
+    sans_preuve_comptees = [0]
     for l in lignes:
         email = (l.get("email_generique") or "").strip().lower()
         if not email or "@" not in email:
@@ -1164,6 +1257,19 @@ def importe(lignes: list[dict]) -> int:
         if email.split("@", 1)[0] not in LOCALES_ACCEPTEES:
             print("  ecartee, partie locale non generique : {}".format(email),
                   file=sys.stderr)
+            ecartees += 1
+            continue
+        # LA PREUVE D'APPARTENANCE EST UNE CONDITION D'IMPORT, pas un confort.
+        #
+        # Sans elle, vingt et une adresses sur cent cinquante-neuf sont parties
+        # en base alors qu'elles appartenaient a l'editeur du site du prospect,
+        # a son logiciel de caisse, ou a un tiers sans rapport. Le controle
+        # existait, il vivait dans un script jetable hors du depot, et il ne
+        # s'appliquait donc pas.
+        #
+        # Une garde qui n'est pas sur le chemin ne garde rien.
+        if not sans_preuve and (l.get("preuve") or "aucune") == "aucune":
+            sans_preuve_comptees[0] += 1
             ecartees += 1
             continue
         a_envoyer.append({
@@ -1183,6 +1289,13 @@ def importe(lignes: list[dict]) -> int:
             "statut": "en_attente",
             "source": l.get("source") or "annuaire-entreprises.data.gouv.fr",
         })
+
+    if sans_preuve_comptees[0]:
+        print("  {} ligne(s) ecartee(s) faute de PREUVE d'appartenance : le "
+              "site ne nomme ni la commune ni le code postal de la structure, "
+              "donc rien ne dit qu'il est le sien. `--sans-preuve` les force en "
+              "connaissance de cause.".format(sans_preuve_comptees[0]),
+              file=sys.stderr)
 
     if not a_envoyer:
         print("Aucune ligne importable : la colonne email_generique est vide. "
@@ -1484,6 +1597,11 @@ def main() -> int:
 
     i = sous.add_parser("importer", help="charge les lignes qualifiees en base")
     i.add_argument("--fichier", required=True)
+    i.add_argument("--sans-preuve", action="store_true",
+                   help="importe aussi les lignes dont le site ne nomme ni la "
+                        "commune ni le code postal. A n'utiliser qu'en sachant "
+                        "que 21 adresses sur 159 se sont revelees etre celles "
+                        "d'un tiers la seule fois ou la garde n'existait pas.")
 
     g = sous.add_parser("engager",
                         help="inscrit les fiches professionnelles a la sequence "
@@ -1565,7 +1683,7 @@ def main() -> int:
         return 0
 
     if a.commande == "importer":
-        return importe(lis(a.fichier))
+        return importe(lis(a.fichier), a.sans_preuve)
 
     if a.commande == "engager":
         return engage(a.limite, a.confirmer, a.fichier or "")

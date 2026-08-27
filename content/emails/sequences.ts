@@ -283,20 +283,33 @@ const PREMIER_CONTACT: Sequence = {
         p(
           "Si ce n'est pas d'actualité, le lien en bas de ce message vous retire définitivement de ma liste, en un clic.",
         ) +
-        signature() +
-        // Information de l'article 14 du RGPD, due AU PLUS TARD lors de la
-        // premiere communication (art. 14.3.b) puisque la donnee sert
-        // precisement a communiquer. Elle porte l'origine, la finalite, la base
-        // legale et la duree, que la version precedente ne disait pas.
+        // LE DROIT D'OPPOSITION REMONTE AVANT LA SIGNATURE.
+        //
+        // L'article 21.4 exige qu'il soit porte « explicitement et de facon
+        // distincte des autres informations ». Il avait bien son paragraphe,
+        // mais en dernier bloc du message, en 13 px, APRES la signature et sous
+        // un pave de 12 px : distinct, oui ; explicitement porte a l'attention,
+        // non. Il est desormais avant la signature et a la taille du corps.
         p(
-          `<span style="font-size:12px;color:#5b6472">Cette adresse professionnelle a été relevée sur le site public de votre structure ou dans la base SIRENE, base de données ouverte de l'INSEE. Elle est utilisée pour vous proposer une prestation de création de site, sur le fondement de l'intérêt légitime (article 6.1.f du RGPD), et conservée trois ans au plus à compter de votre dernier contact. Vos droits d'accès, de rectification et d'effacement s'exercent à ${SITE.email}, et le détail figure dans la <a href="${v.url}/legal/confidentialite" style="color:#5b6472">politique de confidentialité</a>.</span>`,
+          `<span style="color:#3d4450"><strong>Vous pouvez vous opposer à tout moment à recevoir ces messages</strong>, sans avoir à vous justifier : le lien de désinscription en bas suffit, il prend effet immédiatement et il est définitif.</span>`,
         ) +
-        // Le droit d'opposition se mentionne « explicitement et de facon
-        // distincte des autres informations » (art. 21.4). Noye dans la ligne
-        // ci-dessus, il ne remplissait pas cette exigence : il a donc son
-        // propre paragraphe, et il est ecrit plus gros que le reste.
+        signature() +
+        // INFORMATION DE L'ARTICLE 14, corrigee le 27/08/2026 apres audit.
+        //
+        // Ce qui etait FAUX : « relevee sur le site public de votre structure
+        // OU dans la base SIRENE ». L'article 14.2.f impose LA source, pas un
+        // choix entre deux, et la disjonction masquait une inexactitude :
+        // l'annuaire public ne publie AUCUNE adresse electronique, son propre
+        // outil de collecte le dit. La seule source de l'adresse est la page du
+        // site de la structure.
+        //
+        // Ce qui MANQUAIT : l'interet legitime poursuivi lui-meme (14.2.b, on
+        // citait l'article sans dire l'interet), les categories de donnees
+        // (14.1.d, propre a la collecte indirecte), le droit de saisir la CNIL
+        // (14.2.e) et le droit a la limitation (14.2.c). La portabilite reste
+        // omise a dessein : l'article 20 ne joue pas sur le fondement 6.1.f.
         p(
-          `<span style="font-size:13px;color:#3d4450"><strong>Vous pouvez vous opposer à tout moment à recevoir ces messages</strong>, sans avoir à vous justifier : le lien de désinscription ci-dessous suffit, et il est définitif.</span>`,
+          `<span style="font-size:12px;color:#5b6472"><strong>D'où vient cette adresse.</strong> Elle est publiée sur le site de votre structure, où je l'ai lue. Le nom de la structure, son numéro SIREN et son secteur viennent de la base SIRENE de l'INSEE, publiée en données ouvertes. Ce sont les seules données traitées, et toutes sont professionnelles.<br><br><strong>Pourquoi.</strong> Pour vous proposer une prestation de création de site, sur le fondement de l'intérêt légitime (article 6.1.f du RGPD) : faire connaître une activité de développement à des professionnels dont le métier peut en avoir l'usage. Conservation de trois ans au plus à compter de votre dernier contact, puis suppression automatique.<br><br><strong>Vos droits.</strong> Accès, rectification, effacement et limitation, à ${SITE.email}. Le détail figure dans la <a href="${v.url}/legal/confidentialite" style="color:#5b6472">politique de confidentialité</a>, et vous pouvez à tout moment saisir la CNIL.</span>`,
         ),
     },
     {

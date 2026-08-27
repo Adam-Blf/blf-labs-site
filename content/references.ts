@@ -51,18 +51,32 @@ export const REFERENCES: Reference[] = [
     tags: ["Produit", "Web", "iOS", "Android"],
   },
   {
+    /*
+     * CETTE FICHE DISAIT « SITE VITRINE », ET C'ETAIT LA MOITIE DE LA VERITE.
+     *
+     * Le site prend des rendez-vous, gere des creneaux, envoie des rappels et
+     * encaisse. Le decrire comme un site de presentation etait une modestie qui
+     * coutait cher : la prospection ecrit « vos clients ne peuvent ni prendre
+     * rendez-vous ni payer », et le lecteur qui cliquait pour verifier tombait
+     * sur une preuve qui ne montrait pas ca. Le message et la preuve doivent
+     * parler du meme objet.
+     *
+     * Tout ce qui est ecrit ici tourne en production et se verifie en trois
+     * clics sur ohypnozen.com.
+     */
     slug: "ohypnozen",
     title: "Ohypnozen",
-    role: "Site vitrine livré pour un cabinet de thérapie",
+    role: "Prise de rendez-vous et paiement en ligne, pour un cabinet d'hypnose",
     summary:
-      "Site de présentation d'un cabinet : prestations, prise de contact, contenus modifiables par la praticienne sans passer par un développeur.",
+      "Le patient choisit son créneau, reçoit un rappel automatique la veille et règle en ligne. La praticienne ne rappelle plus personne pour caler une date, et un créneau libéré se remet en ligne tout seul.",
     url: "https://ohypnozen.com",
     shot: "/shots/ohypnozen.webp",
     facts: [
-      "Interface d'édition réservée à la propriétaire du site",
-      "Pages légales et RGPD en place dès la mise en ligne",
-      "Nom de domaine et hébergement au nom du cabinet",
+      "Réservation en ligne avec gestion des créneaux et rappel automatique",
+      "Paiement sécurisé, sur place ou à l'avance selon la séance",
+      "Espace praticienne : rendez-vous, dossiers, créneaux bloqués",
+      "Pages légales, RGPD et données de santé traitées dès la mise en ligne",
     ],
-    tags: ["Site vitrine", "Next.js", "Édition de contenu"],
+    tags: ["Réservation", "Paiement", "Next.js", "Espace praticien"],
   },
 ];
