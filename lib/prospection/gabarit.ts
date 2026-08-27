@@ -1,4 +1,4 @@
-import { SITE, FULL_ADDRESS } from "@/lib/site";
+import { SITE } from "@/lib/site";
 import { creeJeton } from "@/lib/prospection/jeton";
 
 /**
@@ -72,10 +72,28 @@ function versTexte(html: string): string {
     .trim();
 }
 
+/**
+ * L'ADRESSE DU DOMICILE NE PART PLUS DANS CHAQUE MESSAGE.
+ *
+ * Elle y figurait, en HTML et en texte brut. Aucun texte francais ne l'impose
+ * dans un message de prospection : l'article L.34-5 du CPCE exige des
+ * coordonnees VALABLES pour faire cesser les envois, et l'article 20 de la LCEN
+ * exige d'identifier l'annonceur. L'adresse electronique et le SIRET satisfont
+ * les deux. Seuls le CAN-SPAM americain et la LCAP canadienne exigent une
+ * adresse postale physique, et ces deux pays sont fermes.
+ *
+ * Ce dispositif invoquait la regle du strict minimum pour FERMER les
+ * Etats-Unis, tout en publiant l'adresse du domicile d'Adam a chaque envoi vers
+ * des inconnus. Elle reste dans les mentions legales, ou elle est obligatoire
+ * et ou elle est consultee par qui la cherche.
+ *
+ * A remettre le jour ou l'un de ces deux pays s'ouvre, idealement avec une
+ * domiciliation.
+ */
 function piedDePage(urlDesinscription: string): string {
   return `<div style="max-width:560px;margin:16px auto 0;font-size:12px;line-height:1.6;color:${COULEUR_DISCRETE}">
     <p style="margin:0 0 6px">${esc(SITE.legalMention)}, ${esc(SITE.legalForm)}. SIRET ${esc(SITE.siret)}.</p>
-    <p style="margin:0 0 6px">${esc(FULL_ADDRESS)} &bull; ${esc(SITE.email)}</p>
+    <p style="margin:0 0 6px">${esc(SITE.email)}</p>
     <p style="margin:0"><a href="${esc(urlDesinscription)}" style="color:${COULEUR_DISCRETE}">Ne plus recevoir ces messages</a>, en un clic et sans justification.</p>
   </div>`;
 }
@@ -148,7 +166,7 @@ export function prepare(params: {
   const texte = `${versTexte(corps)}
 
 ${SITE.legalMention}, ${SITE.legalForm}. SIRET ${SITE.siret}.
-${FULL_ADDRESS} - ${SITE.email}
+${SITE.email}
 
 Ne plus recevoir ces messages : ${urlDesinscription}`;
 

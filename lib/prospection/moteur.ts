@@ -36,10 +36,32 @@ const VERROU_PERIME_MINUTES = 15;
 const LOT = 20;
 
 /**
- * Plafond d'envois par jour. Volontairement bas au demarrage, a monter par
- * paliers sur trois semaines une fois les rapports DMARC propres.
+ * Plafond d'envois par jour, quand la base n'en porte pas.
+ *
+ * IL VIT DESORMAIS EN BASE, dans `moteur_reglages`. Il etait lu ici depuis
+ * l'environnement, donc fige jusqu'au prochain deploiement : le baisser en
+ * urgence demandait un redeploiement, ce qui est exactement ce qu'on n'a pas
+ * le temps de faire quand il faut le baisser.
  */
-const PLAFOND_JOUR = Number(process.env.PROSPECTION_PLAFOND_JOUR ?? 50);
+const PLAFOND_PAR_DEFAUT = Number(process.env.PROSPECTION_PLAFOND_JOUR ?? 50);
+
+/**
+ * SEUILS DU COUPE-CIRCUIT, et d'ou ils viennent.
+ *
+ * Ce sont ceux que Google et Microsoft appliquent pour classer un expediteur.
+ * Au-dela, ce n'est plus une campagne qui se passe mal, c'est un domaine qui se
+ * brule - et celui-ci envoie AUSSI les factures. Une reputation abimee met des
+ * mois a revenir, quand elle revient.
+ *
+ * Mesures sur une fenetre glissante des derniers envois plutot que sur la
+ * journee : une salve mauvaise doit arreter la machine en quelques minutes, pas
+ * le lendemain matin.
+ */
+const FENETRE_SURVEILLANCE = 200;
+const SEUIL_REBONDS = 0.03;
+const SEUIL_PLAINTES = 0.001;
+/** En dessous, un taux ne veut rien dire : deux rebonds sur cinq font 40 %. */
+const MINIMUM_POUR_CONCLURE = 40;
 
 /** Pause entre deux envois. Resend limite le rythme des appels. */
 const PAUSE_MS = 600;
@@ -74,6 +96,83 @@ function pause(ms: number): Promise<void> {
 }
 
 /** Envois deja partis aujourd'hui, echecs exclus. */
+type Reglages = {
+  actif: boolean;
+  plafond_jour: number;
+  motif_arret: string | null;
+};
+
+/**
+ * L'interrupteur et le plafond, lus AVANT toute reservation.
+ *
+ * Une lecture qui echoue rend `null` et le battement s'arrete : ne pas savoir
+ * si la machine doit tourner n'autorise pas a la faire tourner. C'est la meme
+ * regle que partout ailleurs dans ce module - quand le code ne sait pas, il
+ * n'envoie pas.
+ */
+async function litReglages(db: SupabaseClient): Promise<Reglages | null> {
+  const { data, error } = await db
+    .from("moteur_reglages")
+    .select("actif, plafond_jour, motif_arret")
+    .eq("id", true)
+    .maybeSingle<Reglages>();
+  if (error || !data) return null;
+  return data;
+}
+
+/** Coupe le moteur et ecrit pourquoi, pour qu'un silence s'explique. */
+async function coupe(
+  db: SupabaseClient,
+  motif: string,
+  par: string,
+): Promise<void> {
+  await db
+    .from("moteur_reglages")
+    .update({
+      actif: false,
+      motif_arret: motif,
+      arrete_le: new Date().toISOString(),
+      arrete_par: par,
+    })
+    .eq("id", true);
+}
+
+/**
+ * LE COUPE-CIRCUIT. La seule panne dont on ne se remet pas.
+ *
+ * Le webhook Resend traite chaque rebond et chaque plainte correctement, un par
+ * un. Personne ne regardait le TAUX. A cent cinquante contacts c'est sans
+ * effet ; a dix mille, un lot d'adresses mal qualifiees produit une salve de
+ * rebonds qui brule le domaine - factures comprises - avant que quiconque
+ * ouvre le back-office.
+ *
+ * Mesure sur les derniers envois, pas sur la journee : une salve doit arreter
+ * la machine en quelques minutes.
+ */
+async function tauxHorsLimites(db: SupabaseClient): Promise<string | null> {
+  const { data } = await db
+    .from("email_sends")
+    .select("statut")
+    .order("created_at", { ascending: false })
+    .limit(FENETRE_SURVEILLANCE);
+
+  const lignes = data ?? [];
+  if (lignes.length < MINIMUM_POUR_CONCLURE) return null;
+
+  const rebonds = lignes.filter((l) => l.statut === "bounce").length;
+  const plaintes = lignes.filter((l) => l.statut === "plainte").length;
+  const tauxRebonds = rebonds / lignes.length;
+  const tauxPlaintes = plaintes / lignes.length;
+
+  if (tauxRebonds > SEUIL_REBONDS) {
+    return `rebonds a ${(tauxRebonds * 100).toFixed(1)} % sur les ${lignes.length} derniers envois, seuil ${(SEUIL_REBONDS * 100).toFixed(0)} %`;
+  }
+  if (tauxPlaintes > SEUIL_PLAINTES) {
+    return `plaintes a ${(tauxPlaintes * 100).toFixed(2)} % sur les ${lignes.length} derniers envois, seuil ${(SEUIL_PLAINTES * 100).toFixed(1)} %`;
+  }
+  return null;
+}
+
 async function envoyesAujourdhui(db: SupabaseClient): Promise<number> {
   const debut = new Date();
   debut.setUTCHours(0, 0, 0, 0);
@@ -409,6 +508,40 @@ export async function traiteEcheances(): Promise<Rapport> {
   // retrait automatique apres trois ans sans interaction. Sans cet appel,
   // l'engagement etait publie sans rien derriere. Il tourne avant les envois :
   // une fiche caduque ne doit pas recevoir un message de plus.
+  /*
+   * L'INTERRUPTEUR EN PREMIER, avant meme la purge.
+   *
+   * Une machine qu'on vient d'arreter ne doit rien faire du tout, pas meme du
+   * menage : si l'arret vient d'un doute sur les donnees, toucher aux donnees
+   * est precisement ce qu'il ne faut pas faire.
+   */
+  const reglages = await litReglages(db);
+  if (!reglages) {
+    rapport.journal.push("reglages illisibles, aucune echeance touchee");
+    await journalise(db, rapport);
+    return rapport;
+  }
+  if (!reglages.actif) {
+    rapport.journal.push(
+      `moteur arrete${reglages.motif_arret ? ` : ${reglages.motif_arret}` : ""}`,
+    );
+    await journalise(db, rapport);
+    return rapport;
+  }
+
+  /*
+   * LE COUPE-CIRCUIT ENSUITE, avant de reserver quoi que ce soit. Il coupe
+   * lui-meme et n'attend pas qu'on vienne le lire : une salve de rebonds se
+   * mesure en minutes, et personne ne regarde un tableau de bord la nuit.
+   */
+  const derive = await tauxHorsLimites(db);
+  if (derive) {
+    await coupe(db, derive, "coupe-circuit");
+    rapport.journal.push(`COUPE-CIRCUIT : ${derive}`);
+    await journalise(db, rapport);
+    return rapport;
+  }
+
   const { data: purges } = await db.rpc("purge_consentements_caducs");
   if (typeof purges === "number" && purges > 0) {
     rapport.purges = purges;
@@ -416,20 +549,53 @@ export async function traiteEcheances(): Promise<Rapport> {
   }
 
   const deja = await envoyesAujourdhui(db);
-  const reste = PLAFOND_JOUR - deja;
+  const reste = reglages.plafond_jour - deja;
   if (reste <= 0) {
-    rapport.journal.push(`plafond du jour atteint : ${deja} sur ${PLAFOND_JOUR}`);
+    rapport.journal.push(
+      `plafond du jour atteint : ${deja} sur ${reglages.plafond_jour}`,
+    );
+    await journalise(db, rapport);
     return rapport;
   }
 
   const inscriptions = await reserve(db, Math.min(LOT, reste));
   rapport.candidats = inscriptions.length;
-  if (!inscriptions.length) return rapport;
+  if (!inscriptions.length) {
+    await journalise(db, rapport);
+    return rapport;
+  }
 
   for (const inscription of inscriptions) {
     await traiteUne(db, resend, inscription, rapport);
     await pause(PAUSE_MS);
   }
 
+  await journalise(db, rapport);
   return rapport;
+}
+
+/**
+ * Ecrit le battement en base.
+ *
+ * Le rapport finissait dans un journal GitHub Actions puis disparaissait. Sans
+ * trace, rien ne distingue « rien a envoyer » de « plus personne n'appelle la
+ * route » : le workflow est vert dans les deux cas, et un moteur mort passe
+ * pour un moteur au repos.
+ *
+ * L'ecriture ne peut pas faire echouer le battement : un journal indisponible
+ * est ennuyeux, empecher les envois pour autant serait pire.
+ */
+async function journalise(db: SupabaseClient, rapport: Rapport): Promise<void> {
+  try {
+    await db.from("moteur_battements").insert({
+      candidats: rapport.candidats,
+      envoyes: rapport.envoyes,
+      ignores: rapport.ignores,
+      echecs: rapport.echecs,
+      purges: rapport.purges,
+      journal: rapport.journal,
+    });
+  } catch {
+    // Volontairement muet, voir ci-dessus.
+  }
 }
