@@ -35,15 +35,20 @@ const VERROU_PERIME_MINUTES = 15;
 /** Nombre d'inscriptions traitees par execution. */
 const LOT = 20;
 
-/**
- * Plafond d'envois par jour, quand la base n'en porte pas.
+/*
+ * LE PLAFOND N'EST PLUS ICI. Il vit dans `moteur_reglages`, en base.
  *
- * IL VIT DESORMAIS EN BASE, dans `moteur_reglages`. Il etait lu ici depuis
- * l'environnement, donc fige jusqu'au prochain deploiement : le baisser en
- * urgence demandait un redeploiement, ce qui est exactement ce qu'on n'a pas
- * le temps de faire quand il faut le baisser.
+ * Il etait lu depuis l'environnement, donc fige jusqu'au prochain
+ * deploiement : le baisser en urgence demandait un redeploiement, ce qui est
+ * exactement ce qu'on n'a pas le temps de faire au moment ou il faut le
+ * baisser. La variable `PROSPECTION_PLAFOND_JOUR` n'est plus lue par personne ;
+ * elle reste posee chez Vercel et peut y etre retiree.
+ *
+ * Aucune constante de repli n'est gardee ici, volontairement : un repli
+ * silencieux masquerait une lecture de reglages en echec, et le moteur
+ * enverrait a un rythme que personne n'a decide. `litReglages` rend `null` et
+ * le battement s'arrete.
  */
-const PLAFOND_PAR_DEFAUT = Number(process.env.PROSPECTION_PLAFOND_JOUR ?? 50);
 
 /**
  * SEUILS DU COUPE-CIRCUIT, et d'ou ils viennent.

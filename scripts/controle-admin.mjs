@@ -136,6 +136,95 @@ for (const chemin of [...fichiers(PAGES), ...fichiers(COMPOSANTS)]) {
   }
 }
 
+/*
+ * TOUT `revalidatePath` VISE UNE ROUTE VIVANTE.
+ *
+ * Les poles ont ete regroupes, les anciennes adresses ont recu une
+ * redirection, et QUINZE appels a `revalidatePath` ont continue de pointer
+ * vers `/admin/facturation`, `/admin/projets` et `/admin/comptabilite`, qui
+ * n'existent plus comme routes. Un `revalidatePath` vers une route morte ne
+ * leve rien et ne previent rien : il ne rafraichit simplement rien. On deplace
+ * une carte, on emet une facture, et l'ecran garde l'ancienne valeur.
+ *
+ * La redirection posee dans next.config.ts sert un NAVIGATEUR qui arrive sur
+ * une ancienne adresse. Elle ne fait pas de ces adresses des routes a
+ * invalider, et c'est precisement ce qui rendait le defaut invisible.
+ *
+ * CE QUE CETTE GARDE NE VOIT PAS : les chemins interpoles, du type
+ * `/admin/facturation/${id}`. Elle ne lit que les litteraux.
+ */
+const ROUTES = new Set(
+  fichiers(PAGES)
+    .filter((c) => /[\\/]page\.tsx$/.test(c))
+    .map((c) =>
+      relatif(c)
+        .replace(/^app\/admin/, "/admin")
+        .replace(/\/\([^)]+\)/g, "")
+        .replace(/\/page\.tsx$/, ""),
+    )
+    .map((r) => r || "/admin"),
+);
+
+for (const chemin of fichiers(PAGES)) {
+  const nom = relatif(chemin);
+  const source = sansCommentaires(readFileSync(chemin, "utf8"));
+  for (const trouve of source.matchAll(/revalidatePath\(\s*"([^"$`]+)"/g)) {
+    const cible = trouve[1];
+    if (!ROUTES.has(cible)) {
+      echec(
+        `${nom} appelle revalidatePath("${cible}") - cette route n'existe pas, ` +
+          "rien n'est rafraichi et rien ne le signale",
+      );
+    }
+  }
+}
+
+/*
+ * AUTANT DE SECTIONS RENDUES QUE D'ONGLETS DECLARES.
+ *
+ * Un onglet ajoute a `navigation.ts` sans vue correspondante ne se signale
+ * jamais, et il echoue de DEUX facons selon la maniere dont la page choisit
+ * sa section :
+ *
+ *   chaine de `&&`  -> ecran BLANC sous un onglet souligne. Un ecran vide se
+ *                      lit comme « il n'y a rien », pas comme « il manque du
+ *                      code ».
+ *   ternaire        -> pire encore : la branche `else` s'affiche, donc le
+ *                      MAUVAIS contenu sous le bon onglet, sans rien d'anormal
+ *                      a l'ecran.
+ *
+ * D'ou le critere retenu : on ne cherche pas la cle de l'onglet dans le code -
+ * un ternaire ne la nomme pas, et le controle rendait deux faux positifs sur
+ * `projets` et `comptabilite`. On compte les composants `Section*` rendus.
+ * C'est la seule mesure qui vaut pour les deux formes.
+ */
+const navigation = readFileSync(join(COMPOSANTS, "navigation.ts"), "utf8");
+for (const pole of navigation.matchAll(
+  /chemin:\s*"(\/admin[^"]*)"([\s\S]*?)(?=\n  \{|\n\];)/g,
+)) {
+  const [, chemin, corps] = pole;
+  const onglets = [...corps.matchAll(/cle:\s*"([^"]+)"/g)].length;
+  if (onglets === 0) continue;
+  const page = join(PAGES, "(dashboard)", chemin.replace("/admin/", ""), "page.tsx");
+  let source;
+  try {
+    source = sansCommentaires(readFileSync(page, "utf8"));
+  } catch {
+    echec(`${chemin} est declare dans navigation.ts mais n'a pas de page`);
+    continue;
+  }
+  const sections = new Set(
+    [...source.matchAll(/<(Section[A-Z]\w*)[\s/>]/g)].map((m) => m[1]),
+  );
+  if (sections.size !== onglets) {
+    echec(
+      `${chemin} declare ${onglets} onglet(s) et ne rend que ${sections.size} ` +
+        `section(s) distincte(s) - un onglet sans vue affiche un ecran blanc, ` +
+        "ou pire, le contenu d'un autre onglet",
+    );
+  }
+}
+
 if (echecs > 0) {
   console.error(`\n${echecs} ecart(s) d'architecture.`);
   process.exitCode = 1;

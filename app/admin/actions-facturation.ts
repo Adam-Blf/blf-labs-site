@@ -74,7 +74,7 @@ export async function createInvoice(formData: FormData) {
     await recomputeInvoiceTotals(supabase, data.id);
   }
 
-  revalidatePath("/admin/facturation");
+  revalidatePath("/admin/argent");
   redirect(`/admin/facturation/${data.id}`);
 }
 
@@ -164,7 +164,7 @@ export async function addInvoiceLine(invoiceId: string, formData: FormData) {
     p_cents: unit_price_cents,
   });
 
-  revalidatePath("/admin/facturation");
+  revalidatePath("/admin/argent");
   revalidatePath(`/admin/facturation/${invoiceId}`);
 }
 
@@ -286,7 +286,7 @@ export async function setInvoicePaymentMethod(id: string, method: string) {
     .eq("id", id);
   if (error) throw new Error(error.message);
   revalidatePath(`/admin/facturation/${id}`);
-  revalidatePath("/admin/comptabilite");
+  revalidatePath("/admin/argent");
 }
 
 export async function setInvoicePaidAt(
@@ -308,8 +308,8 @@ export async function setInvoicePaidAt(
   if (error) throw new Error(error.message);
 
   revalidatePath(`/admin/facturation/${id}`);
-  revalidatePath("/admin/facturation");
-  revalidatePath("/admin/comptabilite");
+  revalidatePath("/admin/argent");
+  revalidatePath("/admin/argent");
   return { ok: true };
 }
 
@@ -326,9 +326,9 @@ export async function updateInvoiceStatus(id: string, status: InvoiceStatus) {
   if (status === "paye") patch.paid_at = new Date().toISOString().slice(0, 10);
   const { error } = await supabase.from("invoices").update(patch).eq("id", id);
   if (error) throw new Error(error.message);
-  revalidatePath("/admin/facturation");
+  revalidatePath("/admin/argent");
   revalidatePath(`/admin/facturation/${id}`);
-  revalidatePath("/admin/comptabilite");
+  revalidatePath("/admin/argent");
 }
 
 /**
@@ -352,5 +352,5 @@ export async function deleteInvoice(id: string) {
       "Seul un brouillon peut être supprimé ; une pièce émise doit être annulée.",
     );
   }
-  revalidatePath("/admin/facturation");
+  revalidatePath("/admin/argent");
 }

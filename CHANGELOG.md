@@ -6,6 +6,61 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.39.0 - 2026-08-28
+
+### Ajoute
+
+- **Une messagerie dans le back-office : lire, repondre, retirer.** Une reponse
+  arrivait dans la boite personnelle d'Adam et n'avait aucun chemin vers la
+  base. Trois consequences : une demande « retirez-moi » restait une note
+  mentale, la sequence continuait et envoyait cinq jours plus tard un message
+  qui commence par « sans reponse de votre part », et une reponse n'etait pas
+  comptable - le seul chiffre qui dit si le canal fonctionne.
+
+  **Toute reponse arrete desormais la sequence**, sans lire son contenu. C'est
+  ce qui permet d'etre PRUDENT sur la detection de retrait : une demande non
+  reconnue ne produit aucun message de plus, alors qu'une reconnaissance a tort
+  transformerait « pas interesse cette annee » en suppression definitive.
+
+  **Le geste qui manquait entierement** : poser une opposition depuis un fil.
+  `desinscrire()` exige un jeton signe, donc le clic de la personne. Qui le
+  demandait par ecrit devait etre retire a la main, en SQL, c'est-a-dire jamais.
+
+- **Le corps du message est lu ou il se trouve.** L'evenement `email.received`
+  de Resend ne porte NI texte, NI HTML, NI en-tetes - verifie dans le type
+  `ReceivedEmailEventData` du paquet installe. Un dispositif qui lirait
+  `data.text` compilerait, rendrait 200, afficherait un fil, et n'aurait jamais
+  de corps : la seule fonction portant un risque juridique serait morte a la
+  naissance, en silence. Le corps vient d'un second appel.
+
+- **Le HTML entrant n'est jamais affiche.** Un message entrant vient d'un
+  inconnu et s'affiche dans une interface authentifiee en deuxieme facteur. On
+  rend le texte brut.
+
+### Corrige
+
+- **Quinze `revalidatePath` visaient des routes supprimees.** Apres le
+  regroupement en poles, `/admin/facturation`, `/admin/projets` et
+  `/admin/comptabilite` n'existent plus comme routes. Un `revalidatePath` vers
+  une route morte ne leve rien et ne previent rien : il ne rafraichit
+  simplement rien. On deplacait une carte, on emettait une facture, et l'ecran
+  gardait l'ancienne valeur. La redirection posee dans `next.config.ts` sert un
+  navigateur, pas une invalidation de cache, et c'est ce qui rendait le defaut
+  invisible.
+- **La garde d'architecture du back-office ne tournait qu'a la main.** Elle
+  etait donc verte depuis des semaines sur ces quinze chemins morts. Elle tourne
+  desormais en integration continue, avec deux controles de plus : tout
+  `revalidatePath` vise une route vivante, et tout onglet declare a une vue.
+  Vue rouge sur l'etat reel : dix-sept ecarts nommes.
+- **Le motif de detection de retrait ratait la formulation courante.** Il
+  cherchait « ne plus recevoir » quand on ecrit « je ne SOUHAITE plus
+  recevoir ». Une regle ecrite d'apres la phrase qu'on imagine plutot que
+  d'apres celle qu'on recoit ne reconnait rien.
+- Le plafond quotidien ne se lit plus dans l'environnement, la constante morte
+  est retiree, et aucun repli silencieux ne la remplace : un repli masquerait
+  une lecture de reglages en echec, et le moteur enverrait a un rythme que
+  personne n'a decide.
+
 ## 0.38.0 - 2026-08-28
 
 ### Corrige
