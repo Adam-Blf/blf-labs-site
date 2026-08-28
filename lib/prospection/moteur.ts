@@ -100,6 +100,16 @@ type Reglages = {
   actif: boolean;
   plafond_jour: number;
   motif_arret: string | null;
+  /**
+   * Le coupe-circuit ne juge que ce qui est parti APRES cette date.
+   *
+   * Sans elle, un declenchement serait DEFINITIF : la fenetre regarde les
+   * derniers envois, et ces envois ne changent plus. Le moteur se serait
+   * recoupe a chaque battement, pour toujours, et on aurait fini par desarmer
+   * la garde pour de bon. Une garde qu'on ne peut pas lever est une garde qu'on
+   * finit par retirer.
+   */
+  reprise_le: string | null;
 };
 
 /**
@@ -113,7 +123,7 @@ type Reglages = {
 async function litReglages(db: SupabaseClient): Promise<Reglages | null> {
   const { data, error } = await db
     .from("moteur_reglages")
-    .select("actif, plafond_jour, motif_arret")
+    .select("actif, plafond_jour, motif_arret, reprise_le")
     .eq("id", true)
     .maybeSingle<Reglages>();
   if (error || !data) return null;
@@ -149,12 +159,17 @@ async function coupe(
  * Mesure sur les derniers envois, pas sur la journee : une salve doit arreter
  * la machine en quelques minutes.
  */
-async function tauxHorsLimites(db: SupabaseClient): Promise<string | null> {
-  const { data } = await db
+async function tauxHorsLimites(
+  db: SupabaseClient,
+  depuis: string | null,
+): Promise<string | null> {
+  let requete = db
     .from("email_sends")
     .select("statut")
     .order("created_at", { ascending: false })
     .limit(FENETRE_SURVEILLANCE);
+  if (depuis) requete = requete.gt("created_at", depuis);
+  const { data } = await requete;
 
   const lignes = data ?? [];
   if (lignes.length < MINIMUM_POUR_CONCLURE) return null;
@@ -534,7 +549,7 @@ export async function traiteEcheances(): Promise<Rapport> {
    * lui-meme et n'attend pas qu'on vienne le lire : une salve de rebonds se
    * mesure en minutes, et personne ne regarde un tableau de bord la nuit.
    */
-  const derive = await tauxHorsLimites(db);
+  const derive = await tauxHorsLimites(db, reglages.reprise_le);
   if (derive) {
     await coupe(db, derive, "coupe-circuit");
     rapport.journal.push(`COUPE-CIRCUIT : ${derive}`);

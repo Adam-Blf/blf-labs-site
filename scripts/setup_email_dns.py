@@ -98,17 +98,29 @@ def main() -> int:
     parser.add_argument("--apply", action="store_true", help="ecrit dans la zone")
     parser.add_argument("--verify", action="store_true", help="declenche la verification")
     parser.add_argument("--env-file", type=Path, default=None)
+    parser.add_argument(
+        "--domaine", default=ZONE,
+        help="Domaine Resend a configurer. Par defaut la zone elle-meme. "
+             "Un SOUS-domaine est accepte - reponses.beloucif.com - et ses "
+             "enregistrements sont poses dans la meme zone OVH, ce qui est "
+             "exactement ce qu'il faut pour recevoir du courrier sans toucher "
+             "aux MX de la racine, qui portent la messagerie d'Adam.")
     args = parser.parse_args()
+
+    if not (args.domaine == ZONE or args.domaine.endswith("." + ZONE)):
+        sys.exit(
+            "Le domaine {} n'appartient pas a la zone {} : ce script ne sait "
+            "ecrire que dans cette zone.".format(args.domaine, ZONE))
 
     env_file = resolve_env_file(args.env_file)
     key = load_resend_key(env_file)
     creds = load_credentials(env_file)
 
-    domain = find_domain(key, ZONE)
+    domain = find_domain(key, args.domaine)
     detail = resend(key, "GET", f"/domains/{domain['id']}")
     records = detail.get("records", [])
 
-    print(f"Domaine {ZONE} chez Resend : statut {detail.get('status')}, "
+    print(f"Domaine {args.domaine} chez Resend : statut {detail.get('status')}, "
           f"region {detail.get('region')}, {len(records)} enregistrement(s) requis\n")
 
     # Etat courant de la zone, pour l'idempotence.

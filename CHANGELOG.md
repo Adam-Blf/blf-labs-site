@@ -6,6 +6,26 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.38.0 - 2026-08-28
+
+### Corrige
+
+- **Le coupe-circuit ne pouvait pas etre leve, donc il aurait fini par etre
+  retire.** Il juge les 200 derniers envois. Il s'est declenche correctement le
+  27 aout - quatre rebonds sur quarante, 10 % pour un seuil a 3 % - mais ces
+  quarante envois ne changent plus : au battement suivant, le meme calcul rend
+  le meme verdict, et le moteur se recoupe indefiniment. La seule facon de
+  repartir etait de desarmer la garde, ce qui est exactement la faute qu'elle
+  existe pour empecher. La fenetre est desormais bornee a la derniere reprise :
+  redemarrer devient un geste explicite et date.
+
+### Ajoute
+
+- **`setup_email_dns.py --domaine`** pour configurer un SOUS-domaine dans la
+  meme zone OVH. Sert au sous-domaine de reception du courrier, et le garde-fou
+  qui refuse tout MX a la racine reste actif : les MX de `beloucif.com` portent
+  la messagerie d'Adam.
+
 ## 0.37.0 - 2026-08-27
 
 ### Ajoute
