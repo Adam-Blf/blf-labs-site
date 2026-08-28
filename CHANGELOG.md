@@ -6,6 +6,49 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.40.0 - 2026-08-28
+
+### Ajoute
+
+- **Le socle de la prospection telephonique.** Le courriel a froid butait sur
+  une correlation qu'aucun reglage ne repare : une structure joignable par
+  courriel a un domaine, donc un site, donc deja un prestataire. Le telephone
+  atteint precisement l'inverse.
+
+  Mesure du 28 aout, Val-de-Marne, commerces cartographies : 21 157 fiches,
+  7 143 portent un telephone, **2 827 un telephone et AUCUN site**, 2 218
+  restent apres avoir ecarte les reseaux sociaux, les fiches sans nom et les
+  enseignes de chaine. Sur UN departement. Le renversement n'est pas d'echelle,
+  il est de nature.
+
+  **L'annuaire public ne publie aucun telephone**, verifie champ par champ : ni
+  sur la fiche, ni sur le siege. La source est OpenStreetMap, et l'adresse
+  exacte de la fiche est conservee pour que la personne puisse verifier ce
+  qu'on lui dit de l'origine.
+
+- **L'opposition est une, quel que soit le canal.** Quelqu'un qui s'est
+  desinscrit du courriel s'est oppose a la PROSPECTION, pas a un protocole de
+  transport. `peut_appeler` interroge les deux listes, et un refus exprime
+  pendant un appel pose l'opposition par declencheur, sans dependre d'un second
+  geste qu'on oublierait un soir sur deux.
+
+- **Un numero est stocke sous une seule forme.** « 01 42 00 11 22 »,
+  « +33142001122 » et « 0142001122 » sont le meme numero : sans forme canonique
+  verifiee a l'ecriture, une opposition posee sur l'une des ecritures ne bloque
+  pas les deux autres. Elle serait enregistree, affichee, et sans effet - le
+  pire des trois etats, parce qu'on la croit posee.
+
+- **La collecte est plafonnee a soixante fiches.** L'information de l'article 14
+  est due dans le mois qui suit la collecte : ramasser deux mille numeros en une
+  passe fabrique le manquement a l'echelle. `peut_appeler` refuse deja une fiche
+  collectee il y a plus de trente jours et jamais informee ; le plafond evite
+  d'en fabriquer.
+
+  Huit assertions prouvees sur la base, dont cinq en vue rouge : numero non
+  canonique refuse, association ecartee, fiche non informee de plus de trente
+  jours ecartee, refus definitif bloquant, et **opposition courriel bloquant
+  l'appel**.
+
 ## 0.39.0 - 2026-08-28
 
 ### Ajoute
