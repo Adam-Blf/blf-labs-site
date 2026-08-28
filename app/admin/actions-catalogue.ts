@@ -29,7 +29,7 @@ export async function createServiceItem(formData: FormData) {
     p_cents: cents,
   });
   if (error) throw new Error(error.message);
-  revalidatePath("/admin/facturation");
+  revalidatePath("/admin/argent");
 }
 
 /** Met a jour la designation et le prix d'une prestation du catalogue. */
@@ -44,7 +44,7 @@ export async function updateServiceItem(id: string, formData: FormData) {
     .update({ designation, unit_price_cents: cents, updated_at: new Date().toISOString() })
     .eq("id", id);
   if (error) throw new Error(error.message);
-  revalidatePath("/admin/facturation");
+  revalidatePath("/admin/argent");
 }
 
 /** Retire une prestation du catalogue (n'affecte aucune facture deja emise). */
@@ -52,5 +52,5 @@ export async function deleteServiceItem(id: string) {
   const supabase = await db();
   const { error } = await supabase.from("service_items").delete().eq("id", id);
   if (error) throw new Error(error.message);
-  revalidatePath("/admin/facturation");
+  revalidatePath("/admin/argent");
 }

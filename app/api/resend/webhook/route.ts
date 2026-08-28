@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { serviceClient } from "@/lib/supabase/clients";
+import { traiteMessageEntrant } from "@/lib/prospection/reception";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,6 +34,11 @@ type EvenementResend = {
     email_id?: string;
     to?: string[] | string;
     bounce?: { type?: string; subType?: string };
+    /* Presents seulement sur `email.received`. Le CORPS n'y est pas : il faut
+       un second appel, voir lib/prospection/reception.ts. */
+    from?: string;
+    subject?: string;
+    message_id?: string;
   };
 };
 
@@ -113,6 +119,26 @@ export async function POST(request: Request) {
 
   const email = premiereAdresse(evenement);
   const type = evenement.type ?? "inconnu";
+
+  /*
+   * UN MESSAGE RECU N'EST PAS UN EVENEMENT D'ENVOI, et il sort ici avant tout
+   * le reste. Le traiter plus bas le ferait passer par `email_events` avec une
+   * charge utile qui porte le sujet et l'adresse d'un tiers, dans une table
+   * sans duree de conservation definie.
+   *
+   * UN ECHEC REND AUTRE CHOSE QUE 200, volontairement : Resend reessaie. Perdre
+   * un message entrant est pire que le traiter deux fois, et le rejeu est
+   * neutralise en base par l'unicite de `resend_id`.
+   */
+  if (type === "email.received") {
+    const traite = await traiteMessageEntrant(db, new Resend(process.env.RESEND_API_KEY ?? ""), {
+      email_id: evenement.data?.email_id,
+      from: evenement.data?.from,
+      subject: evenement.data?.subject,
+      message_id: evenement.data?.message_id,
+    });
+    return new NextResponse(null, { status: traite ? 200 : 503 });
+  }
 
   await db.from("email_events").insert({
     resend_id: evenement.data?.email_id ?? null,

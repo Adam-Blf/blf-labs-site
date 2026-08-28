@@ -76,6 +76,11 @@ export const POLES: readonly Pole[] = [
         aide: "Ce qui est parti, ce qui a été ouvert, ce qui a échoué.",
       },
       {
+        cle: "messages",
+        libelle: "Messages",
+        aide: "Les réponses reçues, et de quoi y répondre sans ouvrir sa boîte personnelle.",
+      },
+      {
         cle: "retraits",
         libelle: "Retraits",
         aide: "La liste de suppression. Une adresse qui y figure ne peut plus être sollicitée.",

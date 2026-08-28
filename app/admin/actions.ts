@@ -41,7 +41,7 @@ export async function updateProjectStatus(
   if (typeof position === "number") patch.position = position;
   const { error } = await supabase.from("projects").update(patch).eq("id", id);
   if (error) throw new Error(error.message);
-  revalidatePath("/admin/projets");
+  revalidatePath("/admin/activite");
 }
 
 export async function createProject(formData: FormData) {
@@ -63,7 +63,7 @@ export async function createProject(formData: FormData) {
     status: "backlog",
   });
   if (error) throw new Error(error.message);
-  revalidatePath("/admin/projets");
+  revalidatePath("/admin/activite");
 }
 
 export async function addTask(projectId: string, label: string) {
@@ -74,7 +74,7 @@ export async function addTask(projectId: string, label: string) {
     .from("project_tasks")
     .insert({ project_id: projectId, label: clean });
   if (error) throw new Error(error.message);
-  revalidatePath("/admin/projets");
+  revalidatePath("/admin/activite");
 }
 
 export async function toggleTask(id: string, done: boolean) {
@@ -84,5 +84,5 @@ export async function toggleTask(id: string, done: boolean) {
     .update({ done })
     .eq("id", id);
   if (error) throw new Error(error.message);
-  revalidatePath("/admin/projets");
+  revalidatePath("/admin/activite");
 }

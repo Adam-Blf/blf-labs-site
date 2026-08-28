@@ -79,6 +79,14 @@ jobs:
         if: always()
         run: npm run check:prospection
 
+      # La garde d'architecture du back-office existait, elle etait ecrite,
+      # versionnee, documentee - et elle ne tournait qu'a la main. Elle etait
+      # donc verte depuis des semaines sur quinze `revalidatePath` morts. C'est
+      # le motif exact que ce fichier invoque en tete pour exister.
+      - name: Architecture du back-office
+        if: always()
+        run: npm run verifie:admin
+
       # Le build en dernier : c'est l'etape la plus lente, et une erreur de
       # type ou de lint aura deja ete signalee plus haut, plus vite.
       - name: Build

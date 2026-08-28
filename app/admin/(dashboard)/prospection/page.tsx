@@ -3,6 +3,7 @@ import { Onglets } from "@/components/admin/Onglets";
 import { POLES, ongletCourant } from "@/components/admin/navigation";
 import { SectionContacts } from "@/components/admin/sections/Contacts";
 import { SectionEnvois } from "@/components/admin/sections/Envois";
+import { SectionMessages } from "@/components/admin/sections/Messages";
 import { SectionRetraits } from "@/components/admin/sections/Retraits";
 
 export const dynamic = "force-dynamic";
@@ -36,6 +37,7 @@ export default async function ProspectionPage({
 
       {actif === "contacts" && <SectionContacts />}
       {actif === "envois" && <SectionEnvois />}
+      {actif === "messages" && <SectionMessages />}
       {actif === "retraits" && <SectionRetraits />}
     </section>
   );
