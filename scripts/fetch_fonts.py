@@ -23,40 +23,31 @@ UA = (
 )
 
 #
-# Choix typographique (revise le 2026-08-07, apres reception des logos).
+# Choix typographique (revise le 2026-09-15, refonte "ligne").
 #
-# La police decoule du logo, elle n'est plus choisie a part. Le lettrage de
-# "BLF Lab's" est construit sur une grille carree : fûts droits, terminaisons a
-# angle droit, contreformes rectangulaires, aucune courbe molle. Archivo reprend
-# ce squelette - c'est une grotesque a coupes droites, franchement carree dans
-# les graisses hautes - donc un titre de page et le logo pose au-dessus se
-# lisent comme sortis de la meme main.
+# La direction du site est une signaletique de ligne de transport. Barlow a ete
+# dessinee d'apres les panneaux routiers et les plaques de transport : lettres
+# ouvertes, chiffres francs, lisible de loin. Deux chasses d'une meme famille :
+# la condensee pour les placards (titres, noms de station), la normale pour le
+# texte. Barlow est inscrite au registre des polices au nom de blf-labs-site.
 #
-# Son axe de largeur (wdth 62 -> 125) est la vraie raison de ce choix : il donne
-# des titres larges et compacts impossibles a obtenir avec une police a chasse
-# fixe, et c'est ce qui signe les pages sans recourir a un effet.
+# Archivo, police de la direction precedente, n'est plus servie au navigateur.
 #
-# Ecartees, et pourquoi :
-#   - Space Grotesk et Space Mono : leur zero porte un point central. Adam l'a
-#     refuse explicitement, ce detail est devenu un marqueur d'interface generee.
-#   - Outfit et Poppins : geometriques neutres, aucun caractere propre, ce sont
-#     les polices par defaut des maquettes generees.
-#   - Inter, Roboto, Arial : polices par defaut.
-#   - IBM Plex, JetBrains Mono : bannies (regle polices d'Adam).
-#
-# Le zero d'Archivo est plein, sans point ni barre : le piege precedent ne peut
-# pas se reproduire.
-#
-# Il n'y a volontairement PAS de seconde famille. Les etiquettes et les numeros
-# legaux sont composes dans Archivo en capitales espacees plutot que dans une
-# monospace : une seule voix typographique tient mieux qu'un duo, et cela
-# supprime le risque de reintroduire une mono au zero pointe.
+# Ecartees, et pourquoi, pour qu'on ne les repropose pas :
+#   - Space Grotesk et Space Mono : zero pointe, refuse explicitement par Adam.
+#   - Outfit, Poppins, Inter, Roboto, Arial : polices par defaut des maquettes
+#     generees, ou bannies par le registre.
+#   - IBM Plex, JetBrains Mono : bannies.
+#   - Bahnschrift (DIN) : deja attribuee a un autre projet dans le registre.
 #
 FONTS: dict[str, str] = {
-    # Archivo, variable sur deux axes : largeur 62 -> 125, graisse 400 -> 900.
-    "archivo": (
+    "barlow": (
         "https://fonts.googleapis.com/css2"
-        "?family=Archivo:wdth,wght@62..125,400..900&display=swap"
+        "?family=Barlow:wght@400;500;600;700&display=swap"
+    ),
+    "barlow-condensed": (
+        "https://fonts.googleapis.com/css2"
+        "?family=Barlow+Condensed:wght@600;700;800&display=swap"
     ),
 }
 

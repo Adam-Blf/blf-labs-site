@@ -110,11 +110,10 @@ export default async function EtudePage({
           <div className="section mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
             <h2 className="title text-3xl sm:text-4xl">Ce qu&rsquo;on a fait</h2>
             <ol className="mt-12 space-y-10">
-              {etude.reponse.map((bloc, index) => (
+              {etude.reponse.map((bloc) => (
                 <li key={bloc.titre} className="border-t border-line pt-8">
-                  <p className="mono text-xs text-muted">
-                    {String(index + 1).padStart(2, "0")}
-                  </p>
+                  {/* Pastille de station plutot qu'un numero : l'ordre est porte par la liste ordonnee. */}
+                  <span aria-hidden="true" className="block h-5 w-5 rounded-full border-[5px] border-ink bg-surface" />
                   <h3 className="title mt-4 text-2xl">{bloc.titre}</h3>
                   <p className="mt-4 leading-relaxed text-muted">
                     {bloc.detail}

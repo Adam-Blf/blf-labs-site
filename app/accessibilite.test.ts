@@ -81,24 +81,49 @@ describe("contrastes des jetons poses en texte, mode par mode", () => {
     });
 
     /**
-     * Le violet reste une teinte CLAIRE. En aplat avec encre noire il rend
-     * 8,1:1 et va tres bien ; c'est son usage en TEXTE qui echouait, et
-     * seulement en mode clair. D'ou un jeton distinct qui bascule par mode,
-     * et non une retouche du violet de marque.
+     * `--accent` (le violet de la ligne web) est aussi pose en TEXTE
+     * (`text-accent`). Le violet clair de l'ancienne direction y tombait a
+     * 2,88:1 en mode clair : le jeton bascule donc par mode, assombri en
+     * clair, eclairci en sombre, et chaque valeur est mesuree contre son fond.
      */
-    it(`--violet-encre tient AA sur --paper en mode ${mode}`, () => {
-      expect(contraste(jeton(bloc, "violet-encre"), fond)).toBeGreaterThanOrEqual(AA);
+    it(`--accent tient AA sur --paper en mode ${mode}`, () => {
+      expect(contraste(jeton(bloc, "ligne-web"), fond)).toBeGreaterThanOrEqual(AA);
     });
+
+    /** Texte discret des placards de fin de page, pose sur `--signe`. */
+    it(`--signe-muted tient AA sur --signe en mode ${mode}`, () => {
+      expect(
+        contraste(jeton(bloc, "signe-muted"), jeton(bloc, "signe")),
+      ).toBeGreaterThanOrEqual(AA);
+    });
+
+    /**
+     * Les pastilles de ligne portent un pictogramme : un element graphique,
+     * donc 3:1 (WCAG 1.4.11). Les teintes s'eclaircissent en sombre et leur
+     * encre s'inverse avec elles ; mesurer chaque mode evite qu'une retouche
+     * d'un cote casse l'autre.
+     */
+    for (const ligne of ["ligne-sites", "ligne-web", "ligne-mobile", "ligne-data"]) {
+      it(`--ligne-ink tient 3:1 sur --${ligne} en mode ${mode}`, () => {
+        expect(
+          contraste(jeton(bloc, "ligne-ink"), jeton(bloc, ligne)),
+        ).toBeGreaterThanOrEqual(3);
+      });
+    }
   }
 
   /**
    * La regle qui a produit le defaut : `.grad-text` habille le H1 de presque
-   * toutes les pages. S'il repasse sur le violet de marque, le titre retombe
-   * a 2,88:1 en clair sans que rien ne le signale.
+   * toutes les pages. Recolorer le mot l'avait fait tomber a 2,88:1 en clair.
+   * Il garde desormais l'encre du titre et la couleur passe dans le trait
+   * dessous : la regle ne doit declarer aucune couleur de texte.
    */
-  it(".grad-text emploie le jeton d'encre, pas le violet de marque", () => {
+  it(".grad-text souligne le mot sans changer sa couleur", () => {
     const css = readFileSync("app/globals.css", "utf-8").replace(/\s+/g, " ");
-    expect(css).toContain(".grad-text { color: var(--violet-encre); }");
+    const bloc = css.match(/\.grad-text \{([^}]*)\}/);
+    expect(bloc).not.toBeNull();
+    expect(bloc![1]).toContain("text-decoration-color: var(--accent)");
+    expect(bloc![1]).not.toMatch(/(^|;)\s*color:/);
   });
 });
 

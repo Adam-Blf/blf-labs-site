@@ -1,134 +1,117 @@
 /*
-  Direction artistique : laboratoire. Deux modes.
+  Direction artistique : la ligne. Refonte du 2026-09-15.
 
-  La palette n'est plus choisie, elle est RELEVEE sur les logos fournis par
-  Adam (brand/logos/logo.svg et logo-inverse.svg). Trois valeurs seulement en
-  sortent, et ce sont les trois seules couleurs du site :
+  Le site se lit comme un plan de ligne et une signaletique de station. Un
+  projet est un trajet, du cadrage jusqu'au terminus ou les cles sont remises a
+  votre nom. La direction precedente, "laboratoire" (grille millimetree, fiole
+  3D, violet et citron), est retiree : elle racontait un laboratoire que le
+  studio n'est pas, et elle ressemblait a toutes les pages de studio tech.
 
-    #111016  le noir violace du bloc de logo        -> --nuit
-    #edeef1  le blanc froid du logo inverse         -> --neige
-    #cb6ce6  le violet de l'apostrophe et du favicon -> --violet
+  LA MATIERE. Des panneaux emailles : un fond, un panneau, une encre. Aucune
+  ombre, aucun degrade, aucun verre. L'elevation se lit au trait.
 
-  Une quatrieme teinte, le citron #d9fb50, est ajoutee en tension. Ce n'est pas
-  une invention decorative : c'est la complementaire reelle du violet, donc la
-  seule couleur qui puisse l'accompagner sans creer un second accent concurrent.
-  Elle sert par petites touches (soulignements, chiffres, puces actives), jamais
-  en aplat large. C'est ce qui repond au reproche d'un site "mort et sans ame"
-  sans retomber dans une palette a cinq couleurs qui ferait gabarit.
+  LES QUATRE LIGNES. Une couleur par famille d'offre, jamais decorative : elle
+  designe toujours la meme chose d'une page a l'autre.
+    --ligne-sites   vermillon   Sites et boutiques
+    --ligne-web     violet      Applications web et SaaS (le violet de
+                                l'apostrophe du logo, assombri pour tenir 3:1)
+    --ligne-mobile  vert        Applications mobiles
+    --ligne-data    bleu        Data et IA
+  --ligne-ink est l'encre posee sur une pastille de ligne. Elle change avec le
+  mode parce que les teintes de ligne s'eclaircissent en sombre.
 
-  Familles ecartees et pourquoi, pour qu'on ne les repropose pas :
-    - bleu, turquoise, vert : refuses un par un, et le vert entrait en
-      collision avec Spotify ;
-    - orange, rose, jaune ensemble : direction "chaude et pop" abandonnee, sans
-      rapport avec le logo reel ;
-    - degrade violet sur blanc : signature visuelle des interfaces generees. Le
-      violet n'apparait ici qu'en aplat franc, jamais en degrade.
+  LE PLACARD. --signe est le panneau de station : noir en clair, blanc en
+  sombre. Il porte les bandeaux d'appel a l'action et l'en-tete du plan de
+  ligne. --signe-ink et --signe-muted sont ses encres.
 
-  REGLE DE CONTRASTE, apprise a nos depens sur ce projet meme.
-  --accent-ink et --support-ink sont INVARIANTS d'un mode a l'autre. Un aplat
-  violet reste le meme violet en clair comme en sombre, donc le texte pose
-  dessus ne doit jamais utiliser --ink, qui s'inverse. C'est exactement ce
-  defaut qui avait produit du texte noir sur fond noir dans le formulaire, puis
-  du texte blanc sur fond blanc. Le violet #cb6ce6 est une teinte CLAIRE : son
-  encre est donc le noir #111016, dans les deux modes, sans exception.
+  REGLE DE CONTRASTE, heritee de la direction precedente et toujours vraie :
+  un aplat porte TOUJOURS son encre dediee (--accent-ink, --support-ink,
+  --ligne-ink, --signe-ink), jamais --ink, qui s'inverse d'un mode a l'autre.
 
   Contrastes mesures (ratio WCAG) :
-    Clair  : #111016 sur #f7f7fa = 17,2:1 | gris #56525e = 6,8:1
-             --faint #736d80 sur #f7f7fa = 4,6:1 (AA texte)
-             --violet-encre #a83fc6 sur #f7f7fa = 4,7:1 (AA texte)
-             #111016 sur violet  =  8,1:1 | #111016 sur citron = 15,4:1
-    Sombre : #edeef1 sur #111016 = 16,3:1 | gris #9a94a6 = 7,4:1
-             --faint #837e91 sur #111016 = 4,8:1 (AA texte)
-             --violet-encre #cb6ce6 sur #111016 = 6,2:1 (AA texte)
-             #111016 sur violet  =  8,1:1 | #111016 sur citron = 15,4:1 (identiques,
-             puisque les aplats et leur encre ne bougent pas)
+    Clair  : #0b0e13 sur #f3f4f6 = 18,1:1 | --muted #454b56 = 8,6:1
+             --faint #5e6571 sur #f3f4f6 = 5,5:1
+             blanc sur --accent #7a2fa3 = 8,4:1 | #0b0e13 sur --support = 12,2:1
+             blanc sur vermillon #c93418 = 5,2:1 | vert #127a44 = 5,3:1
+             bleu #1d57c4 = 6,3:1
+    Sombre : #eef0f3 sur #0b0e13 = 17,5:1 | --muted #a7afbb = 8,8:1
+             --faint #8a93a0 sur #0b0e13 = 6,3:1
+             #0b0e13 sur --accent #b27fe0 = 6,9:1
+             #0b0e13 sur vermillon #f26a4b = 7,0:1 | vert #43c07e = 8,9:1
+             bleu #6c9cf2 = 7,3:1
 */
 
 /* ---- Mode clair ---- */
 .dir-labs {
-  /* Les quatre couleurs de la marque. Elles ne changent PAS avec le mode. */
-  --nuit: #111016;
-  --neige: #edeef1;
-  --violet: #cb6ce6;
-  --violet-clair: #e292ff;
-  /*
-    Le violet, assombri pour l'usage en TEXTE seulement. #cb6ce6 est une
-    teinte claire : en aplat avec encre noire il rend 8,1:1, mais pose en
-    texte sur --paper il tombe a 2,88:1, sous les 3:1 exiges d'un grand
-    titre. Il portait le H1 de presque toutes les pages.
-  */
-  --violet-encre: #a83fc6;
-  --citron: #d9fb50;
-
-  --paper: #f7f7fa;
-  --ink: #111016;
-  --muted: #56525e;
-  --muted-strong: #2b2833;
-  /*
-    Mesure a 4,64:1 sur --paper et 4,97:1 sur blanc. La valeur precedente,
-    #9a94a6, rendait 2,74:1 : sous le seuil AA de 4,5:1 pour du texte courant,
-    sur les surtitres de section, le pied de page et le fil d'Ariane, donc sur
-    presque chaque page. Le mode SOMBRE avait recu ce meme correctif et son
-    commentaire plus bas le raconte - le mode clair ne l'avait jamais recu.
-  */
-  --faint: #736d80;
-
-  /* Encres posees sur les aplats. Invariantes, elles aussi. */
-  --accent: var(--violet);
-  --accent-ink: #111016;
-  --support: var(--citron);
-  --support-ink: #111016;
+  --paper: #f3f4f6;
+  --ink: #0b0e13;
+  --muted: #454b56;
+  --muted-strong: #232830;
+  --faint: #5e6571;
 
   --surface: #ffffff;
-  --surface-strong: #eceaf1;
-  --line: rgba(17, 16, 22, 0.14);
-  --line-strong: rgba(17, 16, 22, 0.32);
+  /* Un fond, un panneau : pas de troisieme surface. */
+  --surface-strong: var(--paper);
+  --line: rgba(11, 14, 19, 0.14);
+  --line-strong: rgba(11, 14, 19, 0.36);
 
-  /* Angles droits : le logo est trace a la regle, l'interface aussi. Le seul
-     arrondi du site est celui du bloc de logo, qui reste donc distinctif. */
-  --radius: 4px;
-  --radius-sm: 3px;
+  --ligne-sites: #c93418;
+  --ligne-web: #7a2fa3;
+  --ligne-mobile: #127a44;
+  --ligne-data: #1d57c4;
+  --ligne-ink: #ffffff;
+
+  --accent: var(--ligne-web);
+  --accent-ink: #ffffff;
+  /* Jaune de signalisation : selection de texte, erreurs, soulignement sur
+     placard. Jamais en aplat large sur le fond clair, ou il ne tient pas. */
+  --support: #ffc21a;
+  --support-ink: #0b0e13;
+
+  --signe: #0b0e13;
+  --signe-ink: #f3f4f6;
+  --signe-muted: #aeb5c0;
+
+  /* Angles d'email : un rayon court, celui d'une plaque de signalisation. Les
+     pastilles de station, elles, sont rondes. */
+  --radius: 6px;
+  --radius-sm: 4px;
   --border-w: 1px;
-  --shadow: 0 24px 60px -34px rgba(17, 16, 22, 0.4);
-  --shadow-sm: 0 12px 28px -20px rgba(17, 16, 22, 0.35);
+  --shadow: none;
+  --shadow-sm: none;
 
-  --font-title: var(--font-archivo);
-  --font-text: var(--font-archivo);
+  --font-title: var(--font-barlow-condensed);
+  --font-text: var(--font-barlow);
   --title-transform: uppercase;
   --title-weight: 800;
-  --title-tracking: -0.03em;
-  --title-leading: 0.92;
-  /* Largeur variable : c'est la signature typographique du site. */
-  --title-width: 118;
-  --section-py: 8rem;
+  --title-tracking: 0.004em;
+  --title-leading: 0.94;
+  --section-py: 8.5rem;
 }
 
 /* ---- Mode sombre ---- */
 .dark .dir-labs,
 .dir-labs.dark {
-  --paper: #111016;
-  --ink: #edeef1;
-  --muted: #9a94a6;
-  --muted-strong: #d5d1de;
-  /* #4b4657 donnait 2,1:1 sur --paper sombre : du texte noir sur fond noir sur
-     les titres du footer et le fil d'Ariane. Remonte a #837e91 = 4,83:1 (WCAG AA
-     texte normal), tout en restant plus discret que --muted (#9a94a6, 6,45:1). */
-  --faint: #837e91;
+  --paper: #0b0e13;
+  --ink: #eef0f3;
+  --muted: #a7afbb;
+  --muted-strong: #d5dae1;
+  --faint: #8a93a0;
 
-  /* Le violet de marque, EN TEXTE, est lisible sur fond sombre : #cb6ce6 y rend
-     6,15:1. C'est en clair qu'il echoue, a 2,88:1. Le jeton d'encre bascule
-     donc par mode, comme --faint juste au-dessus : garder la valeur assombrie
-     du mode clair aurait fait retomber le H1 de chaque page a 3,78:1, une
-     REGRESSION par rapport a l'etat qu'on venait corriger. */
-  --violet-encre: #cb6ce6;
+  --surface: #151a21;
+  --line: rgba(238, 240, 243, 0.14);
+  --line-strong: rgba(238, 240, 243, 0.36);
 
-  /* Les quatre couleurs restent identiques : c'est ce qui tient l'identite
-     d'un mode a l'autre. Seuls les fonds et l'encre s'inversent. */
-  --surface: #1a1822;
-  --surface-strong: #22202c;
-  --line: rgba(237, 238, 241, 0.16);
-  --line-strong: rgba(237, 238, 241, 0.34);
+  --ligne-sites: #f26a4b;
+  --ligne-web: #b27fe0;
+  --ligne-mobile: #43c07e;
+  --ligne-data: #6c9cf2;
+  --ligne-ink: #0b0e13;
 
-  --shadow: 0 28px 70px -34px rgba(0, 0, 0, 0.9);
-  --shadow-sm: 0 14px 34px -20px rgba(0, 0, 0, 0.9);
+  --accent-ink: #0b0e13;
+
+  /* Le placard s'inverse : plaque blanche sur une station de nuit. */
+  --signe: #eef0f3;
+  --signe-ink: #0b0e13;
+  --signe-muted: #454b56;
 }

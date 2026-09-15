@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { SITE, SIRET_PRETTY } from "@/lib/site";
 import { OFFRES } from "@/content/offres";
-import { Graduation } from "@/components/ui/Graduation";
+import { LigneStrip } from "@/components/ui/LigneStrip";
 import { Carnet } from "@/components/marketing/Carnet";
 import { Wordmark } from "./Wordmark";
 
@@ -90,8 +90,8 @@ function Lien({ href, children }: { href: string; children: React.ReactNode }) {
 export function Footer() {
   return (
     <footer className="rule-t mt-auto bg-surface">
-      <div className="mx-auto max-w-6xl px-5">
-        <Graduation className="opacity-60" />
+      <div className="mx-auto max-w-6xl px-5 pt-10">
+        <LigneStrip />
       </div>
 
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:grid-cols-2 lg:grid-cols-4">

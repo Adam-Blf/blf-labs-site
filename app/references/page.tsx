@@ -16,9 +16,9 @@ export default function ReferencesPage() {
   return (
     <>
       <Header />
-      {/* `pt-24` comme services, methode et questions : sans lui, le fil
+      {/* `pt-36` comme services, methode et questions : sans lui, le fil
           d'Ariane passait sous la barre de navigation fixe. */}
-      <main id="contenu" className="pt-24">
+      <main id="contenu" className="pt-36">
         <div className="mx-auto max-w-6xl px-4 pt-8 sm:px-6 lg:px-8">
           <Breadcrumb miettes={[{ nom: "Réalisations" }]} />
         </div>

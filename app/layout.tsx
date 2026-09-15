@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Analytics } from "@/components/analytics/Analytics";
 import { ConsentBanner } from "@/components/analytics/ConsentBanner";
 import { StickyCta } from "@/components/layout/StickyCta";
-import { sans } from "./fonts";
+import { placard, texte } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -76,7 +76,7 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${sans.variable} dir-labs h-full antialiased`}
+      className={`${texte.variable} ${placard.variable} dir-labs h-full antialiased`}
       suppressHydrationWarning
     >
       <head>

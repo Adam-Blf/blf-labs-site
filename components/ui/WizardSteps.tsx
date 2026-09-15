@@ -133,7 +133,7 @@ export function WizardSteps({
               className={`tabular grid size-9 place-items-center rounded-full text-sm font-bold ${
                 done || here
                   ? "bg-accent text-accent-ink"
-                  : "bg-surface text-muted blk-flat"
+                  : "border-[3px] border-ink bg-surface text-ink"
               }`}
             >
               {done ? (
@@ -170,7 +170,7 @@ export function WizardSteps({
               {i < total - 1 && (
                 <span
                   aria-hidden="true"
-                  className="relative h-[3px] flex-1 overflow-hidden rounded-full bg-line"
+                  className="relative h-[6px] flex-1 overflow-hidden rounded-full bg-line"
                 >
                   <motion.span
                     className="absolute inset-0 origin-left rounded-full bg-accent"

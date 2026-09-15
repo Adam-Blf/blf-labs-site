@@ -10,7 +10,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /*
-  Utilitaires de la direction "laboratoire".
+  Utilitaires de la direction "ligne".
   Les composants n'ecrivent jamais une couleur en dur : ils composent ces
   classes, qui lisent les jetons de themes.css.
 */
@@ -29,10 +29,14 @@
   --color-accent-ink: var(--accent-ink);
   --color-support: var(--support);
   --color-support-ink: var(--support-ink);
-  --color-nuit: var(--nuit);
-  --color-neige: var(--neige);
-  --color-violet: var(--violet);
-  --color-citron: var(--citron);
+  --color-ligne-sites: var(--ligne-sites);
+  --color-ligne-web: var(--ligne-web);
+  --color-ligne-mobile: var(--ligne-mobile);
+  --color-ligne-data: var(--ligne-data);
+  --color-ligne-ink: var(--ligne-ink);
+  --color-signe: var(--signe);
+  --color-signe-ink: var(--signe-ink);
+  --color-signe-muted: var(--signe-muted);
 }
 
 /*
@@ -48,41 +52,32 @@
 
 html {
   scroll-behavior: smooth;
+  caret-color: var(--accent);
+  scrollbar-color: var(--line-strong) var(--paper);
 }
 
 body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-text), system-ui, sans-serif;
+  font-size: 1.0625rem;
   overflow-x: hidden;
-  /* Fondu au basculement clair/sombre plutot qu'une coupure seche. Aucun effet
-     au chargement (pas de valeur precedente), et le bloc prefers-reduced-motion
-     plus bas le ramene a 0 pour qui le demande. */
+  /* Fondu au basculement clair/sombre plutot qu'une coupure seche. Le bloc
+     prefers-reduced-motion plus bas le ramene a 0 pour qui le demande. */
   transition:
     background-color 0.25s ease,
     color 0.25s ease;
 }
 
+/* Le jaune de signalisation, seul endroit ou il couvre du texte. */
 ::selection {
-  background: var(--violet);
-  color: var(--accent-ink);
+  background: var(--support);
+  color: var(--support-ink);
 }
 
 /*
-  Les surfaces que le navigateur dessine seul portent aussi la marque : le
-  curseur de saisie et la barre de defilement suivaient jusqu'ici le gris par
-  defaut du systeme, le seul endroit du site qui ne sortait pas de la palette.
-*/
-html {
-  caret-color: var(--violet-encre);
-  scrollbar-color: var(--line-strong) var(--paper);
-}
-
-/*
-  Titre. La largeur variable d'Archivo (axe wdth) est la signature du site :
-  les titres sont larges et compacts, ce qu'aucune police a chasse fixe ne
-  sait faire. C'est ce reglage, et non un effet graphique, qui rend les pages
-  reconnaissables.
+  Placard. Barlow condensee, en capitales : c'est la voix des noms de station,
+  et c'est elle qui rend une capture du site reconnaissable sans le logo.
 */
 .title {
   font-family: var(--font-title), system-ui, sans-serif;
@@ -90,41 +85,38 @@ html {
   font-weight: var(--title-weight);
   letter-spacing: var(--title-tracking);
   line-height: var(--title-leading);
-  font-variation-settings: "wdth" var(--title-width);
+  text-wrap: balance;
 }
 
-/* Titre etroit, pour les colonnes serrees ou un titre large deborderait. */
 /*
-  Mot mis en avant dans un titre : il passe en violet plein.
-  Pas de degrade - deux teintes qui se fondent dans un titre etaient
-  precisement le tic visuel a supprimer.
+  Mot mis en avant dans un titre : la ligne passe dessous. Un trait epais a
+  bouts arrondis, dans la couleur de l'action principale, jamais un changement
+  de couleur du mot lui-meme.
 */
 .grad-text {
-  color: var(--violet-encre);
+  text-decoration-line: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 0.11em;
+  text-underline-offset: 0.12em;
+  text-decoration-skip-ink: none;
 }
 
-/*
-  Soulignement marqueur au citron. C'est l'usage prescrit de la couleur de
-  tension (voir themes.css) : un trait pose sous un mot, pas un aplat. Il passe
-  DERRIERE les glyphes (background), donc le texte garde son encre, et le citron
-  etant une teinte claire invariante, il reste lisible en clair comme en sombre.
-*/
+/* Meme trait en jaune de signalisation, reserve aux placards (fond --signe),
+   ou le violet ne se detache pas assez. */
 .mark-citron {
-  background-image: linear-gradient(var(--citron), var(--citron));
-  background-repeat: no-repeat;
-  background-position: 0 92%;
-  background-size: 100% 0.16em;
+  text-decoration-line: underline;
+  text-decoration-color: var(--support);
+  text-decoration-thickness: 0.11em;
+  text-underline-offset: 0.12em;
+  text-decoration-skip-ink: none;
 }
 
-/*
-  Etiquette : petites capitales tres espacees, dans la meme Archivo que le
-  reste. Il n'y a pas de monospace sur ce site (voir app/fonts.ts).
-*/
+/* Etiquette de placard : condensee, capitales, legerement espacee. */
 .mono {
-  letter-spacing: 0.2em;
+  font-family: var(--font-title), system-ui, sans-serif;
+  letter-spacing: 0.08em;
   font-weight: 700;
   text-transform: uppercase;
-  font-variation-settings: "wdth" 88;
 }
 
 .section {
@@ -145,17 +137,12 @@ html {
 }
 
 /*
-  Surfaces. Un cadre net, pas de flou : le verre depoli est le decor par defaut
-  des maquettes generees, et il coute cher a l'affichage.
-*/
-/*
-  Dans @layer components, et NON en regle nue : sans cela, `background:
-  var(--surface)` l'emportait sur tout utilitaire `bg-accent` / `bg-support`
-  pose sur le meme element (une regle non layered bat les utilitaires Tailwind).
-  Consequence en sombre : un badge ou un bouton cense etre un aplat colore
-  restait sur la surface sombre, avec une encre sombre par-dessus - le texte noir
-  sur fond noir. En passant ces classes dans le layer components, l'utilitaire
-  reprend la main quand il est present, et la surface reste le defaut sinon.
+  Panneaux emailles. Un trait net, un rayon court, aucune ombre.
+
+  Dans @layer components, et NON en regle nue : une regle non layered bat tout
+  utilitaire Tailwind, si bien que `background: var(--surface)` l'emportait sur
+  un `bg-accent` pose sur le meme element, et un bouton cense etre un aplat
+  colore restait sur la surface avec une encre illisible par-dessus.
 */
 @layer components {
   .blk,
@@ -166,8 +153,6 @@ html {
     background: var(--surface);
     border: var(--border-w) solid var(--line);
     border-radius: var(--radius-sm);
-    /* Meme fondu que le body au changement de theme (neutralise par
-       prefers-reduced-motion). */
     transition:
       background-color 0.25s ease,
       border-color 0.25s ease;
@@ -175,60 +160,8 @@ html {
 }
 
 /*
-  Verre a refraction. A ne pas confondre avec le verre depoli retire juste
-  au-dessus : il n'y a ici AUCUN flou.
-
-  Le filtre deforme reellement l'arriere-plan par une carte de deplacement, au
-  lieu de le diluer. C'est ce qui distingue un materiau d'un effet de maquette :
-  le fond reste lisible a travers, seulement courbe, comme derriere une vitre
-  epaisse.
-
-  Trois garde-fous, chacun paye par un bug connu de ce projet :
-
-  - La refraction ne s'applique QUE tant que la page n'a pas defile, quand la
-    barre survole le hero. Des qu'un contenu passe dessous, le composant repasse
-    sur le fond opaque : une barre translucide au-dessus d'un texte qui glisse
-    est illisible, c'est deja pour cette raison que le verre avait ete retire.
-  - Aucune couleur en dur. Les aretes sont composees a partir des jetons de
-    marque, jamais d'un blanc ecrit a la main : c'est ce blanc en dur qui
-    faisait peindre du blanc sur du blanc en theme clair.
-  - Le filtre est fixe, il n'anime rien. Rien a desactiver en mouvement reduit,
-    et aucun cout par image.
-
-  Sans le support de `backdrop-filter: url()`, seules les aretes restent : la
-  barre est alors simplement nette, ce qui est l'etat livre aujourd'hui.
-*/
-.verre {
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--neige) 55%, transparent),
-    inset 0 -1px 0 color-mix(in srgb, var(--nuit) 14%, transparent);
-}
-
-@supports (backdrop-filter: url("#blf-refraction")) {
-  .verre {
-    backdrop-filter: url("#blf-refraction");
-  }
-}
-
-/*
-  Grille de laboratoire, posee en fond de section. Elle rappelle le papier
-  millimetre d'un carnet de paillasse et donne de la matiere aux grands aplats
-  sans ajouter ni image ni couleur. Purement decorative, donc masquee aux
-  lecteurs d'ecran par aria-hidden cote composant.
-*/
-.grille {
-  background-image:
-    linear-gradient(to right, var(--line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
-  background-size: 72px 72px;
-}
-
-/*
-  Bouton principal. Angle droit, comme tout le reste du site (seul le bloc de
-  logo est arrondi, voir themes.css). Le nom `btn-pill` est desormais un
-  vestige : la pilule et son survol flottant (translateY + halo violet) etaient
-  la signature d'une interface generee, exactement ce que la DA refuse. Le
-  survol se contente d'un ancrage net, sans levitation ni glow.
+  Bouton. Un placard qu'on enfonce : pas de levitation, pas de halo. Le nom
+  `btn-pill` est un vestige, la pilule a disparu du site depuis longtemps.
 */
 .btn-pill {
   border-radius: var(--radius);
@@ -236,6 +169,7 @@ html {
     background-color 0.16s ease,
     border-color 0.16s ease,
     color 0.16s ease,
+    filter 0.16s ease,
     transform 0.16s var(--ease-snap);
 }
 
@@ -243,19 +177,18 @@ html {
    au toucher et reste colle apres le geste. */
 @media (hover: hover) and (pointer: fine) {
   .btn-pill:hover {
-    filter: brightness(1.04);
+    filter: brightness(1.08);
   }
 }
 
 /* L'appui se voit : un bouton qui ne bouge pas sous le doigt donne
    l'impression que la page n'a rien entendu. */
 .btn-pill:active {
-  filter: brightness(0.98);
   transform: scale(0.97);
 }
 
 /*
-  Lien de navigation : le trait se deploie de la gauche vers la droite.
+  Lien de navigation : la ligne se deploie de la gauche vers la droite.
   Anime sur `transform` et non sur `width`, pour rester fluide.
 */
 .nav-link {
@@ -266,10 +199,11 @@ html {
   content: "";
   position: absolute;
   left: 0;
-  bottom: -6px;
-  height: 2px;
+  bottom: -7px;
+  height: 3px;
   width: 100%;
-  background: var(--violet);
+  border-radius: 999px;
+  background: var(--accent);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.2s var(--ease-snap);
@@ -286,14 +220,43 @@ html {
 }
 
 /*
+  Signature : la Ligne BLF du hero se trace une fois, de l'origine au terminus,
+  et les stations s'allument dans l'ordre. Le texte des stations ne bouge pas :
+  seul le trace et les pastilles, decoratifs, sont animes. `--i` est l'ordre de
+  la station. Sous mouvement reduit, le bloc plus bas montre directement la
+  ligne terminee.
+*/
+@keyframes ligne-trace {
+  from {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes arret-allume {
+  from {
+    transform: scale(0.55);
+  }
+}
+
+.ligne-trace {
+  transform-origin: top;
+  animation: ligne-trace 380ms var(--ease-snap) both;
+  animation-delay: calc(var(--i, 0) * 190ms + 220ms);
+}
+
+.arret {
+  animation: arret-allume 260ms var(--ease-snap) both;
+  animation-delay: calc(var(--i, 0) * 190ms + 60ms);
+}
+
+/*
   Dans @layer base et non en regle nue : une regle hors couche bat tout
   utilitaire Tailwind, si bien que `outline-none` pose sur le panneau du
-  formulaire de commande etait ignore et qu'un cadre violet entourait toute
-  l'etape apres chaque clic sur Continuer.
+  formulaire de commande etait ignore.
 */
 @layer base {
   :where(a, button, input, textarea, select, [tabindex]):focus-visible {
-    outline: 2px solid var(--violet);
+    outline: 3px solid var(--ink);
     outline-offset: 3px;
   }
 }
@@ -307,6 +270,7 @@ html {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }

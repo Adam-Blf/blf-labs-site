@@ -12,7 +12,9 @@ import { join } from "node:path";
  *
  * Elle est generee et non dessinee a la main : le jour ou le nom, la couleur ou
  * la promesse changent, l'image suit sans qu'on ait a rouvrir un editeur
- * d'images et a se souvenir qu'elle existe.
+ * d'images et a se souvenir qu'elle existe. Refonte "ligne" du 2026-09-15 : le
+ * placard noir, la bande des quatre lignes et le trait sous "clés" reprennent le
+ * site.
  *
  * La police est lue depuis le depot, pas telechargee : la regle d'assets locaux
  * vaut aussi au build, et une generation qui depend d'un CDN casse le jour ou ce
@@ -25,16 +27,24 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 /**
- * Satori, le moteur derriere ImageResponse, ne lit ni woff2 ni les polices
- * variables : il lui faut un fichier statique. D'ou ce fichier dedie, present
- * uniquement pour la generation et jamais servi au navigateur.
+ * Satori, le moteur derriere ImageResponse, ne lit pas le woff2 : il lui faut
+ * un fichier TTF statique. D'ou ce fichier dedie, present uniquement pour la
+ * generation et jamais servi au navigateur.
  */
 async function police() {
-  return readFile(join(process.cwd(), "assets", "archivo-800.ttf"));
+  return readFile(join(process.cwd(), "assets", "barlow-condensed-800.ttf"));
 }
 
+// Jetons du placard du site (themes.css, mode clair). Ecrits en dur ici et
+// nulle part ailleurs : cette image est generee hors du navigateur, elle n'a
+// aucun acces aux variables CSS.
+const SIGNE = "#0b0e13";
+const ENCRE = "#f3f4f6";
+const DISCRET = "#aeb5c0";
+const LIGNES = ["#f26a4b", "#b27fe0", "#43c07e", "#6c9cf2"];
+
 export default async function Image() {
-  const archivo = await police();
+  const placard = await police();
 
   return new ImageResponse(
     (
@@ -45,41 +55,52 @@ export default async function Image() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          // Jetons du theme sombre du site. Ecrits en dur ici et nulle part
-          // ailleurs : cette image est generee hors du navigateur, elle n'a
-          // aucun acces aux variables CSS.
-          backgroundColor: "#111016",
-          color: "#edeef1",
-          padding: "72px 80px",
-          fontFamily: "Archivo",
+          backgroundColor: SIGNE,
+          color: ENCRE,
+          padding: "64px 80px",
+          fontFamily: "Barlow Condensed",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            fontSize: 26,
-            letterSpacing: 6,
-            textTransform: "uppercase",
-            color: "#9a94a6",
-          }}
-        >
-          Studio de développement - Île-de-France
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          {LIGNES.map((couleur, index) => (
+            <div key={couleur} style={{ display: "flex", alignItems: "center", flex: 1, gap: 6 }}>
+              {index > 0 && (
+                <div
+                  style={{
+                    width: 22,
+                    height: 22,
+                    borderRadius: 11,
+                    border: `5px solid ${ENCRE}`,
+                  }}
+                />
+              )}
+              <div style={{ flex: 1, height: 8, borderRadius: 4, backgroundColor: couleur }} />
+            </div>
+          ))}
         </div>
 
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            fontSize: 82,
-            lineHeight: 1.02,
+            fontSize: 104,
+            lineHeight: 0.95,
             textTransform: "uppercase",
           }}
         >
-          <div style={{ display: "flex" }}>On construit</div>
-          <div style={{ display: "flex" }}>votre logiciel.</div>
-          {/* Le violet ne sert qu'aux points d'accent, ici comme sur le site. */}
-          <div style={{ display: "flex", color: "#cb6ce6" }}>
-            Vous en gardez les clés.
+          <div style={{ display: "flex" }}>On construit votre logiciel.</div>
+          <div style={{ display: "flex" }}>
+            Vous en gardez les&nbsp;
+            <span
+              style={{
+                display: "flex",
+                borderBottom: "12px solid #ffc21a",
+                paddingBottom: 2,
+              }}
+            >
+              clés
+            </span>
+            .
           </div>
         </div>
 
@@ -88,18 +109,20 @@ export default async function Image() {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            fontSize: 28,
-            color: "#9a94a6",
+            fontSize: 38,
+            textTransform: "uppercase",
+            letterSpacing: 2,
+            color: DISCRET,
           }}
         >
-          <div style={{ display: "flex", color: "#edeef1" }}>BLF Lab&apos;s</div>
+          <div style={{ display: "flex", color: ENCRE }}>BLF Lab&apos;s</div>
           <div style={{ display: "flex" }}>beloucif.com</div>
         </div>
       </div>
     ),
     {
       ...size,
-      fonts: [{ name: "Archivo", data: archivo, weight: 800, style: "normal" }],
+      fonts: [{ name: "Barlow Condensed", data: placard, weight: 800, style: "normal" }],
     },
   );
 }

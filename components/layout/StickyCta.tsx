@@ -75,7 +75,7 @@ export function StickyCta() {
         href="/commander"
         // 56 px de haut : au-dessus du plancher de 44 px des cibles tactiles,
         // parce que c'est le bouton le plus important du site sur mobile.
-        className="btn-pill flex min-h-[56px] items-center justify-center bg-accent px-6 text-base font-semibold text-accent-ink shadow-lg"
+        className="btn-pill flex min-h-[56px] items-center justify-center bg-accent px-6 text-base font-semibold text-accent-ink"
       >
         Démarrer un projet
       </Link>

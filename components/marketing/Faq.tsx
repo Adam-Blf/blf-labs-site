@@ -56,7 +56,9 @@ export function Faq({
                     onClick={() => setOpenIndex(open ? null : index)}
                     className="flex min-h-[44px] w-full items-center justify-between gap-4 px-6 py-5 text-left"
                   >
-                    <span className="title text-lg">{item.question}</span>
+                    {/* Texte courant et non placard : une question entiere en
+                        capitales condensees se lit mal. */}
+                    <span className="text-lg font-semibold">{item.question}</span>
 
                     {/* Croix qui pivote : un seul trace pour les deux etats,
                         plutot que deux icones qui se remplacent. */}

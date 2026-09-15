@@ -14,7 +14,7 @@ type Variant = "accent" | "support" | "ghost";
  */
 const BASE =
   "blk-sm title inline-flex min-h-[44px] items-center justify-center gap-2 px-6 py-3 text-base " +
-  "transition-transform duration-150 ease-snap hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.97]";
+  "rounded-[var(--radius)] transition-[transform,filter] duration-150 ease-snap hover:brightness-110 active:scale-[0.97]";
 
 // Le texte pose sur un aplat utilise TOUJOURS l'encre invariante de cet aplat,
 // jamais var(--ink) : c'est ce qui evite le quasi-blanc sur jaune en sombre.

@@ -40,7 +40,7 @@ export function ConsentBanner() {
       aria-label="Consentement a la mesure d'audience"
       className="fixed inset-x-0 bottom-0 z-[60] px-4 pb-4"
     >
-      <div className="blk mx-auto flex max-w-3xl flex-col gap-5 p-5 shadow-lg sm:flex-row sm:items-center sm:justify-between">
+      <div className="blk mx-auto flex max-w-3xl flex-col gap-5 border-line-strong p-5 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm leading-relaxed text-muted-strong">
           On mesure la fréquentation du site pour savoir quelles pages servent
           vraiment. Rien n&rsquo;est déposé sur votre appareil sans votre accord,
