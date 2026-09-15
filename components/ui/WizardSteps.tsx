@@ -97,12 +97,15 @@ export function WizardSteps({
     goTo(Math.min(Math.max(target, 0), furthest));
   }
 
+  // Les memes proprietes dans les deux cas, seule l'amplitude change. Des objets
+  // de forme differente selon `reduced` (inconnu du serveur) rendaient un style
+  // initial different cote serveur et cote client, d'ou une erreur
+  // d'hydratation sur /commander chez tout visiteur en mouvement reduit.
+  const shift = reduced ? 0 : 24;
   const variants = {
-    enter: (d: WizardDirection) =>
-      reduced ? { opacity: 0 } : { opacity: 0, x: d * 24 },
-    center: reduced ? { opacity: 1 } : { opacity: 1, x: 0 },
-    exit: (d: WizardDirection) =>
-      reduced ? { opacity: 0 } : { opacity: 0, x: d * -24 },
+    enter: (d: WizardDirection) => ({ opacity: 0, x: d * shift }),
+    center: { opacity: 1, x: 0 },
+    exit: (d: WizardDirection) => ({ opacity: 0, x: d * -shift }),
   };
 
   return (

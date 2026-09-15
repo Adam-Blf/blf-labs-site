@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ArrowUpRightIcon } from "@phosphor-icons/react/ssr";
 import { Reveal } from "@/components/motion/Reveal";
 import Link from "next/link";
 import { ETUDE_PAR_SLUG } from "@/content/etudes";
@@ -12,8 +13,15 @@ import { REFERENCES } from "@/content/references";
  * demande a un client de juger un travail qu'il ne voit pas.
  *
  * Chaque realisation porte donc maintenant une capture du site reel, prise en
- * ligne puis convertie en WebP. La vignette s'agrandit legerement au survol et
- * son voile s'estompe : le mouvement sert a designer, pas a decorer.
+ * ligne puis convertie en WebP. La vignette s'agrandit legerement au survol :
+ * le mouvement sert a designer, pas a decorer.
+ *
+ * Le voile sombre en degrade pose sur chaque capture a ete retire le
+ * 2026-09-15. Ecrit en noir fixe, il salissait le bas des captures en theme
+ * clair et masquait precisement ce qu'on demande au visiteur de juger. Les
+ * angles suivent aussi le rayon du site : ces vignettes arrondies a 16 px et les
+ * etiquettes en pilule etaient les seules courbes d'une interface tracee a la
+ * regle.
  */
 export function ReferencesSection({
   compact = false,
@@ -51,7 +59,7 @@ export function ReferencesSection({
                 rel="noopener noreferrer"
                 className="block"
               >
-                <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-line">
+                <div className="relative aspect-[16/10] overflow-hidden rounded-[var(--radius)] border border-line transition-colors duration-200 group-hover:border-line-strong">
                   <Image
                     src={reference.shot}
                     alt={`Capture du site ${reference.title}`}
@@ -61,13 +69,7 @@ export function ReferencesSection({
                        dediee : la charger en priorite evite un trou pendant le
                        rendu. Les suivantes restent en chargement differe. */
                     priority={index === 0}
-                    className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                  />
-                  {/* Voile qui s'estompe au survol : la capture s'eclaircit
-                      quand on la designe. */}
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-0 bg-gradient-to-t from-[#0b0b0c] via-[#0b0b0c]/30 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-40"
+                    className="object-cover object-top transition-transform duration-500 ease-snap group-hover:scale-[1.03]"
                   />
                 </div>
 
@@ -76,8 +78,13 @@ export function ReferencesSection({
                     <h3 className="title text-2xl sm:text-3xl">
                       {reference.title}
                     </h3>
-                    <span className="text-sm text-muted-strong transition-transform duration-300 group-hover:translate-x-1">
-                      Voir le site &rarr;
+                    <span className="inline-flex items-center gap-1.5 text-sm text-muted-strong transition-colors group-hover:text-ink">
+                      Voir le site
+                      <ArrowUpRightIcon
+                        aria-hidden="true"
+                        weight="bold"
+                        className="h-3.5 w-3.5 transition-transform duration-200 ease-snap group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                      />
                     </span>
                   </div>
 
@@ -112,7 +119,7 @@ export function ReferencesSection({
                     >
                       <span
                         aria-hidden="true"
-                        className="mt-2 block h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
+                        className="mt-2 block h-1.5 w-1.5 shrink-0 bg-accent"
                       />
                       <span>{fact}</span>
                     </li>
@@ -124,7 +131,7 @@ export function ReferencesSection({
                 {reference.tags.map((tag) => (
                   <li
                     key={tag}
-                    className="rounded-full border border-line px-3 py-1 text-xs text-muted"
+                    className="rounded-[var(--radius-sm)] border border-line px-3 py-1 text-xs text-muted"
                   >
                     {tag}
                   </li>

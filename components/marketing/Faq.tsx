@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { PlusIcon } from "@phosphor-icons/react";
 import { FAQ } from "@/content/faq";
 
 /**
@@ -59,23 +60,13 @@ export function Faq({
 
                     {/* Croix qui pivote : un seul trace pour les deux etats,
                         plutot que deux icones qui se remplacent. */}
-                    <motion.span
+                    <PlusIcon
                       aria-hidden="true"
-                      animate={{ rotate: open ? 45 : 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="shrink-0 text-accent"
-                    >
-                      <svg
-                        viewBox="0 0 24 24"
-                        className="h-5 w-5"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                      >
-                        <path d="M12 5v14M5 12h14" />
-                      </svg>
-                    </motion.span>
+                      weight="bold"
+                      className={`h-5 w-5 shrink-0 text-accent transition-transform duration-200 ease-snap ${
+                        open ? "rotate-45" : "rotate-0"
+                      }`}
+                    />
                   </button>
                 </h3>
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { ListIcon, XIcon } from "@phosphor-icons/react";
 import { Wordmark } from "./Wordmark";
 import { GlassRefraction } from "./GlassRefraction";
 import { ThemeToggle } from "./ThemeToggle";
@@ -62,7 +63,7 @@ export function Header() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-6 z-50 px-4 transition-transform duration-300 ${
+      className={`fixed inset-x-0 top-6 z-50 px-4 transition-transform duration-300 ease-glide ${
         isHidden ? "-translate-y-[150%]" : "translate-y-0"
       }`}
     >
@@ -127,23 +128,13 @@ export function Header() {
               aria-expanded={open}
               aria-controls="menu-mobile"
               onClick={() => setOpen((value) => !value)}
-              className="flex h-11 w-11 items-center justify-center rounded-full text-ink md:hidden"
+              className="flex h-11 w-11 items-center justify-center rounded-[var(--radius)] text-ink transition-transform duration-150 ease-snap active:scale-[0.94] md:hidden"
             >
-              <svg
-                viewBox="0 0 24 24"
-                className="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                aria-hidden="true"
-              >
-                {open ? (
-                  <path d="M18 6 6 18M6 6l12 12" />
-                ) : (
-                  <path d="M4 7h16M4 12h16M4 17h16" />
-                )}
-              </svg>
+              {open ? (
+                <XIcon aria-hidden="true" weight="bold" className="h-6 w-6" />
+              ) : (
+                <ListIcon aria-hidden="true" weight="bold" className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>

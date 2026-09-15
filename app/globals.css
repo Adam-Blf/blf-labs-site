@@ -35,6 +35,17 @@
   --color-citron: var(--citron);
 }
 
+/*
+  Courbes de mouvement du site, en jetons (classes `ease-snap`, `ease-glide`).
+  Les courbes natives `ease` et `ease-out` sont trop molles : le mouvement
+  demarre sans conviction et l'interface parait attendre. `snap` sert a tout ce
+  qui entre ou repond a un geste, `glide` a ce qui se deplace deja a l'ecran.
+*/
+@theme {
+  --ease-snap: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-glide: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -55,6 +66,16 @@ body {
 ::selection {
   background: var(--violet);
   color: var(--accent-ink);
+}
+
+/*
+  Les surfaces que le navigateur dessine seul portent aussi la marque : le
+  curseur de saisie et la barre de defilement suivaient jusqu'ici le gris par
+  defaut du systeme, le seul endroit du site qui ne sortait pas de la palette.
+*/
+html {
+  caret-color: var(--violet-encre);
+  scrollbar-color: var(--line-strong) var(--paper);
 }
 
 /*
@@ -214,15 +235,23 @@ body {
   transition:
     background-color 0.16s ease,
     border-color 0.16s ease,
-    color 0.16s ease;
+    color 0.16s ease,
+    transform 0.16s var(--ease-snap);
 }
 
-.btn-pill:hover {
-  filter: brightness(1.04);
+/* Survol reserve aux pointeurs fins : sur ecran tactile, le survol se declenche
+   au toucher et reste colle apres le geste. */
+@media (hover: hover) and (pointer: fine) {
+  .btn-pill:hover {
+    filter: brightness(1.04);
+  }
 }
 
+/* L'appui se voit : un bouton qui ne bouge pas sous le doigt donne
+   l'impression que la page n'a rien entendu. */
 .btn-pill:active {
   filter: brightness(0.98);
+  transform: scale(0.97);
 }
 
 /*
@@ -243,17 +272,30 @@ body {
   background: var(--violet);
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 0.3s ease;
+  transition: transform 0.2s var(--ease-snap);
 }
 
-.nav-link:hover::after,
 .nav-link:focus-visible::after {
   transform: scaleX(1);
 }
 
-:where(a, button, input, textarea, select, [tabindex]):focus-visible {
-  outline: 2px solid var(--violet);
-  outline-offset: 3px;
+@media (hover: hover) and (pointer: fine) {
+  .nav-link:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+/*
+  Dans @layer base et non en regle nue : une regle hors couche bat tout
+  utilitaire Tailwind, si bien que `outline-none` pose sur le panneau du
+  formulaire de commande etait ignore et qu'un cadre violet entourait toute
+  l'etape apres chaque clic sur Continuer.
+*/
+@layer base {
+  :where(a, button, input, textarea, select, [tabindex]):focus-visible {
+    outline: 2px solid var(--violet);
+    outline-offset: 3px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

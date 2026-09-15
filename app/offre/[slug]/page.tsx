@@ -122,7 +122,7 @@ export default async function OffrePage({ params }: PageProps) {
                 <Link
                   key={item.slug}
                   href={`/offre/${item.slug}`}
-                  className="blk-sm group bg-surface p-5 transition-transform hover:-translate-y-1"
+                  className="blk-sm group bg-surface p-5 hover:border-line-strong"
                 >
                   <h3 className="title text-lg group-hover:underline">
                     {item.title}

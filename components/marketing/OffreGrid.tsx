@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowRightIcon } from "@phosphor-icons/react/ssr";
 import {
   IconAppsMobiles,
   IconAppsWeb,
@@ -9,11 +10,14 @@ import { Reveal } from "@/components/motion/Reveal";
 import { OFFRES, type OffreSlug } from "@/content/offres";
 
 /**
- * Services, en grille de quatre cartes de verre.
+ * Services, en grille de quatre cartes a cadre net.
  *
- * Le pictogramme est pose dans un quart de disque flou, en angle de carte,
- * conformement a la specification. Le halo est purement decoratif, donc masque
- * aux lecteurs d'ecran.
+ * Le quart de disque flou qui ornait l'angle de chaque carte a ete retire : un
+ * degrade violet passe au flou est precisement le decor que themes.css refuse,
+ * et c'etait le seul flou du site. Le survol ne grossit plus la carte non plus
+ * (un agrandissement de 2 % sur un bloc de texte le rend flou pendant
+ * l'animation) : le cadre se renforce et la fleche avance, ce qui designe la
+ * carte sans la deformer.
  */
 const ICONS: Record<OffreSlug, (props: { className?: string }) => React.ReactNode> = {
   "sites-web": IconSitesWeb,
@@ -43,20 +47,8 @@ export function OffreGrid() {
               <Link
                 key={offre.slug}
                 href={`/offre/${offre.slug}`}
-                className="glass group relative overflow-hidden p-8 transition-transform duration-300 hover:scale-[1.02] sm:p-10"
+                className="glass group relative overflow-hidden p-8 hover:border-line-strong sm:p-10"
               >
-                {/*
-                  Quart de disque colore, dans l'angle de la carte.
-                  Il etait ecrit `from-orange/25`, une couleur qui n'existe pas
-                  dans `@theme` : Tailwind n'emettait aucune regle, le decor
-                  etait invisible depuis toujours et rien ne le signalait.
-                  Repose sur la couleur d'accent, qui elle est declaree.
-                */}
-                <span
-                  aria-hidden="true"
-                  className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-gradient-to-br from-accent/25 to-transparent blur-2xl transition-opacity duration-500 group-hover:opacity-80"
-                />
-
                 <div className="relative z-10">
                   <span className="glass-sm inline-flex h-14 w-14 items-center justify-center">
                     <Icon className="h-7 w-7 text-ink" />
@@ -74,15 +66,20 @@ export function OffreGrid() {
                     {offre.stack.map((tool) => (
                       <li
                         key={tool}
-                        className="rounded-full border border-line px-3 py-1 text-xs font-medium text-muted"
+                        className="rounded-[var(--radius-sm)] border border-line px-3 py-1 text-xs font-medium text-muted"
                       >
                         {tool}
                       </li>
                     ))}
                   </ul>
 
-                  <span className="mono mt-8 inline-block text-xs text-muted transition-colors group-hover:text-ink">
+                  <span className="mono mt-8 inline-flex items-center gap-2 text-xs text-muted transition-colors group-hover:text-ink">
                     En savoir plus
+                    <ArrowRightIcon
+                      aria-hidden="true"
+                      weight="bold"
+                      className="h-3.5 w-3.5 transition-transform duration-200 ease-snap group-hover:translate-x-1"
+                    />
                   </span>
                 </div>
               </Link>

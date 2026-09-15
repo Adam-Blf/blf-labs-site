@@ -6,6 +6,41 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.41.0 - 2026-09-15
+
+### Corrige
+
+- **Le formulaire de commande et la bascule de theme levaient une erreur
+  d'hydratation chez tout visiteur en mouvement reduit.** Leurs animations
+  choisissaient des proprietes differentes selon une preference que le serveur
+  ne connait pas. Les deux rendus concordent desormais, mouvement reduit ou non,
+  mesure sur l'accueil, les services, les realisations, les questions et la
+  commande : zero erreur de console dans les deux cas.
+- **Le fil d'Ariane de la page Realisations passait sous la barre de
+  navigation**, seule page dediee a laquelle manquait la marge des autres.
+- **Un cadre violet entourait toute l'etape du formulaire apres chaque clic sur
+  Continuer.** La regle de focus, ecrite hors couche, ecrasait le `outline-none`
+  du panneau.
+
+### Modifie
+
+- **Le mouvement suit deux courbes partagees** (`ease-snap` pour ce qui repond a
+  un geste, `ease-glide` pour ce qui se deplace), au lieu des courbes natives,
+  trop molles. Le trait sous les liens passe de 300 a 200 ms.
+- **Chaque bouton repond a l'appui** par un leger resserrement, y compris au
+  doigt, ou le survol n'existe pas. Le survol des boutons et des liens est
+  reserve aux pointeurs fins.
+- **Les cartes ne grossissent plus au survol** (le texte flou pendant
+  l'agrandissement) : le cadre se renforce et la fleche avance.
+- **Retire le dernier decor hors direction artistique** : le disque violet flou
+  en angle des cartes de services, le voile noir en degrade qui salissait les
+  captures de realisations en theme clair, et les arrondis de 16 px et les
+  pilules d'une interface tracee a la regle.
+- **Les pictogrammes touches par ce lot viennent de Phosphor** (fleches, menu,
+  soleil et lune, plus de la FAQ), en graisse `bold` comme les traces qu'ils
+  remplacent. Les quatre pictogrammes de services restent dessines a la main.
+- Le curseur de saisie et la barre de defilement suivent la palette.
+
 ## 0.40.0 - 2026-08-28
 
 ### Ajoute

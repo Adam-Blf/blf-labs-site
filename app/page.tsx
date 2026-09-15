@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowRightIcon } from "@phosphor-icons/react/ssr";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { CtaBand } from "@/components/marketing/CtaBand";
@@ -85,18 +86,21 @@ export default function Home() {
                 <Link
                   key={card.href}
                   href={card.href}
-                  className="glass group flex flex-col justify-between gap-10 p-8 transition-transform duration-300 hover:-translate-y-1"
+                  className="glass group flex flex-col justify-between gap-10 p-8 hover:border-line-strong"
                 >
                   <h3 className="title text-2xl">{card.title}</h3>
 
                   <div>
                     <p className="font-light text-muted">{card.body}</p>
-                    <span
+                    {/* Fleche dessinee (Phosphor) plutot que le caractere
+                        &rarr;, dont le trace changeait avec la police de
+                        repli. Elle avance au survol : c'est elle qui designe
+                        la carte, la carte ne se souleve plus. */}
+                    <ArrowRightIcon
                       aria-hidden="true"
-                      className="mt-6 inline-block text-xl text-muted-strong transition-transform duration-300 group-hover:translate-x-1"
-                    >
-                      &rarr;
-                    </span>
+                      weight="bold"
+                      className="mt-6 h-5 w-5 text-muted-strong transition-transform duration-200 ease-snap group-hover:translate-x-1 group-hover:text-ink"
+                    />
                   </div>
                 </Link>
               ))}

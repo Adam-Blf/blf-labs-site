@@ -67,7 +67,7 @@ export function StickyCta() {
       // `pb-[env(safe-area-inset-bottom)]` : sans lui, la barre passe sous la
       // barre de gestes des iPhone recents et le bouton devient a moitie
       // inatteignable.
-      className={`fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] transition-transform duration-300 sm:hidden ${
+      className={`fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] transition-transform duration-300 ease-snap sm:hidden ${
         visible ? "translate-y-0" : "translate-y-[150%]"
       }`}
     >
