@@ -1,6 +1,6 @@
 {
   "name": "blf-labs-site",
-  "version": "0.42.0",
+  "version": "0.42.1",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3200",
@@ -25,7 +25,7 @@
     "@supabase/supabase-js": "^2.112.2",
     "framer-motion": "^13.0.0",
     "gsap": "^3.15.0",
-    "next": "16.3.0",
+    "next": "16.3.5",
     "pdf-lib": "^1.17.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",
@@ -39,7 +39,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.3.0",
+    "eslint-config-next": "16.3.5",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.10"

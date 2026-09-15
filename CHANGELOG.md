@@ -6,6 +6,17 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.42.1 - 2026-09-15
+
+### Securite
+
+- **Next passe de 16.3.0 a 16.3.5, et sharp de 0.34 a 0.35.4.** Deux avis
+  critiques visaient la version en ligne : execution de code a distance sans
+  authentification via l'optimisation d'images en AVIF (GHSA-2xp9-vwfh-vxw4) et
+  sur les serveurs heberges sous Windows (GHSA-p293-qw3h-jr36). Un avis haut
+  visait libheif dans sharp (GHSA-rgj7-g3m4-5g8c). `npm audit` ne remonte plus
+  aucune vulnerabilite de production.
+
 ## 0.42.0 - 2026-09-15
 
 ### Modifie
