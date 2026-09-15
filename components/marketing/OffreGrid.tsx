@@ -57,7 +57,7 @@ const LIGNES: Record<
 export function OffreGrid() {
   return (
     <section id="offre" className="relative">
-      <div className="section mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="section section-suite-fil mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <h2 className="title max-w-3xl text-5xl sm:text-6xl lg:text-7xl">
           Des services conçus pour{" "}
           <span className="grad-text">votre activité</span>
