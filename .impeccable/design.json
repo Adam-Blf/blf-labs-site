@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-15T15:30:00Z",
+  "title": "Design System: BLF Lab's",
+  "extensions": {
+    "colorMeta": {
+      "ligne-web": { "role": "primary", "displayName": "Violet de la ligne web", "canonical": "#7a2fa3", "tonalRamp": ["#2a0f39", "#3f1756", "#551f73", "#6a2890", "#7a2fa3", "#9a5bc0", "#bf93db", "#e6d4f2"] },
+      "ligne-sites": { "role": "secondary", "displayName": "Vermillon", "canonical": "#c93418", "tonalRamp": ["#3f0f06", "#5e170a", "#7e1f0e", "#a42813", "#c93418", "#e05a3f", "#ee9784", "#f9d8d0"] },
+      "ligne-mobile": { "role": "secondary", "displayName": "Vert de ligne", "canonical": "#127a44", "tonalRamp": ["#052716", "#083a21", "#0b4f2c", "#0f6538", "#127a44", "#3c9e69", "#86c9a4", "#d3eedf"] },
+      "ligne-data": { "role": "secondary", "displayName": "Bleu de ligne", "canonical": "#1d57c4", "tonalRamp": ["#081b3d", "#0d295c", "#12367c", "#18479f", "#1d57c4", "#4c7ed8", "#90b0e8", "#d8e4f8"] },
+      "support": { "role": "tertiary", "displayName": "Jaune de signalisation", "canonical": "#ffc21a", "tonalRamp": ["#4d3900", "#735600", "#997300", "#cc9900", "#ffc21a", "#ffd257", "#ffe294", "#fff3d1"] },
+      "paper": { "role": "neutral", "displayName": "Gris de quai", "canonical": "#f3f4f6" },
+      "surface": { "role": "neutral", "displayName": "Émail", "canonical": "#ffffff" },
+      "ink": { "role": "neutral", "displayName": "Encre", "canonical": "#0b0e13" },
+      "signe": { "role": "neutral", "displayName": "Placard", "canonical": "#0b0e13" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "H1 de l'accueil, capitales condensées." },
+      "headline": { "displayName": "Headline", "purpose": "Titres de section et H1 des pages intérieures." },
+      "title": { "displayName": "Nom de station", "purpose": "Étapes, offres, correspondances." },
+      "body": { "displayName": "Texte", "purpose": "Texte courant en Barlow." },
+      "label": { "displayName": "Étiquette de placard", "purpose": "Navigation, fil d'Ariane, étiquettes." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "ease-snap", "value": "cubic-bezier(0.23, 1, 0.32, 1)", "purpose": "Tout ce qui entre ou répond à un geste : appui, trait de navigation, allumage des stations." },
+      { "name": "ease-glide", "value": "cubic-bezier(0.77, 0, 0.175, 1)", "purpose": "Ce qui se déplace déjà à l'écran : retrait de la barre de navigation." },
+      { "name": "ligne-trace", "value": "scaleY 380ms ease-snap, delay 190ms per station", "purpose": "Trace unique de la Ligne BLF au chargement." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Action principale, placard violet de la ligne web.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\">Démarrer un projet</a>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; min-height: 54px; padding: 0 32px; background: var(--accent, #7a2fa3); color: var(--accent-ink, #ffffff); font-family: 'Barlow Condensed', system-ui, sans-serif; font-weight: 800; font-size: 1.25rem; text-transform: uppercase; letter-spacing: 0.004em; border-radius: 6px; text-decoration: none; transition: filter 160ms ease, transform 160ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn-primary:hover { filter: brightness(1.08); } .ds-btn-primary:active { transform: scale(0.97); } .ds-btn-primary:focus-visible { outline: 3px solid var(--ink, #0b0e13); outline-offset: 3px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Action secondaire, trait d'encre de 2 px.",
+      "html": "<a class=\"ds-btn-ghost\" href=\"#\">Voir les services</a>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; min-height: 54px; padding: 0 32px; border: 2px solid var(--ink, #0b0e13); color: var(--ink, #0b0e13); font-family: 'Barlow Condensed', system-ui, sans-serif; font-weight: 800; font-size: 1.25rem; text-transform: uppercase; border-radius: 6px; text-decoration: none; transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1); } .ds-btn-ghost:active { transform: scale(0.97); } .ds-btn-ghost:focus-visible { outline: 3px solid var(--ink, #0b0e13); outline-offset: 3px; }"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "refersTo": "nav-current",
+      "description": "Barre émaillée, page courante en placard plein.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-link ds-nav-current\" href=\"#\">Services</a><a class=\"ds-nav-link\" href=\"#\">Tarifs</a><a class=\"ds-nav-link\" href=\"#\">Méthode</a></nav>",
+      "css": ".ds-nav { display: flex; gap: 24px; align-items: center; padding: 12px 20px; background: var(--surface, #ffffff); border: 1px solid var(--line, rgba(11,14,19,0.14)); border-radius: 6px; } .ds-nav-link { position: relative; font-family: 'Barlow Condensed', system-ui, sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted-strong, #232830); text-decoration: none; } .ds-nav-link:hover { color: var(--ink, #0b0e13); } .ds-nav-current { background: var(--ink, #0b0e13); color: var(--paper, #f3f4f6); padding: 4px 10px; border-radius: 4px; } .ds-nav-link:focus-visible { outline: 3px solid var(--ink, #0b0e13); outline-offset: 3px; }"
+    },
+    {
+      "name": "Station Line",
+      "kind": "custom",
+      "refersTo": "station",
+      "description": "Trait de ligne et pastilles de station, signature du système.",
+      "html": "<ol class=\"ds-line\"><li><span class=\"ds-stop\"></span>Cadrage</li><li><span class=\"ds-stop\"></span>Maquette</li><li><span class=\"ds-stop ds-terminus\"></span>Remise des clés</li></ol>",
+      "css": ".ds-line { list-style: none; margin: 0; padding: 0; } .ds-line li { position: relative; display: flex; gap: 20px; align-items: center; padding-bottom: 28px; font-family: 'Barlow Condensed', system-ui, sans-serif; font-weight: 800; font-size: 1.5rem; text-transform: uppercase; } .ds-line li:not(:last-child)::before { content: ''; position: absolute; left: 11px; top: 14px; width: 6px; height: 100%; border-radius: 9999px; background: var(--accent, #7a2fa3); } .ds-stop { position: relative; z-index: 1; width: 28px; height: 28px; border-radius: 9999px; border: 5px solid var(--ink, #0b0e13); background: var(--surface, #ffffff); box-sizing: border-box; } .ds-terminus { background: var(--accent, #7a2fa3); }"
+    },
+    {
+      "name": "Four Lines Strip",
+      "kind": "custom",
+      "refersTo": "station",
+      "description": "Bande des quatre couleurs de ligne, séparateur de section.",
+      "html": "<div class=\"ds-strip\"><span style=\"background:#c93418\"></span><i></i><span style=\"background:#7a2fa3\"></span><i></i><span style=\"background:#127a44\"></span><i></i><span style=\"background:#1d57c4\"></span></div>",
+      "css": ".ds-strip { display: flex; align-items: center; gap: 4px; color: var(--ink, #0b0e13); } .ds-strip span { flex: 1; height: 6px; } .ds-strip span:first-child { border-radius: 9999px 0 0 9999px; } .ds-strip span:last-child { border-radius: 0 9999px 9999px 0; } .ds-strip i { width: 16px; height: 16px; border-radius: 9999px; border: 4px solid currentColor; box-sizing: border-box; }"
+    },
+    {
+      "name": "Placard",
+      "kind": "card",
+      "refersTo": "placard",
+      "description": "Bandeau plein de fin de page, noir en clair, blanc en sombre.",
+      "html": "<section class=\"ds-placard\"><h2>Construisons quelque chose <u>qui vous appartient</u></h2></section>",
+      "css": ".ds-placard { background: var(--signe, #0b0e13); color: var(--signe-ink, #f3f4f6); padding: 64px 40px; } .ds-placard h2 { margin: 0; font-family: 'Barlow Condensed', system-ui, sans-serif; font-weight: 800; font-size: 3rem; line-height: 0.94; text-transform: uppercase; } .ds-placard u { text-decoration-color: var(--support, #ffc21a); text-decoration-thickness: 0.11em; text-underline-offset: 0.12em; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Le plan de ligne",
+    "overview": "Le site se lit comme la signalétique d'une ligne de transport. Un projet est un trajet de quatre stations, cadrage, maquette, développement, remise des clés, et le terminus est l'offre elle-même : le code, le nom de domaine et les accès transférés au nom du client. La matière est celle du panneau émaillé : un fond, un panneau, une encre, et rien entre les deux. Aucune ombre, aucun dégradé, aucun verre.",
+    "keyCharacteristics": [
+      "Un trait de ligne épais (6 px, bouts ronds) qui relie des pastilles de station (anneau d'encre de 5 px, cœur de panneau).",
+      "Placards en Barlow Condensed 800 capitales ; texte en Barlow.",
+      "Quatre couleurs de ligne, une par offre, jamais en décor.",
+      "États francs : allumé ou éteint, jamais de demi-teinte.",
+      "Un seul changement de fond par page, le placard de fin de page."
+    ],
+    "rules": [
+      { "name": "The One Line, One Offer Rule", "body": "Une couleur de ligne désigne toujours la même famille d'offre. Elle ne sert jamais à décorer une section qui n'en parle pas ; seule la bande des quatre lignes les montre ensemble.", "section": "colors" },
+      { "name": "The Dedicated Ink Rule", "body": "Un aplat porte son encre dédiée (accent-ink, support-ink, ligne-ink, signe-ink), jamais ink, qui s'inverse avec le thème.", "section": "colors" },
+      { "name": "The Two Surfaces Rule", "body": "Un fond et un panneau par thème. Pas de troisième surface.", "section": "colors" },
+      { "name": "The Station Name Rule", "body": "Tout ce qui nomme un lieu du site est en capitales condensées. Tout ce qui explique reste en Barlow normale.", "section": "typography" },
+      { "name": "The Underline, Not Recolor Rule", "body": "Un mot mis en avant dans un titre garde l'encre du titre ; la couleur passe dans un trait de 0.11em dessous.", "section": "typography" },
+      { "name": "The Enamel Rule", "body": "Rien ne flotte. Pas de lévitation au survol, pas de halo, pas de verre ; un bouton s'enfonce, il ne se soulève pas.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do relier ce qui se suit par un trait de ligne de 6px et des pastilles de station, du centre d'une pastille au centre de la suivante.",
+      "Do donner à chaque famille d'offre sa couleur de ligne, et seulement à elle.",
+      "Do mettre en avant un mot de titre par un trait dessous, violet sur le fond, jaune sur un placard.",
+      "Do passer l'état courant en placard plein, sans demi-teinte.",
+      "Do mesurer chaque encre contre son propre fond dans les deux thèmes (app/accessibilite.test.ts)."
+    ],
+    "donts": [
+      "Don't poser d'ombre, de dégradé, de verre ni de flou décoratif.",
+      "Don't reprendre la grille millimétrée, la fiole 3D, le citron ou Archivo de la direction \"laboratoire\".",
+      "Don't construire une section en grille de cartes identiques icône, titre, texte : utiliser des rangées réglées.",
+      "Don't poser de surtitre au-dessus d'un titre.",
+      "Don't recolorer un mot de titre.",
+      "Don't redessiner, recoloriser ou régénérer le logo : ce sont les fichiers fournis dans public/brand."
+    ]
+  }
+}

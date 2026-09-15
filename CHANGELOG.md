@@ -6,6 +6,84 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.42.0 - 2026-09-15
+
+### Modifie
+
+- **Nouvelle direction artistique, "ligne".** Le site se lit comme un plan de
+  ligne de transport : un projet est un trajet de quatre stations, et son
+  terminus, la remise des cles, est l'offre elle-meme. Elle remplace la
+  direction "laboratoire" (grille millimetree, fiole 3D, violet et citron).
+  Le systeme est decrit dans `DESIGN.md`.
+- **Le premier ecran montre le trajet entier.** A cote du titre, la Ligne BLF
+  expose le cadrage, la maquette, le developpement et la remise des cles, avec
+  ce qui est transfere au client. Elle se trace une fois au chargement ; le
+  mouvement reduit montre la ligne terminee.
+- **Chaque famille d'offre a sa couleur de ligne**, reprise partout : vermillon
+  pour les sites, violet du logo pour les applications web, vert pour le
+  mobile, bleu pour la data. Sur la page Services, les outils utilises sont
+  poses comme les stations de la ligne.
+- **La methode est une ligne de quatre stations**, horizontale sur ordinateur et
+  verticale sur telephone.
+- **Typographie Barlow**, condensee en capitales pour les titres et les
+  etiquettes, normale pour le texte. Archivo n'est plus servie.
+- **Les appels a l'action de fin de page sont un placard plein**, noir en clair
+  et blanc en sombre.
+- **La navigation signale la page courante** par un placard plein, annonce aux
+  lecteurs d'ecran.
+- La carte de partage sur les reseaux suit la nouvelle direction.
+- Les pictogrammes des quatre offres viennent de Phosphor, comme le reste du
+  site.
+
+### Retire
+
+- La scene 3D du hero et ses trois dependances (`three`, `@react-three/fiber`,
+  `@react-three/drei`) : moins de code au chargement de l'accueil.
+- La barre de navigation en verre refractif, la grille millimetree et la regle
+  graduee, avec les ombres qui restaient sur le bouton mobile et le bandeau de
+  consentement.
+- Le surtitre au-dessus du titre de l'accueil.
+
+### Corrige
+
+- Le titre des pages Commander, Services, Methode, Questions et Realisations
+  touchait la barre de navigation fixe.
+
+## 0.41.0 - 2026-09-15
+
+### Corrige
+
+- **Le formulaire de commande et la bascule de theme levaient une erreur
+  d'hydratation chez tout visiteur en mouvement reduit.** Leurs animations
+  choisissaient des proprietes differentes selon une preference que le serveur
+  ne connait pas. Les deux rendus concordent desormais, mouvement reduit ou non,
+  mesure sur l'accueil, les services, les realisations, les questions et la
+  commande : zero erreur de console dans les deux cas.
+- **Le fil d'Ariane de la page Realisations passait sous la barre de
+  navigation**, seule page dediee a laquelle manquait la marge des autres.
+- **Un cadre violet entourait toute l'etape du formulaire apres chaque clic sur
+  Continuer.** La regle de focus, ecrite hors couche, ecrasait le `outline-none`
+  du panneau.
+
+### Modifie
+
+- **Le mouvement suit deux courbes partagees** (`ease-snap` pour ce qui repond a
+  un geste, `ease-glide` pour ce qui se deplace), au lieu des courbes natives,
+  trop molles. Le trait sous les liens passe de 300 a 200 ms.
+- **Chaque bouton repond a l'appui** par un leger resserrement, y compris au
+  doigt, ou le survol n'existe pas. Le survol des boutons et des liens est
+  reserve aux pointeurs fins.
+- **Les cartes ne grossissent plus au survol** (le texte flou pendant
+  l'agrandissement) : le cadre se renforce et la fleche avance.
+- **Retire le dernier decor hors direction artistique** : le disque violet flou
+  en angle des cartes de services, le voile noir en degrade qui salissait les
+  captures de realisations en theme clair, et les arrondis de 16 px et les
+  pilules d'une interface tracee a la regle.
+- **Les pictogrammes touches par ce lot viennent de Phosphor** (fleches, menu,
+  soleil et lune, plus de la FAQ), en graisse `bold` comme les traces qu'ils
+  remplacent. Les quatre pictogrammes de services restent dessines a la main.
+- Le curseur de saisie et la barre de defilement suivent la palette.
+
 ## 0.40.0 - 2026-08-28
 
 ### Ajoute

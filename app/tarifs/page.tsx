@@ -88,11 +88,10 @@ export default function TarifsPage() {
             </h2>
 
             <ol className="mt-12 space-y-10">
-              {FACTEURS.map((facteur, index) => (
+              {FACTEURS.map((facteur) => (
                 <li key={facteur.titre} className="border-t border-line pt-8">
-                  <p className="mono text-xs text-muted">
-                    {String(index + 1).padStart(2, "0")}
-                  </p>
+                  {/* Pastille de station plutot qu'un numero : l'ordre est porte par la liste ordonnee. */}
+                  <span aria-hidden="true" className="block h-5 w-5 rounded-full border-[5px] border-ink bg-surface" />
                   <h3 className="title mt-4 text-2xl">{facteur.titre}</h3>
                   <p className="mt-4 leading-relaxed text-muted">
                     {facteur.texte}

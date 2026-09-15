@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowRightIcon } from "@phosphor-icons/react/ssr";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { CtaBand } from "@/components/marketing/CtaBand";
@@ -9,7 +10,7 @@ import { ZoneCouverte } from "@/components/marketing/ZoneCouverte";
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Reveal } from "@/components/motion/Reveal";
-import { Graduation } from "@/components/ui/Graduation";
+import { LigneStrip } from "@/components/ui/LigneStrip";
 import { OFFRES } from "@/content/offres";
 
 /**
@@ -32,6 +33,24 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
+const CORRESPONDANCES = [
+  {
+    href: "/services",
+    title: "Les services",
+    body: `${OFFRES.length} familles de projets, de la vitrine à l'outil métier.`,
+  },
+  {
+    href: "/methode",
+    title: "La méthode",
+    body: "Comment un projet se déroule, du cadrage à la remise des clés.",
+  },
+  {
+    href: "/references",
+    title: "Les réalisations",
+    body: "Des projets livrés, en ligne, que vous pouvez consulter.",
+  },
+];
+
 /**
  * Accueil.
  *
@@ -39,6 +58,9 @@ export const metadata: Metadata = {
  * du contenu en une seule colonne a faire defiler. Il pose la promesse, puis
  * oriente vers les pages dediees (services, methode, realisations, commande),
  * chacune ayant sa propre adresse, son propre titre et sa propre indexation.
+ *
+ * L'orientation se lit comme un tableau de correspondances : trois rangees
+ * reglees, une station et une destination, plutot que trois cartes identiques.
  */
 export default function Home() {
   return (
@@ -49,55 +71,33 @@ export default function Home() {
       <main id="contenu">
         <Hero />
 
-        <section className="relative">
+        <section className="rule-t">
           <div className="section mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            {/*
-              Deuxieme et derniere apparition de la regle sur cette page. Un
-              element signature repete a chaque section cesse d'etre une
-              signature et devient un fond d'ecran : ce qui le rend
-              reconnaissable, c'est sa rarete.
-            */}
-            <Graduation className="mb-12 opacity-40" />
-            <h2 className="title max-w-3xl text-4xl sm:text-5xl">
+            <LigneStrip className="mb-12" />
+            <h2 className="title max-w-3xl text-5xl sm:text-6xl">
               Par où <span className="grad-text">commencer</span>
             </h2>
 
-            {/* Aucune numerotation : les sections se distinguent par leur
-                titre et leur contenu, pas par un compteur. */}
-            <Reveal className="mt-14 grid gap-6 md:grid-cols-3">
-              {[
-                {
-                  href: "/services",
-                  title: "Les services",
-                  body: `${OFFRES.length} familles de projets, de la vitrine à l'outil métier.`,
-                },
-                {
-                  href: "/methode",
-                  title: "La méthode",
-                  body: "Comment un projet se déroule, du cadrage à la remise des clés.",
-                },
-                {
-                  href: "/references",
-                  title: "Les réalisations",
-                  body: "Des projets livrés, en ligne, que vous pouvez consulter.",
-                },
-              ].map((card) => (
+            <Reveal className="mt-14 border-b border-line">
+              {CORRESPONDANCES.map((destination) => (
                 <Link
-                  key={card.href}
-                  href={card.href}
-                  className="glass group flex flex-col justify-between gap-10 p-8 transition-transform duration-300 hover:-translate-y-1"
+                  key={destination.href}
+                  href={destination.href}
+                  className="group grid grid-cols-[auto_1fr_auto] items-center gap-x-5 gap-y-2 border-t border-line py-8 sm:grid-cols-[auto_18rem_1fr_auto] sm:gap-x-10"
                 >
-                  <h3 className="title text-2xl">{card.title}</h3>
-
-                  <div>
-                    <p className="font-light text-muted">{card.body}</p>
-                    <span
-                      aria-hidden="true"
-                      className="mt-6 inline-block text-xl text-muted-strong transition-transform duration-300 group-hover:translate-x-1"
-                    >
-                      &rarr;
-                    </span>
-                  </div>
+                  <span
+                    aria-hidden="true"
+                    className="h-6 w-6 rounded-full border-[5px] border-ink bg-surface transition-colors duration-150 group-hover:bg-accent"
+                  />
+                  <h3 className="title text-3xl sm:text-4xl">{destination.title}</h3>
+                  <p className="col-start-2 text-muted sm:col-start-3 sm:row-start-1">
+                    {destination.body}
+                  </p>
+                  <ArrowRightIcon
+                    aria-hidden="true"
+                    weight="bold"
+                    className="col-start-3 row-span-2 row-start-1 h-7 w-7 text-ink transition-transform duration-200 ease-snap group-hover:translate-x-1 sm:col-start-4 sm:row-span-1"
+                  />
                 </Link>
               ))}
             </Reveal>

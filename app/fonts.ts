@@ -1,34 +1,40 @@
 import localFont from "next/font/local";
 
 /**
- * Archivo, police unique du site, variable sur deux axes.
+ * Barlow, en deux chasses, refonte du 2026-09-15.
  *
- * Le choix decoule du logo et non d'un gout : le lettrage de "BLF Lab's" est
- * trace sur une grille carree, fûts droits et terminaisons a angle droit.
- * Archivo a le meme squelette, si bien qu'un titre de page et le logo pose
- * au-dessus se lisent comme sortis de la meme main.
+ * La direction du site est une signaletique de ligne. Barlow a ete dessinee
+ * d'apres les panneaux routiers et les plaques de transport californiens :
+ * formes legerement arrondies, lettres ouvertes, chiffres francs. Elle se lit
+ * de loin et vite, ce qu'on demande a un nom de station.
  *
- * L'axe de largeur (wdth 62 -> 125) est la raison principale du choix : il
- * donne des titres larges et compacts qu'aucune police a chasse fixe ne peut
- * produire. C'est lui qui signe les pages, sans recourir a un effet visuel.
+ * Deux chasses d'une meme famille plutot que deux familles : la condensee porte
+ * les placards (titres, noms de station, etiquettes), la normale porte le
+ * texte. Un systeme de signaletique parle d'une seule voix.
  *
- * Rapatriee dans public/fonts par scripts/fetch_fonts.py plutot que servie
- * depuis Google Fonts : aucune requete ne part vers un tiers au chargement.
- *
- * Une seule famille, volontairement. Les etiquettes et les numeros legaux sont
- * composes en capitales espacees dans cette meme Archivo, pas dans une
- * monospace : cela evite d'introduire une seconde voix typographique, et cela
- * ferme la porte au zero pointe qui avait fait rejeter Space Mono.
+ * Fichiers rapatries dans public/fonts par scripts/fetch_fonts.py : aucune
+ * requete ne part vers un tiers au chargement. Police inscrite au registre au
+ * nom de blf-labs-site.
  */
-export const sans = localFont({
+export const texte = localFont({
   src: [
-    {
-      path: "../public/fonts/archivo-400-900-latin.woff2",
-      weight: "100 900",
-      style: "normal",
-    },
+    { path: "../public/fonts/barlow-400-latin.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/barlow-500-latin.woff2", weight: "500", style: "normal" },
+    { path: "../public/fonts/barlow-600-latin.woff2", weight: "600", style: "normal" },
+    { path: "../public/fonts/barlow-700-latin.woff2", weight: "700", style: "normal" },
   ],
-  variable: "--font-archivo",
+  variable: "--font-barlow",
+  display: "swap",
+  fallback: ["Segoe UI", "system-ui", "sans-serif"],
+});
+
+export const placard = localFont({
+  src: [
+    { path: "../public/fonts/barlow-condensed-600-latin.woff2", weight: "600", style: "normal" },
+    { path: "../public/fonts/barlow-condensed-700-latin.woff2", weight: "700", style: "normal" },
+    { path: "../public/fonts/barlow-condensed-800-latin.woff2", weight: "800", style: "normal" },
+  ],
+  variable: "--font-barlow-condensed",
   display: "swap",
   fallback: ["Segoe UI", "system-ui", "sans-serif"],
 });

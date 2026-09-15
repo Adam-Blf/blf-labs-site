@@ -93,3 +93,7 @@ mcp.json
 __pycache__/
 *.pyc
 preuves/
+
+# Captures et scripts de revue locaux, jamais versionnes
+/.impeccable/review/
+/.shots/

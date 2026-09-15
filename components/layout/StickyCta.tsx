@@ -67,7 +67,7 @@ export function StickyCta() {
       // `pb-[env(safe-area-inset-bottom)]` : sans lui, la barre passe sous la
       // barre de gestes des iPhone recents et le bouton devient a moitie
       // inatteignable.
-      className={`fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] transition-transform duration-300 sm:hidden ${
+      className={`fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] transition-transform duration-300 ease-snap sm:hidden ${
         visible ? "translate-y-0" : "translate-y-[150%]"
       }`}
     >
@@ -75,7 +75,7 @@ export function StickyCta() {
         href="/commander"
         // 56 px de haut : au-dessus du plancher de 44 px des cibles tactiles,
         // parce que c'est le bouton le plus important du site sur mobile.
-        className="btn-pill flex min-h-[56px] items-center justify-center bg-accent px-6 text-base font-semibold text-accent-ink shadow-lg"
+        className="btn-pill flex min-h-[56px] items-center justify-center bg-accent px-6 text-base font-semibold text-accent-ink"
       >
         Démarrer un projet
       </Link>

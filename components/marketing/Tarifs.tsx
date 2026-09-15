@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/Card";
-import { Graduation } from "@/components/ui/Graduation";
+import { LigneStrip } from "@/components/ui/LigneStrip";
 import { FOURCHETTES, OPTIONS, PALIERS_DE_TACHES } from "@/content/tarifs";
 import { SITE } from "@/lib/site";
 
@@ -49,7 +49,7 @@ export function Tarifs() {
   return (
     <section className="rule-b">
       <div className="section mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <Graduation className="mb-12 opacity-40" />
+        <LigneStrip className="mb-12" />
 
         <h2 className="title text-3xl sm:text-4xl">Points de départ</h2>
         <p className="mt-6 max-w-2xl leading-relaxed text-muted">

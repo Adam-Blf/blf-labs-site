@@ -9,11 +9,12 @@ type Variant = "accent" | "support" | "ghost";
  *
  * Le leger soulevement au survol est volontairement neutre : un effet
  * "d'enfoncement" ne fonctionne qu'avec une ombre dure et paraitrait casse sur
- * les directions sans ombre.
+ * les directions sans ombre. A l'appui, le bouton se resserre legerement : c'est
+ * le retour qui confirme le geste, y compris au doigt ou il n'y a pas de survol.
  */
 const BASE =
   "blk-sm title inline-flex min-h-[44px] items-center justify-center gap-2 px-6 py-3 text-base " +
-  "transition-transform duration-150 hover:-translate-y-[2px] active:translate-y-0";
+  "rounded-[var(--radius)] transition-[transform,filter] duration-150 ease-snap hover:brightness-110 active:scale-[0.97]";
 
 // Le texte pose sur un aplat utilise TOUJOURS l'encre invariante de cet aplat,
 // jamais var(--ink) : c'est ce qui evite le quasi-blanc sur jaune en sombre.

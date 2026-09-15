@@ -50,7 +50,7 @@ export function ZoneCouverte() {
   return (
     <section className="rule-t">
       <div className="section mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <h2 className="title max-w-3xl text-4xl sm:text-5xl">
+        <h2 className="title max-w-3xl text-5xl sm:text-6xl">
           Où on <span className="grad-text">intervient</span>
         </h2>
 
@@ -61,11 +61,19 @@ export function ZoneCouverte() {
           même pour un client à Créteil et pour un client à Toulouse.
         </p>
 
-        <ul className="mt-12 grid gap-6 md:grid-cols-3">
+        {/* Rangees reglees plutot que trois cartes identiques : le titre en
+            placard a gauche, la reponse a droite, comme un panneau
+            d'information de station. */}
+        <ul className="mt-12 border-b border-line">
           {MOMENTS.map((moment) => (
-            <li key={moment.titre} className="blk flex flex-col gap-4 p-8">
-              <h3 className="title text-2xl">{moment.titre}</h3>
-              <p className="leading-relaxed text-muted">{moment.texte}</p>
+            <li
+              key={moment.titre}
+              className="grid gap-3 border-t border-line py-8 md:grid-cols-12 md:gap-10"
+            >
+              <h3 className="title text-3xl md:col-span-4">{moment.titre}</h3>
+              <p className="text-lg leading-relaxed text-muted md:col-span-8">
+                {moment.texte}
+              </p>
             </li>
           ))}
         </ul>

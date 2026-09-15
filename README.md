@@ -67,53 +67,53 @@ des pannes silencieuses.
 
 ## Direction artistique
 
-Huit directions completes ont ete maquettees sur la vraie page d&rsquo;accueil,
-puis departagees sur captures. La retenue est la direction **"laboratoire"**,
-posee en classe `.dir-labs` : angles droits, filets fins de 1 px, aplats francs,
-titres en capitales dans la largeur variable d&rsquo;Archivo. Palette encre
-`#111016`, neige `#edeef1`, violet `#cb6ce6` et citron `#d9fb50`.
+Refonte du 2026-09-15, direction **"ligne"**, toujours posee en classe
+`.dir-labs`. Le site se lit comme un plan de ligne de transport : un projet est
+un trajet de quatre stations (cadrage, maquette, developpement, remise des
+cles), et le terminus, la remise des cles, est l&rsquo;offre elle-meme. La
+direction precedente, "laboratoire" (grille millimetree, fiole 3D, violet et
+citron, Archivo), est retiree.
 
-Trois choses sont exclues par principe, parce qu&rsquo;elles signent une
-interface generee plutot qu&rsquo;une interface dessinee : **le degrade**, le
-**verre depoli** et le **halo de couleur diffuse** derriere un titre. La classe
-`.grad-text` porte donc un aplat de violet et non un degrade, et les disques
-flous du hero ont ete remplaces par la grille millimetree de la paillasse.
+Le systeme complet, jetons compris, est decrit dans [`DESIGN.md`](DESIGN.md).
+En bref :
 
-Elle vit dans `app/themes.css` sous forme de jetons : couleurs, rayon, epaisseur
-de trait, ombre, police de titre, casse et rythme vertical. **Aucun composant ne
-code un style en dur** : ils lisent les classes `blk`, `title`, `section`,
-`rule-b`. Changer de direction ne demande donc de toucher aucun composant.
+- **Matiere** : panneaux emailles, un fond et un panneau par theme, aucune
+  ombre, aucun degrade, aucun verre.
+- **Quatre couleurs de ligne**, une par famille d&rsquo;offre (vermillon pour
+  les sites, violet du logo pour les applications web, vert pour le mobile,
+  bleu pour la data), jamais decoratives.
+- **Placard** : `--signe`, noir en clair et blanc en sombre, porte les appels a
+  l&rsquo;action de fin de page et l&rsquo;en-tete du plan de ligne.
+- **Typographie** : Barlow, condensee en capitales pour les placards, normale
+  pour le texte. Fichiers locaux, aucun CDN.
+- **Signature** : la Ligne BLF du hero (`components/marketing/LigneBlf.tsx`) et
+  la bande des quatre lignes (`components/ui/LigneStrip.tsx`).
 
-### Effets
+**Aucun composant ne code un style en dur** : ils lisent les jetons de
+`app/themes.css` et les classes `blk`, `title`, `section`, `rule-b`.
 
-Trois effets se greffent sur cette direction sans la modifier, et chacun se
-retire sans laisser de trou :
+### Mouvement
 
-- **Scene 3D du hero** (React Three Fiber). La fiole du logo en volume, avec une
-  refraction reelle. Elle ne se charge pas du tout sans WebGL 2.0, sous
-  `prefers-reduced-motion`, ou quand `Save-Data` est demande : le repli est
-  l&rsquo;etat par defaut, et c&rsquo;est la grille qui reste. Ni `three` ni
-  `drei` n&rsquo;entrent alors dans le paquet initial.
-- **Barre de navigation en verre refractif**. Une carte de deplacement SVG
-  courbe l&rsquo;arriere-plan sans le flouter, tant que la page n&rsquo;a pas
-  defile. Des qu&rsquo;un contenu passe dessous, la barre redevient opaque :
-  au-dessus d&rsquo;un texte qui glisse, une barre translucide est illisible.
+- **Trace de la Ligne BLF** : la ligne se dessine une fois au chargement et les
+  stations s&rsquo;allument dans l&rsquo;ordre, en CSS pur. Seuls le trace et
+  les pastilles, decoratifs, bougent ; le texte est visible des le premier
+  rendu, et le mouvement reduit montre la ligne terminee.
 - **Revelation au defilement** (GSAP ScrollTrigger). Rien n&rsquo;est masque en
   CSS : l&rsquo;etat visible est l&rsquo;etat naturel du document, donc une
   panne de script ne produit jamais une page blanche.
 
-Le mouvement reduit est traite en JavaScript et pas seulement en CSS : le bloc
-`@media (prefers-reduced-motion: reduce)` annule des durees de transition, il
-n&rsquo;arrete ni une boucle WebGL ni un `requestAnimationFrame`.
+La scene 3D du hero et la barre en verre refractif ont ete retirees avec la
+direction precedente : `three`, `@react-three/fiber` et `@react-three/drei` ne
+sont plus des dependances.
 
-Regle de contraste heritee d&rsquo;un projet precedent : `--accent-ink` et
-`--support-ink` sont invariants par theme. Tout texte pose sur un aplat les
-utilise, jamais `--ink`, sans quoi il s&rsquo;inverse en mode sombre alors que
-l&rsquo;aplat, lui, ne bouge pas.
+Regle de contraste heritee : un aplat porte toujours son encre dediee
+(`--accent-ink`, `--support-ink`, `--ligne-ink`, `--signe-ink`), jamais
+`--ink`, qui s&rsquo;inverse d&rsquo;un theme a l&rsquo;autre.
 
 Le logo est un bloc typographique ou **la fiole de laboratoire remplace le A de
 LAB'S** : une fiole d&rsquo;Erlenmeyer a la silhouette d&rsquo;un A et son niveau
-de liquide en fait la barre.
+de liquide en fait la barre. Il reste tel quel : c&rsquo;est la piece
+d&rsquo;identite de l&rsquo;entreprise, pas un element de la direction.
 
 ## Demarrer
 
@@ -282,7 +282,6 @@ Tout asset genere a son script reproductible, aucun n&rsquo;embarque de secret :
 | Script | Role |
 |---|---|
 | `scripts/fetch_fonts.py` | Rapatrie les polices en local (aucun CDN) |
-| `scripts/fetch_icons.py` | Recupere les pictogrammes Icons8 et les convertit en composants React |
 | `scripts/ovh_dns.py` | Consulte et modifie la zone DNS de beloucif.com |
 | `scripts/setup_email_dns.py` | Lit les enregistrements exiges par Resend et les pose chez OVH, de facon idempotente |
 | `scripts/setup_dmarc.py` | Pose la politique DMARC de la zone, en simulation par defaut, `--apply` pour ecrire |

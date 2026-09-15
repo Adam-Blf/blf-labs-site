@@ -35,14 +35,6 @@ export default async function AdminLayout({
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-paper text-ink">
-      {/* Grille de paillasse : la matiere du site BLF Lab's, posee en fond pour
-          que le back-office appartienne visiblement a la meme marque. Decorative,
-          donc masquee aux lecteurs d'ecran. */}
-      <span
-        aria-hidden="true"
-        className="grille pointer-events-none absolute inset-0 opacity-30 [mask-image:linear-gradient(to_bottom,black,transparent_80%)]"
-      />
-
       <header className="relative border-b border-line bg-paper/70 backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-8 gap-y-3 px-6 py-4">
           <div className="flex items-center gap-8">
