@@ -123,16 +123,22 @@ export default function AProposPage() {
               options.
             </p>
 
-            <div className="mt-12 flex flex-wrap gap-4">
+            {/*
+              Meme paire de boutons que le hero : placard condense en capitales,
+              action principale en aplat, action secondaire cerclee d'un trait
+              de 2 px a l'encre. La paire portait encore la graisse du corps de
+              texte et un filet a 1 px, restes d'avant la refonte "ligne".
+            */}
+            <div className="mt-12 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
               <Link
                 href="/references"
-                className="btn-pill bg-accent px-8 py-4 font-bold text-accent-ink"
+                className="btn-pill title inline-flex min-h-[54px] items-center justify-center bg-accent px-8 text-xl text-accent-ink sm:w-auto"
               >
                 Voir les réalisations
               </Link>
               <Link
                 href="/methode"
-                className="btn-pill border border-line-strong px-8 py-4 font-medium text-ink"
+                className="btn-pill title inline-flex min-h-[54px] items-center justify-center border-2 border-ink px-8 text-xl text-ink sm:w-auto"
               >
                 Comment se déroule un projet
               </Link>

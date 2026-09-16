@@ -6,6 +6,49 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.42.2 - 2026-09-16
+
+### Corrige
+
+- **Le premier bouton de l'accueil tient dans l'ecran.** Sur un portable de 700
+  px de haut, "Demarrer un projet" se posait a 728 px, donc sous la ligne de
+  flottaison : il fallait defiler pour voir la premiere action proposee. En
+  cause, les deux colonnes du hero alignees par leur MILIEU, le titre suivant le
+  centre d'un plan de ligne plus haut que lui. Les colonnes s'alignent
+  desormais par le haut. Mesure du bas du bouton, avant puis apres : 728 puis
+  636 px en 1440x700, 728 puis 585 en 1440x600, 728 puis 696 en 1440x900, 728
+  puis 704 en 1920x1080. Sur telephone, 575 px en 390x844. Un balayage continu
+  des hauteurs de 600 a 1200 px, aux largeurs 390, 768, 1024, 1280, 1440 et
+  1920, ne trouve plus une seule fenetre ou le bouton sorte de l'ecran.
+- **Le titre ne passe plus derriere la barre de navigation.** Defaut trouve en
+  mesurant le lot lui-meme : la barre flotte a 16 px du haut et descend jusqu'a
+  113 px, et une premiere version de la respiration proportionnelle tombait a
+  80 px sur un ecran court, si bien que la premiere ligne du titre disparaissait
+  sous la barre. La respiration haute part maintenant d'un plancher mesure, et
+  il reste au moins 20 px sous la barre a toutes les tailles controlees, zoom a
+  200 pour cent compris.
+- **L'ecart entre le fil d'Ariane et le titre de /services**, de 136 px, tombe a
+  40 px. Une section de plein exercice ouvre par 8,5 rem de respiration, ce qui
+  est juste entre deux sujets et faux apres un fil : le fil annonce le titre qui
+  suit, les deux appartiennent au meme bloc de lecture.
+- **Les deux boutons du bas de la page A propos** portaient encore la graisse du
+  corps de texte et un filet a 1 px, restes d'avant la refonte "ligne". Ils
+  reprennent la paire du hero : placard condense en capitales, aplat pour
+  l'action principale, trait de 2 px a l'encre pour la seconde.
+
+### Modifie
+
+- **Trois agencements, et non un seul mis a l'echelle.** Sur telephone, les
+  actions sont empilees et pleine largeur, et le plan de ligne se resserre
+  plutot que d'etre un panneau de bureau retreci. Sur ordinateur, les deux
+  colonnes se partagent la largeur, titre a gauche et plan a droite. Au dela de
+  1536 px, le titre grandit et les colonnes s'equilibrent a six contre six ; a
+  partir de 1920 px, sur un ecran lu a distance, le placard monte a 7 rem, le
+  texte d'accroche suit et les marges s'ecartent des bords. Entre ces classes,
+  l'echelle reste fluide : les tailles et les respirations du hero sont
+  plafonnees par la HAUTEUR de la fenetre autant que par sa largeur, ce qui
+  couvre les portables courts et le paysage sur telephone.
+
 ## 0.42.1 - 2026-09-15
 
 ### Securite

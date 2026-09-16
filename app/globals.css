@@ -119,9 +119,130 @@ body {
   text-transform: uppercase;
 }
 
+/*
+  Hero : la premiere action reste dans l'ecran.
+
+  Sur un portable de 700 px de haut, "Demarrer un projet" tombait sous la ligne
+  de flottaison : le bas du bouton se posait a 728 px quelle que soit la
+  largeur. La page demandait donc un geste avant de proposer quoi que ce soit.
+
+  Trois leviers, du plus structurant au plus fin, aucun qui touche a la
+  direction :
+
+  1. La colonne de gauche s'ancre en haut (`lg:items-start` dans Hero.tsx).
+     Centree, elle suivait le milieu du plan de ligne, plus haut qu'elle, ce qui
+     enfoncait le bouton d'environ 170 px. C'est la cause, le reste est du
+     reglage.
+  2. Le titre est plafonne par la HAUTEUR de la fenetre autant que par sa
+     largeur. L'echelle en largeur ne bouge pas : seul un ecran court la rabote.
+  3. Les respirations se contractent avec la hauteur, sans jamais descendre
+     sous ce qui separe deux blocs lisibles.
+
+  Chaque declaration en svh est doublee d'un repli en rem, place avant elle : un
+  navigateur qui ignore svh garde la valeur d'origine au lieu de perdre la
+  regle entiere.
+*/
+.hero {
+  padding-top: 8.5rem;
+  /*
+    Le plancher n'est pas un chiffre rond, il est mesure : la barre de
+    navigation flotte a 16 px du haut et descend jusqu'a 113 px, sur toutes les
+    largeurs. Sous 129 px de respiration, le titre passe DERRIERE elle, puisque
+    la barre est un panneau plein pose au-dessus du contenu. Un premier essai
+    proportionnel a la hauteur descendait a 80 px sur un ecran court et
+    tronquait la premiere ligne du titre.
+
+    D'ou la forme retenue : un plancher a 8,25 rem, soit 132 px, qui laisse
+    toujours 19 px sous la barre, et un terme proportionnel qui n'ajoute de la
+    respiration que lorsque la fenetre en a a donner.
+  */
+  padding-top: clamp(8.25rem, 7rem + 4svh, 10rem);
+  padding-bottom: 5rem;
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    padding-bottom: 7rem;
+  }
+}
+
+.hero-titre {
+  font-size: 3.1rem;
+}
+
+@media (min-width: 640px) {
+  .hero-titre {
+    font-size: 4.5rem;
+    font-size: min(4.5rem, 10.6svh);
+  }
+}
+
+@media (min-width: 1280px) {
+  .hero-titre {
+    font-size: 5.4rem;
+    font-size: min(5.4rem, 10.6svh);
+  }
+}
+
+/*
+  Tres larges ecrans : le placard grandit au lieu de laisser une colonne
+  centree flotter au milieu du vide. 6 rem est le plafond d'affichage tenu sur
+  tout le site, la hauteur reste maitresse.
+*/
+/*
+  L'echelle d'affichage s'arrete a 5,4 rem, comme DESIGN.md la decrit
+  (`clamp(3.1rem, 6vw, 5.4rem)`). Un palier a 6 rem au dela de 1536 px a ete
+  essaye puis retire : il sortait de l'echelle documentee pour le meme resultat
+  bancal que le palier television, un gros titre dans une colonne inchangee.
+*/
+
+/*
+  Television et tres grand moniteur : PAS de palier supplementaire ici, et
+  c'est une decision, pas un oubli.
+
+  Un premier essai montait le placard a 7 rem au dela de 1920 px. Mesure a
+  l'appui, il a fallu le retirer : le conteneur du site plafonne a 1152 px, si
+  bien qu'un titre de 112 px tombait dans une colonne de 550 px, se brisait en
+  six lignes et repoussait le bouton principal a 1027 px sur un ecran de 1080.
+  Le balayage le chiffrait sur toute la plage de 600 a 1160 px de haut.
+
+  Agrandir la typographie sans elargir le contenant ne fait pas une classe
+  d'ecran : ca fabrique une colonne etroite en gros caracteres. La television
+  et l'ultralarge demandent leur propre composition, donc un conteneur plus
+  large et une grille a trois colonnes, ce qui touche toutes les sections du
+  site et ne tient pas dans un lot de correction. C'est le sujet du lot
+  suivant.
+*/
+
+.hero-texte {
+  margin-top: 2rem;
+  margin-top: clamp(1.25rem, 0.5rem + 3svh, 2rem);
+}
+
+.hero-actions {
+  margin-top: 2.5rem;
+  margin-top: clamp(1.5rem, 0.5rem + 4svh, 2.5rem);
+}
+
 .section {
   padding-top: var(--section-py);
   padding-bottom: var(--section-py);
+}
+
+/*
+  Section qui suit immediatement un fil d'Ariane.
+
+  Une section de plein exercice ouvre par 8,5 rem de respiration, ce qui est
+  juste entre deux sujets, et faux apres un fil : le fil annonce le titre qui
+  vient, les deux appartiennent au meme bloc de lecture. Sur /services, cela
+  laissait 136 px de vide entre le chemin et le titre, alors que /tarifs, qui
+  pose son fil dans la section, ne laisse que 2 rem.
+
+  Apres `.section` dans le fichier, et non dans une media query : les deux
+  regles ont la meme specificite, c'est donc l'ordre qui tranche.
+*/
+.section-suite-fil {
+  padding-top: 2.5rem;
 }
 
 .rule-b {
