@@ -64,6 +64,14 @@ export function StickyCta() {
 
   return (
     <div
+      // Reperee au clavier et au lecteur d'ecran comme une zone nommee. Cette
+      // barre est fille directe de <body>, donc hors de tout point de repere :
+      // son contenu etait annonce comme flottant hors structure, ce qu'axe
+      // signale en `region`. Elle n'existe que sous `sm`, d'ou une violation
+      // visible a 390 px et absente a 768. Meme traitement que le bandeau de
+      // consentement, qui porte deja `role="region"` et son libelle.
+      role="region"
+      aria-label="Raccourci vers la commande"
       // `pb-[env(safe-area-inset-bottom)]` : sans lui, la barre passe sous la
       // barre de gestes des iPhone recents et le bouton devient a moitie
       // inatteignable.

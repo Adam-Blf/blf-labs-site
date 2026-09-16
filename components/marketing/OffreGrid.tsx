@@ -54,16 +54,31 @@ const LIGNES: Record<
   },
 };
 
-export function OffreGrid() {
+export function OffreGrid({
+  niveau = 2,
+}: {
+  /**
+   * Niveau du titre. La section est montee sur l'accueil, ou le Hero porte
+   * deja le <h1>, et sur /services, ou elle est le sujet de la page. Sans ce
+   * reglage, /services n'avait aucun <h1> : naviguer par titres, le geste le
+   * plus courant au lecteur d'ecran, n'y donnait aucun point d'entree.
+   */
+  niveau?: 1 | 2;
+} = {}) {
+  const Titre = niveau === 1 ? "h1" : "h2";
+  // Les titres d'offre descendent d'un cran avec le titre de section, sinon la
+  // page dediee saute du h1 au h3 et l'ordre des titres n'est plus lisible.
+  const SousTitre = niveau === 1 ? "h2" : "h3";
+
   return (
     <section id="offre" className="relative">
       <div className="section mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <h2 className="title max-w-3xl text-5xl sm:text-6xl lg:text-7xl">
+        <Titre className="title max-w-3xl text-5xl sm:text-6xl lg:text-7xl">
           Des services conçus pour{" "}
           <span className="grad-text">votre activité</span>
-        </h2>
+        </Titre>
         <p className="mt-6 max-w-2xl text-lg text-muted">
-          Quatre familles de projets. Si le votre tient dans plusieurs cases, ou
+          Quatre familles de projets. Si le vôtre tient dans plusieurs cases, ou
           dans aucune, c&rsquo;est une conversation, pas un problème.
         </p>
 
@@ -83,9 +98,9 @@ export function OffreGrid() {
                   >
                     <ligne.Icone aria-hidden="true" weight="bold" className="h-7 w-7" />
                   </span>
-                  <h3 className="title pt-1.5 text-3xl sm:text-4xl">
+                  <SousTitre className="title pt-1.5 text-3xl sm:text-4xl">
                     {offre.title}
-                  </h3>
+                  </SousTitre>
                 </div>
 
                 <div className="md:col-span-7">

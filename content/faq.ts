@@ -44,8 +44,8 @@ export const FAQ: FaqItem[] = [
       "Non. L'entreprise bénéficie de la franchise en base, article 293 B du Code général des impôts : le prix annoncé est le prix payé, il n'y a pas de TVA à ajouter.",
   },
   {
-    question: "Travaillez-vous en dehors de l'Ile-de-France ?",
+    question: "Travaillez-vous en dehors de l'Île-de-France ?",
     answer:
-      "Oui, partout. Le studio travaille entièrement à distance : cadrage en visioconférence, suivi en visio et par écrit, chaque version en ligne à une adresse que vous ouvrez quand vous voulez. Il n'y a pas de rendez-vous sur place, y compris en Ile-de-France, donc aucune contrainte géographique et aucun frais de déplacement.",
+      "Oui, partout. Le studio travaille entièrement à distance : cadrage en visioconférence, suivi en visio et par écrit, chaque version en ligne à une adresse que vous ouvrez quand vous voulez. Il n'y a pas de rendez-vous sur place, y compris en Île-de-France, donc aucune contrainte géographique et aucun frais de déplacement.",
   },
 ];

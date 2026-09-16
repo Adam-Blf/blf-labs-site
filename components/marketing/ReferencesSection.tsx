@@ -38,6 +38,11 @@ export function ReferencesSection({
   niveau?: 1 | 2;
 }) {
   const Titre = niveau === 1 ? "h1" : "h2";
+  // Le titre de chaque realisation descend d'un cran avec celui de la section :
+  // sur la page dediee, un h1 suivi de h3 est un saut de niveau, signale par
+  // axe et desorientant a la navigation par titres.
+  const SousTitre = niveau === 1 ? "h2" : "h3";
+
   return (
     <section id="réalisations" className="relative">
       <div className="section mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -75,9 +80,9 @@ export function ReferencesSection({
 
                 <div className="mt-6">
                   <div className="flex flex-wrap items-baseline justify-between gap-4">
-                    <h3 className="title text-2xl sm:text-3xl">
+                    <SousTitre className="title text-2xl sm:text-3xl">
                       {reference.title}
-                    </h3>
+                    </SousTitre>
                     <span className="inline-flex items-center gap-1.5 text-sm text-muted-strong transition-colors group-hover:text-ink">
                       Voir le site
                       <ArrowUpRightIcon
@@ -88,7 +93,7 @@ export function ReferencesSection({
                     </span>
                   </div>
 
-                  <p className="mono mt-3 text-[0.7rem] text-muted">
+                  <p className="mono mt-3 text-[0.8rem] text-muted">
                     {reference.role}
                   </p>
 
@@ -104,7 +109,7 @@ export function ReferencesSection({
               {ETUDE_PAR_SLUG.has(reference.slug) && (
                 <Link
                   href={`/references/${reference.slug}`}
-                  className="nav-link mt-6 inline-block text-sm font-medium text-muted-strong transition-colors hover:text-ink"
+                  className="nav-link mt-4 inline-flex min-h-[44px] items-center text-sm font-medium text-muted-strong transition-colors hover:text-ink"
                 >
                   Lire l&rsquo;étude de cas
                 </Link>

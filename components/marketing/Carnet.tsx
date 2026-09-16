@@ -79,7 +79,7 @@ export function Carnet({ source = "pied_de_page" }: { source?: SourceConsentemen
 
   return (
     <form onSubmit={envoie} className="space-y-3">
-      <label htmlFor="carnet-email" className="mono block text-[0.7rem] text-faint">
+      <label htmlFor="carnet-email" className="mono block text-[0.8rem] text-faint">
         Le carnet du studio, un email par mois
       </label>
 
@@ -91,15 +91,15 @@ export function Carnet({ source = "pied_de_page" }: { source?: SourceConsentemen
         value={email}
         onChange={(evenement) => setEmail(evenement.target.value)}
         placeholder="vous@exemple.fr"
-        className="blk-sm w-full bg-paper px-3 py-2 text-sm text-ink outline-none"
+        className="blk-sm min-h-[44px] w-full bg-paper px-3 py-3 text-sm text-ink outline-none"
       />
 
-      <label className="flex items-start gap-2 text-xs leading-relaxed text-muted">
+      <label className="flex cursor-pointer items-start gap-3 py-2 text-xs leading-relaxed text-muted">
         <input
           type="checkbox"
           checked={accord}
           onChange={(evenement) => setAccord(evenement.target.checked)}
-          className="mt-0.5 shrink-0"
+          className="mt-0.5 h-6 w-6 shrink-0 accent-current"
         />
         {/*
           Le libelle vient de content/consentement.ts, le MEME objet que la

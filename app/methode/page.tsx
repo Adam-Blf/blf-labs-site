@@ -20,7 +20,7 @@ export default function MethodePage() {
         <div className="mx-auto max-w-6xl px-4 pt-8 sm:px-6 lg:px-8">
           <Breadcrumb miettes={[{ nom: "Méthode" }]} />
         </div>
-        <Methode />
+        <Methode niveau={1} />
         <CtaBand />
       </main>
       <Footer />

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SITE, SIRET_PRETTY } from "@/lib/site";
+import { SITE } from "@/lib/site";
 import { OFFRES } from "@/content/offres";
 import { LigneStrip } from "@/components/ui/LigneStrip";
 import { Carnet } from "@/components/marketing/Carnet";
@@ -15,11 +15,13 @@ import { Wordmark } from "./Wordmark";
  *    listees nommement plutot que renvoyees vers une page "Services", ce qui
  *    lui evite un saut de plus.
  *
- * 2. OBLIGATION LEGALE. La LCEN impose que l'editeur soit identifiable. La
- *    barre basse porte la denomination, le SIRET et le code d'activite, et la
- *    mention de franchise de TVA exigee par l'article 293 B du CGI figure sur
- *    la meme ligne : ces informations doivent etre atteignables depuis
- *    n'importe quelle page, pas seulement depuis les mentions legales.
+ * 2. OBLIGATION LEGALE. La LCEN impose que l'editeur soit IDENTIFIABLE et que
+ *    ses informations soient ACCESSIBLES, pas qu'elles soient affichees sur
+ *    chaque page. La barre basse porte donc la denomination et le lien vers les
+ *    mentions legales, ou figurent le SIRET, le code d'activite et la franchise
+ *    de TVA de l'article 293 B du CGI. Un identifiant d'entreprise repete sur
+ *    dix-sept pages est une donnee de plus a moissonner pour un gain nul : la
+ *    regle du depot est d'afficher le minimum exige, pas l'exhaustivite.
  *
  * 3. IDENTITE. La regle graduee reprise du hero ferme la page comme elle
  *    l'ouvre. C'est le seul ornement, et il vient de la direction artistique
@@ -68,7 +70,7 @@ function Colonne({
 }) {
   return (
     <div>
-      <h2 className="mono text-[0.7rem] text-faint">{titre}</h2>
+      <h2 className="mono text-[0.8rem] text-faint">{titre}</h2>
       <ul className="mt-4 space-y-2">{children}</ul>
     </div>
   );
@@ -123,10 +125,10 @@ export function Footer() {
         </Colonne>
 
         <div>
-          <h2 className="mono text-[0.7rem] text-faint">Contact</h2>
+          <h2 className="mono text-[0.8rem] text-faint">Contact</h2>
           <a
             href={`mailto:${SITE.email}`}
-            className="mt-4 inline-block text-sm font-semibold text-ink underline-offset-4 hover:underline"
+            className="mt-2 inline-flex min-h-[44px] items-center text-sm font-semibold text-ink underline-offset-4 hover:underline"
           >
             {SITE.email}
           </a>
@@ -143,8 +145,8 @@ export function Footer() {
           {/*
             Seul point de captation d'adresse du site, et il est volontairement
             ici, en bas : quelqu'un qui a lu la page entiere sait ce qu'il
-            demande. Rien n'est echange contre cette adresse, les ressources et
-            le journal restent en acces libre.
+            demande. Rien n'est echange contre cette adresse, et rien sur ce
+            site n'est reserve aux inscrits.
           */}
           <div className="mt-8">
             <Carnet />
@@ -153,15 +155,13 @@ export function Footer() {
       </div>
 
       {/*
-        Barre d'identification legale : denomination et SIRET a gauche (LCEN,
-        atteignables depuis n'importe quelle page), liens legaux a droite. Dense
-        et en petits caracteres, presente sans dominer le pied de page.
+        Barre d'identification legale : denomination a gauche, liens legaux a
+        droite. Le SIRET et la mention de TVA vivent dans /legal/mentions, a un
+        clic d'ici depuis n'importe quelle page, ce que la LCEN demande.
       */}
       <div className="rule-t px-5 py-5">
-        <div className="mx-auto flex max-w-6xl flex-col gap-3 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
-          <p className="tabular">
-            {SITE.legalMention} - SIRET {SIRET_PRETTY} - {SITE.vat}
-          </p>
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
+          <p>{SITE.legalMention}</p>
           <nav
             aria-label="Informations légales"
             className="flex flex-wrap gap-x-4 gap-y-1"

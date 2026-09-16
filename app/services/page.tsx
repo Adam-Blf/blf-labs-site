@@ -20,7 +20,7 @@ export default function ServicesPage() {
         <div className="mx-auto max-w-6xl px-4 pt-8 sm:px-6 lg:px-8">
           <Breadcrumb miettes={[{ nom: "Services" }]} />
         </div>
-        <OffreGrid />
+        <OffreGrid niveau={1} />
         <CtaBand />
       </main>
       <Footer />
