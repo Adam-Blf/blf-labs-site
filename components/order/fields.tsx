@@ -50,6 +50,7 @@ export function TextField({
   optional = false,
   autoComplete,
   placeholder,
+  inputMode,
 }: {
   id: string;
   label: string;
@@ -62,6 +63,12 @@ export function TextField({
   optional?: boolean;
   autoComplete?: string;
   placeholder?: string;
+  /**
+   * Clavier ouvert sur telephone. `type="tel"` ne suffit pas partout : sans
+   * `inputMode`, un numero se saisit au clavier alphabetique, donc en changeant
+   * de disposition a chaque chiffre.
+   */
+  inputMode?: "text" | "tel" | "numeric" | "email" | "url";
 }) {
   const errorId = `${id}-error`;
 
@@ -77,6 +84,7 @@ export function TextField({
         value={value}
         placeholder={placeholder}
         autoComplete={autoComplete}
+        inputMode={inputMode}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
         onChange={(event) => onChange(event.target.value)}
@@ -208,7 +216,7 @@ export function RadioCards<T extends string>({
                 checked={selected}
                 onChange={() => onChange(option.value)}
                 aria-describedby={error ? errorId : undefined}
-                className="mt-1 h-4 w-4 shrink-0 accent-current"
+                className="mt-0.5 h-6 w-6 shrink-0 accent-current"
               />
               <span>
                 <span className="block font-medium">{option.label}</span>
@@ -266,7 +274,7 @@ export function CheckboxCards<T extends string>({
                 type="checkbox"
                 checked={checked}
                 onChange={(event) => onToggle(option.value, event.target.checked)}
-                className="mt-1 h-4 w-4 shrink-0 accent-current"
+                className="mt-0.5 h-6 w-6 shrink-0 accent-current"
               />
               <span>
                 <span className="block font-medium">{option.label}</span>

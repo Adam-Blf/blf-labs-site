@@ -12,7 +12,8 @@ import { FAQ } from "@/content/faq";
  * `useState`, et une dependance Radix supplementaire pour ouvrir un paragraphe
  * ne se justifie pas.
  *
- * Accessibilite : chaque en-tete est un vrai `<button>` dans un `<h3>`, avec
+ * Accessibilite : chaque en-tete est un vrai `<button>` dans un titre dont le
+ * niveau suit celui de la section (h2 sur la page dediee, h3 sur l'accueil), avec
  * `aria-expanded` et `aria-controls`. Le panneau reste dans le DOM le temps de
  * l'animation de fermeture, mais l'attribut `hidden` du bouton renseigne les
  * lecteurs d'ecran sans attendre.
@@ -30,6 +31,9 @@ export function Faq({
   niveau?: 1 | 2;
 } = {}) {
   const Titre = niveau === 1 ? "h1" : "h2";
+  // La question descend d'un cran avec le titre de section : sur /questions, un
+  // h1 suivi de h3 est un saut de niveau signale par axe.
+  const SousTitre = niveau === 1 ? "h2" : "h3";
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
@@ -47,7 +51,7 @@ export function Faq({
 
             return (
               <li key={item.question} className="blk-sm overflow-hidden bg-surface">
-                <h3>
+                <SousTitre>
                   <button
                     type="button"
                     id={buttonId}
@@ -70,7 +74,7 @@ export function Faq({
                       }`}
                     />
                   </button>
-                </h3>
+                </SousTitre>
 
                 <AnimatePresence initial={false}>
                   {open && (

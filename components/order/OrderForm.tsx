@@ -336,6 +336,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
               id="phone"
               label="Téléphone"
               type="tel"
+              inputMode="tel"
               optional
               value={values.phone}
               onChange={(value) => set("phone", value)}
@@ -396,6 +397,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
                   id="siren"
                   label="SIREN ou SIRET"
                   placeholder="123 456 789"
+                  inputMode="numeric"
                   optional
                   value={values.siren}
                   onChange={(value) => set("siren", value)}

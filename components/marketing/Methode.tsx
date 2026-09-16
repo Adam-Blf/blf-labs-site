@@ -30,13 +30,27 @@ const ETAPES = [
  *
  * Aucune numerotation affichee : l'ordre est porte par la ligne elle-meme.
  */
-export function Methode() {
+export function Methode({
+  niveau = 2,
+}: {
+  /**
+   * Niveau du titre. La section est montee sur l'accueil, ou le Hero porte
+   * deja le <h1>, et sur /methode, ou elle est le sujet de la page. Sans ce
+   * reglage, /methode n'avait aucun <h1>.
+   */
+  niveau?: 1 | 2;
+} = {}) {
+  const Titre = niveau === 1 ? "h1" : "h2";
+  // Les etapes descendent d'un cran avec le titre de section : sur la page
+  // dediee, un h1 suivi de h3 est un saut de niveau signale par axe.
+  const SousTitre = niveau === 1 ? "h2" : "h3";
+
   return (
     <section id="méthode" className="relative">
       <div className="section relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <h2 className="title max-w-3xl text-5xl sm:text-6xl lg:text-7xl">
+        <Titre className="title max-w-3xl text-5xl sm:text-6xl lg:text-7xl">
           Comment <span className="grad-text">ça se passe</span>
-        </h2>
+        </Titre>
         <p className="mt-6 max-w-2xl text-lg text-muted">
           Quatre temps, toujours les mêmes, quelle que soit la taille du projet.
         </p>
@@ -68,7 +82,9 @@ export function Methode() {
                   />
                 )}
 
-                <h3 className="title pt-1.5 text-3xl lg:pt-0">{etape.title}</h3>
+                <SousTitre className="title pt-1.5 text-3xl lg:pt-0">
+                  {etape.title}
+                </SousTitre>
                 <p className="mt-3 leading-relaxed text-muted">{etape.body}</p>
               </li>
             );

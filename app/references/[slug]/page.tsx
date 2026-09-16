@@ -155,7 +155,11 @@ export default async function EtudePage({
                     <dd className="tabular title mt-2 text-3xl">
                       {chiffre.valeur}
                     </dd>
-                    <p className="mt-3 text-xs text-faint">{chiffre.source}</p>
+                    {/* Un second <dd> et non un <p> : dans une liste de
+                        definitions, chaque div ne peut contenir que des <dt> et
+                        des <dd>. Le <p> cassait l'association libelle-valeur
+                        pour un lecteur d'ecran, et axe le signalait. */}
+                    <dd className="mt-3 text-xs text-faint">{chiffre.source}</dd>
                   </div>
                 ))}
               </dl>

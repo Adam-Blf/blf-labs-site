@@ -63,12 +63,15 @@ export function Breadcrumb({ miettes }: { miettes: Miette[] }) {
               {miette.href ? (
                 <Link
                   href={miette.href}
-                  className="transition-colors hover:text-ink"
+                  className="inline-flex min-h-[44px] items-center transition-colors hover:text-ink"
                 >
                   {miette.nom}
                 </Link>
               ) : (
-                <span aria-current="page" className="text-muted-strong">
+                <span
+                  aria-current="page"
+                  className="inline-flex min-h-[44px] items-center text-muted-strong"
+                >
                   {miette.nom}
                 </span>
               )}

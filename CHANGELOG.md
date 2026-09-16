@@ -6,6 +6,51 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## 0.42.3 - 2026-09-16
+
+Premier lot issu de l'audit du site (note globale 69 sur 100) : ce qui se mesure
+et ne demande aucun arbitrage. Les deux lots suivants traitent les classes
+d'ecran puis la performance.
+
+### Corrige
+
+- **Le tableau comparatif ne deborde plus sur telephone.** Sur
+  `/studio-ou-agence`, sa largeur minimale de 42 rem sortait de la fenetre de 320
+  a 680 px : c'etait le seul debordement horizontal du site. Sous 640 px il
+  devient une liste, un critere par bloc avec ses trois reponses ; au-dela, le
+  tableau reste, dans une zone defilante desormais atteignable au clavier.
+- **`/services` et `/methode` ont un titre principal.** Ces deux pages indexees
+  n'avaient aucun `h1` : leur sujet etait un `h2`, et la navigation par titres,
+  le geste le plus courant au lecteur d'ecran, n'y avait aucun point d'entree.
+- **Plus de saut de niveau de titre** sur `/services`, `/methode`, `/references`
+  et `/questions` : les titres enfants suivent le niveau de leur section au lieu
+  d'etre des `h3` sous un `h1`.
+- **Les chiffres d'une etude de cas sont une liste de definitions valide.** La
+  source de chaque chiffre etait un paragraphe glisse entre un `dt` et un `dd`,
+  ce qui rompait l'association libelle-valeur pour un lecteur d'ecran.
+- **Cibles tactiles portees a 44 px** : champ et case du carnet, cases du
+  formulaire de commande, pastilles d'etape, lien courriel du pied de page, lien
+  vers une etude de cas, et fil d'Ariane.
+- **Plus de texte a 11 px** : les etiquettes en capitales du pied de page, du
+  carnet et des references passent a 12,8 px, et la barre legale a 14 px.
+- **Le clavier numerique s'ouvre** sur les champs telephone et SIREN du
+  formulaire de commande, au lieu du clavier alphabetique.
+- **Deux fautes** : "le votre" sans accent en tete de `/services`, et
+  "Ile-de-France" sans accent dans deux reponses des questions frequentes.
+- **La barre d'action collante du telephone est une zone nommee.** Fille directe
+  de `<body>`, elle vivait hors de tout point de repere : son bouton etait
+  annonce hors structure. Le defaut ne figurait pas dans l'audit et n'est pas
+  une regression du lot : il n'apparait qu'a 390 px, la barre etant masquee
+  au-dela, et c'est la mesure d'accessibilite de ce lot qui l'a fait sortir.
+
+### Modifie
+
+- **Le SIRET et la mention de TVA quittent le pied de page.** La LCEN demande
+  que ces informations soient ACCESSIBLES, pas qu'elles soient affichees sur
+  chacune des dix-sept pages. Elles restent dans `/legal/mentions`, a un clic de
+  n'importe quelle page, et sur les factures. La barre basse garde la
+  denomination et les liens legaux.
+
 ## 0.42.1 - 2026-09-15
 
 ### Securite

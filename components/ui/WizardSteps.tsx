@@ -130,7 +130,7 @@ export function WizardSteps({
               initial={false}
               animate={{ scale: here ? 1 : 0.92 }}
               transition={reduced ? { duration: 0 } : { duration: 0.2 }}
-              className={`tabular grid size-9 place-items-center rounded-full text-sm font-bold ${
+              className={`tabular grid size-11 place-items-center rounded-full text-sm font-bold ${
                 done || here
                   ? "bg-accent text-accent-ink"
                   : "border-[3px] border-ink bg-surface text-ink"

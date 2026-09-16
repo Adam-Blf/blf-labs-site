@@ -121,7 +121,47 @@ export default function StudioOuAgencePage() {
           <div className="section mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
             <h2 className="title text-3xl sm:text-4xl">Les différences</h2>
 
-            <div className="mt-10 overflow-x-auto">
+            {/* SOUS 640 px, LE TABLEAU DEVIENT UNE LISTE. Sa largeur minimale
+                de 42rem debordait de la fenetre sur tout telephone : c'etait le
+                seul debordement horizontal du site. Un tableau de comparaison
+                reduit a une colonne ne se lit de toute facon pas ; empile, on
+                lit un critere puis ses trois reponses. */}
+            <ul className="mt-10 space-y-6 sm:hidden">
+              {CRITERES.map((ligne) => (
+                <li key={ligne.critere} className="blk-sm p-5">
+                  <p className="title text-xl">{ligne.critere}</p>
+                  <dl className="mt-4 space-y-3">
+                    <div>
+                      <dt className="mono text-[0.8rem] text-muted">
+                        Freelance
+                      </dt>
+                      <dd className="mt-1 text-sm text-muted">
+                        {ligne.freelance}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="mono text-[0.8rem] text-ink">Studio</dt>
+                      <dd className="mt-1 text-sm text-ink">{ligne.studio}</dd>
+                    </div>
+                    <div>
+                      <dt className="mono text-[0.8rem] text-muted">Agence</dt>
+                      <dd className="mt-1 text-sm text-muted">
+                        {ligne.agence}
+                      </dd>
+                    </div>
+                  </dl>
+                </li>
+              ))}
+            </ul>
+
+            {/* La zone defilante est focalisable : sans tabIndex, son contenu
+                est inatteignable au clavier des qu'il deborde. */}
+            <div
+              tabIndex={0}
+              role="region"
+              aria-label="Comparatif freelance, studio, agence"
+              className="mt-10 hidden overflow-x-auto sm:block"
+            >
               <table className="w-full min-w-[42rem] border-collapse text-left text-sm">
                 <thead>
                   <tr className="border-b border-line-strong">
