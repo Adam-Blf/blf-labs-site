@@ -57,6 +57,19 @@ flowchart TD
     end
 
     K -->|"lecture et ecriture<br/>filtrees par RLS (aal2)"| DB
+
+    classDef c0 fill:#2563eb,stroke:#1e3a8a,stroke-width:2px,color:#ffffff
+    classDef c1 fill:#7c3aed,stroke:#4c1d95,stroke-width:2px,color:#ffffff
+    classDef c2 fill:#0891b2,stroke:#164e63,stroke-width:2px,color:#ffffff
+    classDef c3 fill:#16a34a,stroke:#14532d,stroke-width:2px,color:#ffffff
+    classDef c4 fill:#d97706,stroke:#78350f,stroke-width:2px,color:#ffffff
+    class V,P c0
+    class F,L,T,K c1
+    class API c2
+    class Z,H,DB,R c3
+    class A,C c4
+    style Next fill:#2563eb14,stroke:#1e3a8a,stroke-width:1px,stroke-dasharray:4 3
+    style Admin fill:#7c3aed14,stroke:#4c1d95,stroke-width:1px,stroke-dasharray:4 3
 ```
 
 Le point important : l&rsquo;etape 5 ne peut pas faire echouer l&rsquo;etape 3.
@@ -206,6 +219,17 @@ flowchart LR
   WH[/api/resend/webhook/] -->|plainte, rebond dur| SUP[(suppression_list)]
   UNSUB[/desinscription/] --> SUP
   SUP --> G
+
+  classDef c0 fill:#2563eb,stroke:#1e3a8a,stroke-width:2px,color:#ffffff
+  classDef c1 fill:#7c3aed,stroke:#4c1d95,stroke-width:2px,color:#ffffff
+  classDef c2 fill:#0891b2,stroke:#164e63,stroke-width:2px,color:#ffffff
+  classDef c3 fill:#16a34a,stroke:#14532d,stroke-width:2px,color:#ffffff
+  classDef c4 fill:#d97706,stroke:#78350f,stroke-width:2px,color:#ffffff
+  class F1,F2,IMP,CRON,WH,UNSUB c0
+  class C,DOI,API,SUP c1
+  class E,G c2
+  class SEND c3
+  class LOG c4
 ```
 
 **Comment la voie professionnelle se remplit.** Cinq etapes, et aucune n&rsquo;envoie
