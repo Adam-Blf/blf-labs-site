@@ -116,7 +116,7 @@ export async function inscrire(demande: DemandeInscription): Promise<ResultatIns
 }
 
 async function envoieConfirmation(email: string, jeton: string): Promise<boolean> {
-  const apiKey = process.env.RESEND_API_KEY;
+  const apiKey = process.env.BLFLABS_RESEND_API_KEY;
   if (!apiKey) return false;
 
   const lien = `${SITE.url}/api/inscription/confirmer?jeton=${jeton}`;

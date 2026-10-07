@@ -1353,10 +1353,10 @@ def importe(lignes: list[dict], sans_preuve: bool = False) -> int:
     une partie locale dans la liste blanche - mais autant ne pas lui envoyer ce
     qu'elle va rejeter.
     """
-    url = os.environ.get("SUPABASE_URL")
-    cle = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+    url = os.environ.get("BLFLABS_SUPABASE_URL")
+    cle = os.environ.get("BLFLABS_SUPABASE_SERVICE_ROLE_KEY")
     if not url or not cle:
-        print("SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY doivent etre dans "
+        print("BLFLABS_SUPABASE_URL et BLFLABS_SUPABASE_SERVICE_ROLE_KEY doivent etre dans "
               "l'environnement. Aucune valeur n'est lue depuis le depot.",
               file=sys.stderr)
         return 2
@@ -1551,10 +1551,10 @@ def engage(limite: int, confirme_: bool, fichier: str = "") -> int:
     exemple les sites qui nomment la commune de la structure - pendant que le
     reste attend une garde meilleure.
     """
-    url = os.environ.get("SUPABASE_URL")
-    cle = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+    url = os.environ.get("BLFLABS_SUPABASE_URL")
+    cle = os.environ.get("BLFLABS_SUPABASE_SERVICE_ROLE_KEY")
     if not url or not cle:
-        print("SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY doivent etre dans "
+        print("BLFLABS_SUPABASE_URL et BLFLABS_SUPABASE_SERVICE_ROLE_KEY doivent etre dans "
               "l'environnement.", file=sys.stderr)
         return 2
 

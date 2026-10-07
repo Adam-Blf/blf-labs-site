@@ -15,8 +15,8 @@ import type { SupabaseClient } from "@supabase/supabase-js";
  * regle de degradation gracieuse du reste du site.
  */
 export async function supabaseServer(): Promise<SupabaseClient | null> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const url = process.env.NEXT_PUBLIC_BLFLABS_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_BLFLABS_SUPABASE_ANON_KEY;
   if (!url || !key) return null;
 
   const cookieStore = await cookies();

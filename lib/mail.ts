@@ -107,7 +107,7 @@ function shell(title: string, body: string): string {
 }
 
 export async function sendOrderEmails(order: OrderInput): Promise<boolean> {
-  const apiKey = process.env.RESEND_API_KEY;
+  const apiKey = process.env.BLFLABS_RESEND_API_KEY;
   if (!apiKey) return false;
 
   const resend = new Resend(apiKey);
@@ -171,7 +171,7 @@ export async function sendInvoicePaymentEmail(params: {
   amountLabel: string;
   paymentUrl: string;
 }): Promise<boolean> {
-  const apiKey = process.env.RESEND_API_KEY;
+  const apiKey = process.env.BLFLABS_RESEND_API_KEY;
   if (!apiKey) return false;
   const resend = new Resend(apiKey);
   const { to, number, amountLabel, paymentUrl } = params;

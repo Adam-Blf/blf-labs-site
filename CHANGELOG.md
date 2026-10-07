@@ -6,6 +6,13 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## [Unreleased]
+
+- chore(env): every environment key shared with another project now carries the
+  `BLFLABS` prefix (`BLFLABS_SUPABASE_URL`, `NEXT_PUBLIC_BLFLABS_SUPABASE_URL`,
+  `BLFLABS_RESEND_API_KEY`, `BLFLABS_STRIPE_SECRET_KEY`...), and local dev loads
+  the central `~/.secrets/projets.env` from `next.config.ts`.
+
 ## [0.42.1] - 2026-10-07
 
 First tagged release. Latest changes:

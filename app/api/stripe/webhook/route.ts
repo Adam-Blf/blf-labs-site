@@ -17,7 +17,7 @@ export const runtime = "nodejs";
  */
 export async function POST(request: NextRequest) {
   const stripe = getStripe();
-  const secret = process.env.STRIPE_WEBHOOK_SECRET;
+  const secret = process.env.BLFLABS_STRIPE_WEBHOOK_SECRET;
   const signature = request.headers.get("stripe-signature");
   if (!stripe || !secret || !signature) {
     return new NextResponse("Non configure", { status: 400 });
