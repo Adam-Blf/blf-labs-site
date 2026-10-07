@@ -6,6 +6,26 @@ Regle de lecture : une entree decrit ce qui change pour quelqu'un qui utilise le
 site ou reprend le depot, pas la liste des fichiers touches. Le detail technique
 est dans les messages de commit et les pull requests.
 
+## [0.42.1] - 2026-10-07
+
+First tagged release. Latest changes:
+
+- docs: add colors to mermaid diagrams (#79)
+- fix(deps): close two critical Next.js remote code execution advisories (#76)
+- feat(design): the site becomes a line whose terminus is the hand-over of the keys (#75)
+- feat(prospection): the phone reaches exactly who email structurally cannot (#73)
+- feat(admin): read, answer and remove, without opening a personal inbox (#72)
+- fix(prospection): a breaker that cannot be released is a breaker that gets removed (#71)
+- fix(prospection): a guard that reads translated text is a bet on the system locale (#70)
+- fix(prospection): freins du moteur, audit juridique, et un premier contact qui ressemble a une lettre (#69)
+- fix(prospection): twenty-one addresses belonged to someone other than the prospect (#68)
+- feat: prospection internationale sous garde, et le prix se dit par tache (#67)
+- fix(prospection): the professional path could never have sent a single message (#66)
+- fix(prospection): drop sites claimed by more than one structure
+- feat(prospection): target niches by NAF code, partition by department, measure the guesser
+- refactor: split lib by domain, drop dead weight, fix measured a11y defects
+- feat(tarifs): three tiers, and the guard that should have caught their loss (#62)
+
 ## 0.42.1 - 2026-09-15
 
 ### Securite
