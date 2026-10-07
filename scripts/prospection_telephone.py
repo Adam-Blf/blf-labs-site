@@ -206,10 +206,10 @@ def collecte(departement: str, lot: int) -> list[dict]:
 
 
 def importe(lignes: list[dict]) -> int:
-    url = os.environ.get("SUPABASE_URL")
-    cle = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+    url = os.environ.get("BLFLABS_SUPABASE_URL")
+    cle = os.environ.get("BLFLABS_SUPABASE_SERVICE_ROLE_KEY")
     if not url or not cle:
-        print("SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY doivent etre dans "
+        print("BLFLABS_SUPABASE_URL et BLFLABS_SUPABASE_SERVICE_ROLE_KEY doivent etre dans "
               "l'environnement.", file=sys.stderr)
         return 2
 

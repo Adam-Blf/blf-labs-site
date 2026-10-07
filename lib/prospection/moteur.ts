@@ -517,7 +517,7 @@ export async function traiteEcheances(): Promise<Rapport> {
   // au journal butait sur l'unicite, et l'etape etait consideree comme deja
   // partie : une cle momentanement absente ou en cours de rotation faisait
   // PERDRE le message au lieu de le retenter.
-  const apiKey = process.env.RESEND_API_KEY;
+  const apiKey = process.env.BLFLABS_RESEND_API_KEY;
   if (!apiKey) {
     rapport.journal.push("cle Resend absente, aucune echeance touchee");
     return rapport;

@@ -144,19 +144,29 @@ Le port 3200 est reserve a ce projet dans le registre de ports local.
 Aucune n&rsquo;est obligatoire pour lancer le site : sans elles il tourne en mode
 degrade, et le formulaire indique une alternative par email.
 
+Les cles partagees avec d&rsquo;autres projets portent le prefixe `BLFLABS`
+(`NEXT_PUBLIC_BLFLABS_...` pour les cles publiques), afin que chaque nom soit
+unique sur tous les projets.
+
+**Fichier central en local.** `next.config.ts` charge
+`~/.secrets/projets.env` s&rsquo;il existe (chemin surchargeable par
+`CENTRAL_ENV_FILE`), via `process.loadEnvFile` de Node 20.12+. Une variable deja
+definie, par exemple dans `.env.local`, l&rsquo;emporte. Sur Vercel le fichier
+n&rsquo;existe pas et rien ne change : les variables viennent du projet Vercel.
+
 | Variable | Role | Sans elle |
 |---|---|---|
-| `RESEND_API_KEY` | Envoi des emails | Aucun email, la demande reste en base |
+| `BLFLABS_RESEND_API_KEY` | Envoi des emails | Aucun email, la demande reste en base |
 | `RESEND_FROM` | Adresse d&rsquo;expedition | Valeur par defaut `contact@beloucif.com`. **Doit appartenir a un domaine VERIFIE chez Resend**, sinon 403 |
-| `SUPABASE_URL` | Base de donnees | Aucune ecriture, seul l&rsquo;email part |
-| `SUPABASE_SERVICE_ROLE_KEY` | Ecriture serveur | Idem. **Jamais cote client** |
-| `NEXT_PUBLIC_SUPABASE_URL` | Authentification admin | `/admin` inaccessible |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Authentification admin | `/admin` inaccessible |
+| `BLFLABS_SUPABASE_URL` | Base de donnees | Aucune ecriture, seul l&rsquo;email part |
+| `BLFLABS_SUPABASE_SERVICE_ROLE_KEY` | Ecriture serveur | Idem. **Jamais cote client** |
+| `NEXT_PUBLIC_BLFLABS_SUPABASE_URL` | Authentification admin | `/admin` inaccessible |
+| `NEXT_PUBLIC_BLFLABS_SUPABASE_ANON_KEY` | Authentification admin | `/admin` inaccessible |
 | `ADMIN_EMAILS` | Liste blanche du back-office | Personne n&rsquo;entre |
 | `IP_HASH_SALT` | Sel de l&rsquo;empreinte d&rsquo;IP | Sel par defaut, a definir en production |
 | `NEXT_PUBLIC_GA_ID` | Mesure d&rsquo;audience GA4 | Aucune mesure, et **aucun bandeau de consentement** |
-| `STRIPE_SECRET_KEY` | Liens de paiement des factures | Facture emise sans lien de paiement |
-| `STRIPE_WEBHOOK_SECRET` | Verification de la signature Stripe | Le webhook refuse tout |
+| `BLFLABS_STRIPE_SECRET_KEY` | Liens de paiement des factures | Facture emise sans lien de paiement |
+| `BLFLABS_STRIPE_WEBHOOK_SECRET` | Verification de la signature Stripe | Le webhook refuse tout |
 | `INDEXNOW_KEY` | Annonce des pages aux moteurs | Repli sur une cle en dur, publique par conception |
 | `CRON_SECRET` | Garde de `/api/cron/sequences` | La route repond 401, **aucune sequence ne part** |
 | `UNSUBSCRIBE_SECRET` | Signature des liens de retrait et de confirmation | Le moteur **leve** : mieux vaut ne rien envoyer que des liens falsifiables |

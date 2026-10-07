@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import urllib.error
 import urllib.request
@@ -40,14 +41,26 @@ from ovh_dns import ZONE, call, load_credentials, resolve_env_file  # noqa: E402
 RESEND_API = "https://api.resend.com"
 
 
+# EN: central secrets file shared by every project, overridable by CENTRAL_ENV_FILE.
+# FR : fichier de secrets central partage par tous les projets, surchargeable par CENTRAL_ENV_FILE.
+CENTRAL_ENV_FILE = Path(
+    os.environ.get("CENTRAL_ENV_FILE") or Path.home() / ".secrets" / "projets.env"
+)
+
+
 def load_resend_key(env_file: Path) -> str:
-    for raw in env_file.read_text(encoding="utf-8-sig").splitlines():
-        line = raw.strip()
-        if line.startswith("RESEND_API_KEY=") and "=" in line:
-            value = line.partition("=")[2].strip().strip('"').strip("'")
-            if value:
-                return value
-    sys.exit("RESEND_API_KEY absente ou vide dans le fichier d'environnement")
+    # EN: look in the given file first, then in the central file.
+    # FR : cherche d'abord dans le fichier fourni, puis dans le fichier central.
+    for candidate in (env_file, CENTRAL_ENV_FILE):
+        if not candidate.exists():
+            continue
+        for raw in candidate.read_text(encoding="utf-8-sig").splitlines():
+            line = raw.strip()
+            if line.startswith("BLFLABS_RESEND_API_KEY="):
+                value = line.partition("=")[2].strip().strip('"').strip("'")
+                if value:
+                    return value
+    sys.exit("BLFLABS_RESEND_API_KEY absente ou vide dans les fichiers d'environnement")
 
 
 def resend(key: str, method: str, path: str):

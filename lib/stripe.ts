@@ -9,7 +9,7 @@ import { SITE } from "@/lib/site";
  * paiement, mais la facture reste emise et telechargeable.
  */
 export function getStripe(): Stripe | null {
-  const key = process.env.STRIPE_SECRET_KEY;
+  const key = process.env.BLFLABS_STRIPE_SECRET_KEY;
   if (!key) return null;
   return new Stripe(key);
 }

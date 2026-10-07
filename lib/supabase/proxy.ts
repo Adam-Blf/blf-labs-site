@@ -22,8 +22,8 @@ import { NextResponse, type NextRequest } from "next/server";
 export async function updateAdminSession(request: NextRequest): Promise<NextResponse> {
   let response = NextResponse.next({ request });
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const url = process.env.NEXT_PUBLIC_BLFLABS_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_BLFLABS_SUPABASE_ANON_KEY;
   // Sans base configuree, on ne bloque pas la navigation : le site public reste
   // servi, seul le back-office sera inutilisable (et le dira).
   if (!url || !key) return response;

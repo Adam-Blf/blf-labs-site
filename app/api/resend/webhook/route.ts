@@ -104,7 +104,7 @@ export async function POST(request: Request) {
 
   let evenement: EvenementResend;
   try {
-    const resend = new Resend(process.env.RESEND_API_KEY ?? "verification-seulement");
+    const resend = new Resend(process.env.BLFLABS_RESEND_API_KEY ?? "verification-seulement");
     evenement = resend.webhooks.verify({
       payload: brut,
       headers: { id, timestamp, signature },
@@ -131,7 +131,7 @@ export async function POST(request: Request) {
    * neutralise en base par l'unicite de `resend_id`.
    */
   if (type === "email.received") {
-    const traite = await traiteMessageEntrant(db, new Resend(process.env.RESEND_API_KEY ?? ""), {
+    const traite = await traiteMessageEntrant(db, new Resend(process.env.BLFLABS_RESEND_API_KEY ?? ""), {
       email_id: evenement.data?.email_id,
       from: evenement.data?.from,
       subject: evenement.data?.subject,

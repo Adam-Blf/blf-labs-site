@@ -84,7 +84,7 @@ export async function repond(filId: string, texte: string) {
     );
   }
 
-  const cle = process.env.RESEND_API_KEY;
+  const cle = process.env.BLFLABS_RESEND_API_KEY;
   if (!cle) throw new Error("Clé d'envoi absente.");
 
   const sujet = fil.sujet.startsWith("Re:") ? fil.sujet : `Re: ${fil.sujet}`;
