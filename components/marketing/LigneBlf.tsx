@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { KeyIcon } from "@phosphor-icons/react/ssr";
+import { Key } from "reicon-react";
 
 /**
  * Ligne BLF, le plan de ligne du hero.
@@ -69,7 +69,7 @@ export function LigneBlf() {
             aria-hidden="true"
             className="arret relative z-10 -ml-2 -mt-2 grid h-11 w-11 shrink-0 place-items-center rounded-full border-[5px] border-ink bg-accent text-accent-ink"
           >
-            <KeyIcon weight="bold" className="h-5 w-5" />
+            <Key strokeWidth={2} className="h-5 w-5" />
           </span>
           <div className="-mt-1.5">
             <p className="title text-4xl">Remise des clés</p>

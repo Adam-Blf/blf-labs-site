@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { PlusIcon } from "@phosphor-icons/react";
+import { Plus } from "reicon-react";
 import { FAQ } from "@/content/faq";
 
 /**
@@ -62,9 +62,9 @@ export function Faq({
 
                     {/* Croix qui pivote : un seul trace pour les deux etats,
                         plutot que deux icones qui se remplacent. */}
-                    <PlusIcon
+                    <Plus
                       aria-hidden="true"
-                      weight="bold"
+                      strokeWidth={2}
                       className={`h-5 w-5 shrink-0 text-accent transition-transform duration-200 ease-snap ${
                         open ? "rotate-45" : "rotate-0"
                       }`}

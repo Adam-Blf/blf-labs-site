@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRightIcon } from "@phosphor-icons/react/ssr";
+import { ArrowRight } from "reicon-react";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { CtaBand } from "@/components/marketing/CtaBand";
@@ -93,9 +93,9 @@ export default function Home() {
                   <p className="col-start-2 text-muted sm:col-start-3 sm:row-start-1">
                     {destination.body}
                   </p>
-                  <ArrowRightIcon
+                  <ArrowRight
                     aria-hidden="true"
-                    weight="bold"
+                    strokeWidth={2}
                     className="col-start-3 row-span-2 row-start-1 h-7 w-7 text-ink transition-transform duration-200 ease-snap group-hover:translate-x-1 sm:col-start-4 sm:row-span-1"
                   />
                 </Link>

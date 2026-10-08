@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowUpRightIcon } from "@phosphor-icons/react/ssr";
+import { ArrowUpRight } from "reicon-react";
 import { Reveal } from "@/components/motion/Reveal";
 import Link from "next/link";
 import { ETUDE_PAR_SLUG } from "@/content/etudes";
@@ -80,9 +80,9 @@ export function ReferencesSection({
                     </h3>
                     <span className="inline-flex items-center gap-1.5 text-sm text-muted-strong transition-colors group-hover:text-ink">
                       Voir le site
-                      <ArrowUpRightIcon
+                      <ArrowUpRight
                         aria-hidden="true"
-                        weight="bold"
+                        strokeWidth={2}
                         className="h-3.5 w-3.5 transition-transform duration-200 ease-snap group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
                       />
                     </span>

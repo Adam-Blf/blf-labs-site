@@ -1,4 +1,4 @@
-import { KeyIcon } from "@phosphor-icons/react/ssr";
+import { Key } from "reicon-react";
 
 const ETAPES = [
   {
@@ -59,7 +59,7 @@ export function Methode() {
                     aria-hidden="true"
                     className="absolute -left-0.5 -top-0.5 z-10 grid h-11 w-11 place-items-center rounded-full border-[5px] border-ink bg-accent text-accent-ink"
                   >
-                    <KeyIcon weight="bold" className="h-5 w-5" />
+                    <Key strokeWidth={2} className="h-5 w-5" />
                   </span>
                 ) : (
                   <span

@@ -9,7 +9,7 @@ Version 0.25.0
 [![last commit](https://img.shields.io/github/last-commit/Adam-Blf/blf-labs-site?color=D4A437&style=flat-square&label=dernier%20push)](https://github.com/Adam-Blf/blf-labs-site/commits)
 [![top language](https://img.shields.io/github/languages/top/Adam-Blf/blf-labs-site?style=flat-square)](https://github.com/Adam-Blf/blf-labs-site)
 [![license](https://img.shields.io/github/license/Adam-Blf/blf-labs-site?style=flat-square&color=D4A437)](LICENSE)
-[![version](https://img.shields.io/badge/version-0.42.1-D4A437?style=flat-square)](CHANGELOG.md)
+[![version](https://img.shields.io/badge/version-0.43.0-D4A437?style=flat-square)](CHANGELOG.md)
 <!-- adam-badges:end -->
 
 Site vitrine et tunnel de commande du studio **BLF Lab's**, publie sur
