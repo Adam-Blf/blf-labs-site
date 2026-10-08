@@ -13,6 +13,12 @@ est dans les messages de commit et les pull requests.
   `BLFLABS_RESEND_API_KEY`, `BLFLABS_STRIPE_SECRET_KEY`...), and local dev loads
   the central `~/.secrets/projets.env` from `next.config.ts`.
 
+## [0.43.0] - 2026-10-08 - migration des icones vers Reicon
+
+- refactor(icons): `@phosphor-icons/react` remplace par `reicon-react` 1.2.6 sur les
+  huit composants qui portaient une icone. La graisse `bold` de Phosphor devient un
+  trait de 2 pour garder le meme poids visuel.
+
 ## [0.42.1] - 2026-10-07
 
 First tagged release. Latest changes:

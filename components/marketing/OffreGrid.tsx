@@ -1,11 +1,11 @@
 import Link from "next/link";
 import {
-  AppWindowIcon,
-  ArrowRightIcon,
-  DatabaseIcon,
-  DeviceMobileIcon,
-  GlobeIcon,
-} from "@phosphor-icons/react/ssr";
+  Window2,
+  ArrowRight,
+  Database,
+  Mobile,
+  Globe,
+} from "reicon-react";
 import { Reveal } from "@/components/motion/Reveal";
 import { OFFRES, type OffreSlug } from "@/content/offres";
 
@@ -19,35 +19,35 @@ import { OFFRES, type OffreSlug } from "@/content/offres";
  *
  * Plus de grille de cartes identiques : quatre rangees reglees, qu'on lit de
  * haut en bas comme un index de lignes. Les pictogrammes Icons8 dessines a la
- * main sont remplaces par Phosphor, seul jeu d'icones du site.
+ * main sont remplaces par Reicon, seul jeu d'icones du site.
  *
  * Les classes de couleur sont ecrites en entier ici : Tailwind ne genere que les
  * classes qu'il lit litteralement dans le source.
  */
 const LIGNES: Record<
   OffreSlug,
-  { Icone: typeof GlobeIcon; pastille: string; trait: string; station: string }
+  { Icone: typeof Globe; pastille: string; trait: string; station: string }
 > = {
   "sites-web": {
-    Icone: GlobeIcon,
+    Icone: Globe,
     pastille: "bg-ligne-sites",
     trait: "before:bg-ligne-sites",
     station: "border-ligne-sites",
   },
   "apps-web": {
-    Icone: AppWindowIcon,
+    Icone: Window2,
     pastille: "bg-ligne-web",
     trait: "before:bg-ligne-web",
     station: "border-ligne-web",
   },
   "apps-mobiles": {
-    Icone: DeviceMobileIcon,
+    Icone: Mobile,
     pastille: "bg-ligne-mobile",
     trait: "before:bg-ligne-mobile",
     station: "border-ligne-mobile",
   },
   "data-ia": {
-    Icone: DatabaseIcon,
+    Icone: Database,
     pastille: "bg-ligne-data",
     trait: "before:bg-ligne-data",
     station: "border-ligne-data",
@@ -81,7 +81,7 @@ export function OffreGrid() {
                   <span
                     className={`grid h-14 w-14 shrink-0 place-items-center rounded-full text-ligne-ink ${ligne.pastille}`}
                   >
-                    <ligne.Icone aria-hidden="true" weight="bold" className="h-7 w-7" />
+                    <ligne.Icone aria-hidden="true" strokeWidth={2} className="h-7 w-7" />
                   </span>
                   <h3 className="title pt-1.5 text-3xl sm:text-4xl">
                     {offre.title}
@@ -114,9 +114,9 @@ export function OffreGrid() {
 
                   <span className="mono mt-9 inline-flex items-center gap-2 text-base text-ink">
                     En savoir plus
-                    <ArrowRightIcon
+                    <ArrowRight
                       aria-hidden="true"
-                      weight="bold"
+                      strokeWidth={2}
                       className="h-4 w-4 transition-transform duration-200 ease-snap group-hover:translate-x-1"
                     />
                   </span>

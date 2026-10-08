@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ListIcon, XIcon } from "@phosphor-icons/react";
+import { Menu, X } from "reicon-react";
 import { Wordmark } from "./Wordmark";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -141,9 +141,9 @@ export function Header() {
               className="flex h-11 w-11 items-center justify-center rounded-[var(--radius)] text-ink transition-transform duration-150 ease-snap active:scale-[0.94] md:hidden"
             >
               {open ? (
-                <XIcon aria-hidden="true" weight="bold" className="h-6 w-6" />
+                <X aria-hidden="true" strokeWidth={2} className="h-6 w-6" />
               ) : (
-                <ListIcon aria-hidden="true" weight="bold" className="h-6 w-6" />
+                <Menu aria-hidden="true" strokeWidth={2} className="h-6 w-6" />
               )}
             </button>
           </div>

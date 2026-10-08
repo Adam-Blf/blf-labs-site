@@ -1,6 +1,6 @@
 "use client";
 
-import { MoonIcon, SunIcon } from "@phosphor-icons/react";
+import { Moon, Sun } from "reicon-react";
 import { basculerTheme, useThemeSombre } from "@/lib/ui/useTheme";
 
 /**
@@ -11,7 +11,7 @@ import { basculerTheme, useThemeSombre } from "@/lib/ui/useTheme";
  * le script d'amorcage du layout. Le composant ne peut donc pas afficher un
  * soleil pendant que la page est sombre.
  *
- * Les deux pictogrammes (Phosphor) sont TOUJOURS rendus, superposes, et c'est
+ * Les deux pictogrammes (Reicon) sont TOUJOURS rendus, superposes, et c'est
  * le CSS qui les echange en fondu, legere rotation et flou de 2 px. La version
  * precedente animait un seul SVG avec framer-motion en choisissant ses valeurs
  * selon `useReducedMotion()` : le serveur, qui ne connait pas la preference,
@@ -43,14 +43,14 @@ export function ThemeToggle() {
       title={libelle}
       className="blk-sm relative flex h-11 w-11 items-center justify-center overflow-hidden bg-surface text-ink transition-transform duration-150 ease-snap hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.97]"
     >
-      <SunIcon
+      <Sun
         aria-hidden="true"
-        weight="bold"
+        strokeWidth={2}
         className={`${ICONE} ${dark ? `${CACHEE} rotate-90` : VISIBLE}`}
       />
-      <MoonIcon
+      <Moon
         aria-hidden="true"
-        weight="bold"
+        strokeWidth={2}
         className={`${ICONE} ${dark ? VISIBLE : `${CACHEE} -rotate-90`}`}
       />
     </button>
