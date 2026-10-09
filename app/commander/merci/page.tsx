@@ -69,16 +69,16 @@ export default function MerciPage() {
 
           <div className="mt-12 flex flex-wrap items-center gap-4">
             <Link
-              href="/"
-              className="btn-pill bg-accent px-8 py-4 font-bold text-accent-ink"
+              href="/references"
+              className="btn-pill btn-plein px-8 py-4 font-bold"
             >
-              Retour à l&rsquo;accueil
+              Découvrir des projets livrés en attendant
             </Link>
             <Link
-              href="/references"
-              className="btn-pill border border-line-strong px-8 py-4 font-medium text-ink"
+              href="/"
+              className="btn-pill btn-contour px-8 py-4 font-medium"
             >
-              Voir les réalisations
+              Revenir à l&rsquo;accueil
             </Link>
           </div>
         </div>

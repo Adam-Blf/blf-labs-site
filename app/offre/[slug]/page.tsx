@@ -7,6 +7,7 @@ import { Breadcrumb } from "@/components/seo/Breadcrumb";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { OFFRES, OFFRE_BY_SLUG } from "@/content/offres";
+import { CTA } from "@/content/cta";
 
 // Next 16 : `params` est une promesse, il faut l'attendre avant de lire le slug.
 type PageProps = { params: Promise<{ slug: string }> };
@@ -65,7 +66,7 @@ export default async function OffrePage({ params }: PageProps) {
 
             <div className="mt-10 flex flex-wrap gap-4">
               <ButtonLink href={`/commander?offre=${offre.slug}`}>
-                Commander ce type de projet
+                {CTA.estimation} pour ce projet
               </ButtonLink>
             </div>
           </div>
@@ -122,7 +123,7 @@ export default async function OffrePage({ params }: PageProps) {
                 <Link
                   key={item.slug}
                   href={`/offre/${item.slug}`}
-                  className="blk-sm group bg-surface p-5 transition-transform hover:-translate-y-1"
+                  className="blk-sm group border-faint bg-surface p-5 transition-transform hover:-translate-y-1"
                 >
                   <h3 className="title text-lg group-hover:underline">
                     {item.title}

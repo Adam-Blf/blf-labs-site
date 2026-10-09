@@ -6,6 +6,7 @@ import { Wordmark } from "./Wordmark";
 import { GlassRefraction } from "./GlassRefraction";
 import { ThemeToggle } from "./ThemeToggle";
 import { Menu, X } from "reicon-react";
+import { CTA } from "@/content/cta";
 
 /**
  * Le site est multi-pages : chaque entree pointe vers une adresse reelle, pas
@@ -17,7 +18,7 @@ const NAV = [
   { href: "/tarifs", label: "Tarifs" },
   { href: "/methode", label: "Méthode" },
   { href: "/references", label: "Réalisations" },
-  { href: "/contact", label: "Contact" },
+  { href: "/contact", label: CTA.reponse },
 ];
 
 /**
@@ -98,7 +99,7 @@ export function Header() {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className="nav-link text-sm font-medium text-muted-strong transition-colors hover:text-ink"
+                  className="nav-link whitespace-nowrap text-sm font-medium text-muted-strong transition-colors hover:text-ink"
                 >
                   {item.label}
                 </Link>
@@ -117,9 +118,9 @@ export function Header() {
 
             <Link
               href="/commander"
-              className="btn-pill hidden bg-accent px-5 py-2.5 text-sm font-semibold text-accent-ink sm:block"
+              className="btn-pill btn-plein hidden px-5 py-2.5 text-sm font-semibold sm:block"
             >
-              Démarrer un projet
+              {CTA.estimation}
             </Link>
 
             <button
@@ -159,9 +160,9 @@ export function Header() {
               <Link
                 href="/commander"
                 onClick={() => setOpen(false)}
-                className="btn-pill mt-2 block bg-accent px-5 py-3 text-center text-sm font-semibold text-accent-ink"
+                className="btn-pill btn-plein mt-2 block px-5 py-3 text-center text-sm font-semibold"
               >
-                Démarrer un projet
+                {CTA.estimation}
               </Link>
             </li>
           </ul>

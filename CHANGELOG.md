@@ -13,6 +13,21 @@ est dans les messages de commit et les pull requests.
   `BLFLABS_RESEND_API_KEY`, `BLFLABS_STRIPE_SECRET_KEY`...), and local dev loads
   the central `~/.secrets/projets.env` from `next.config.ts`.
 
+## [0.45.0] - 2026-10-09 - des boutons qui disent ce qu'on y gagne
+
+- **Chaque appel à l'action public dit ce que le visiteur obtient** : « Recevoir
+  mon estimation », « Connaître les prix de départ », « Parler de mon projet en
+  20 minutes », « Une réponse sous 48 h », à la place de « Démarrer un projet »,
+  « En savoir plus » ou « Envoyer la demande ». Les libellés suivent le stade du
+  visiteur, et chaque délai cité figure déjà sur la page de destination.
+  Inventaire avant et après dans `docs/boutons.md`.
+- **Contrastes des boutons mesurés et corrigés** : contour des boutons pleins et
+  secondaires à 3:1 au moins contre la page, anneau de focus à 4,69:1 en clair,
+  `--faint` sombre remonté à 5,05:1 sur le pied de page, texte de la carte
+  violette de /tarifs à 6,15:1.
+- Les emails du carnet pointent vers la page qu'ils annoncent, et la garde
+  `lib/cta.test.ts` refuse le retour des libellés bannis.
+
 ## [0.44.3] - 2026-10-09 - telephone visible
 
 - **Le numero de telephone est affiche dans le pied de page et sur la page

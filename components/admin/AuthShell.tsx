@@ -14,7 +14,7 @@ export function AuthShell({ children }: { children: ReactNode }) {
         aria-hidden="true"
         className="grille pointer-events-none absolute inset-0 opacity-30 [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]"
       />
-      <main className="relative w-full max-w-md">
+      <main id="contenu" className="relative w-full max-w-md">
         <Link
           href="/"
           aria-label="BLF Lab's - retour à l'accueil"

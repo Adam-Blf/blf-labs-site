@@ -130,9 +130,9 @@ export function Carnet({ source = "pied_de_page" }: { source?: SourceConsentemen
       <button
         type="submit"
         disabled={!accord || etat === "envoi"}
-        className="blk-sm bg-accent px-4 py-2 text-sm font-semibold text-accent-ink disabled:opacity-40"
+        className="blk-sm btn-plein px-4 py-2 text-sm font-semibold disabled:opacity-40"
       >
-        {etat === "envoi" ? "Envoi..." : "S'inscrire"}
+        {etat === "envoi" ? "Inscription en cours" : "Recevoir le carnet du studio"}
       </button>
 
       {etat === "erreur" && (

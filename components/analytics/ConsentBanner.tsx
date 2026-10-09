@@ -49,7 +49,7 @@ export function ConsentBanner() {
             href="/legal/confidentialite"
             className="underline underline-offset-4"
           >
-            En savoir plus
+            Lire ce qui est mesuré
           </Link>
         </p>
 
@@ -58,14 +58,14 @@ export function ConsentBanner() {
           <button
             type="button"
             onClick={() => ecrireConsentement("refuse")}
-            className="btn-pill min-h-[44px] border border-line-strong px-5 py-2.5 text-sm font-semibold text-ink"
+            className="btn-pill btn-contour min-h-[44px] px-5 py-2.5 text-sm font-semibold"
           >
             Refuser
           </button>
           <button
             type="button"
             onClick={() => ecrireConsentement("accepte")}
-            className="btn-pill min-h-[44px] bg-accent px-5 py-2.5 text-sm font-semibold text-accent-ink"
+            className="btn-pill btn-plein min-h-[44px] px-5 py-2.5 text-sm font-semibold"
           >
             Accepter
           </button>

@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/Card";
 import { Graduation } from "@/components/ui/Graduation";
 import { FOURCHETTES, OPTIONS, PALIERS_DE_TACHES } from "@/content/tarifs";
 import { SITE } from "@/lib/site";
+import { CTA } from "@/content/cta";
 
 /**
  * Les trois paliers de prix, en colonnes.
@@ -75,7 +76,7 @@ export function Tarifs() {
                   <h3 className="title text-xl">{f.nom}</h3>
                   <p
                     className={`mt-2 text-sm leading-relaxed ${
-                      index === 1 ? "text-accent-ink/80" : "text-muted"
+                      index === 1 ? "text-accent-ink" : "text-muted"
                     }`}
                   >
                     {f.pour_qui}
@@ -92,7 +93,7 @@ export function Tarifs() {
 
                 <p
                   className={`text-sm leading-relaxed ${
-                    index === 1 ? "text-accent-ink/80" : "text-muted"
+                    index === 1 ? "text-accent-ink" : "text-muted"
                   }`}
                 >
                   {f.couvre}
@@ -116,7 +117,7 @@ export function Tarifs() {
 
                 <p
                   className={`text-sm leading-relaxed ${
-                    index === 1 ? "text-accent-ink/70" : "text-muted"
+                    index === 1 ? "text-accent-ink" : "text-muted"
                   }`}
                 >
                   <strong>Ce qui fait monter :</strong> {f.fait_monter}
@@ -127,11 +128,11 @@ export function Tarifs() {
                     href="/commander"
                     className={`btn-pill inline-block px-6 py-3 text-sm font-semibold ${
                       index === 1
-                        ? "bg-paper text-ink"
-                        : "border border-line-strong text-ink"
+                        ? "border border-ink bg-paper text-ink focus-visible:outline-nuit"
+                        : "btn-contour"
                     }`}
                   >
-                    Demander un devis
+                    {CTA.estimation}
                   </Link>
                 </div>
               </Card>

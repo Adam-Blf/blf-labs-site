@@ -34,7 +34,7 @@ export function ThemeToggle() {
       onClick={() => basculerTheme(!dark)}
       aria-label={libelle}
       title={libelle}
-      className="blk-sm relative flex h-11 w-11 items-center justify-center overflow-hidden bg-surface text-ink transition-transform hover:-translate-y-[2px]"
+      className="blk-sm relative flex h-11 w-11 border-faint items-center justify-center overflow-hidden bg-surface text-ink transition-transform hover:-translate-y-[2px]"
     >
       <AnimatePresence mode="wait" initial={false}>
         <motion.span

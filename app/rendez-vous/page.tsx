@@ -83,17 +83,17 @@ export default function RendezVousPage() {
             <div className="mt-10 flex flex-wrap items-center gap-4">
               <a
                 href={`tel:${SITE.phone.replace(/\s/g, "")}`}
-                className="btn-pill inline-flex min-h-[56px] items-center bg-accent px-8 text-lg font-bold text-accent-ink"
+                className="btn-pill btn-plein inline-flex min-h-[56px] items-center px-8 text-lg font-bold"
               >
-                Appeler le {SITE.phone}
+                Caler mes vingt minutes au {SITE.phone}
               </a>
               <a
                 href={`mailto:${SITE.email}?subject=${encodeURIComponent(
                   "Prendre rendez-vous",
                 )}`}
-                className="btn-pill inline-flex min-h-[56px] items-center border border-line px-8 text-lg font-bold text-ink"
+                className="btn-pill btn-contour inline-flex min-h-[56px] items-center px-8 text-lg font-bold"
               >
-                Écrire un message
+                Demander mon créneau par écrit
               </a>
             </div>
 

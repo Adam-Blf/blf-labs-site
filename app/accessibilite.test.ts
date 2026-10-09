@@ -92,6 +92,50 @@ describe("contrastes des jetons poses en texte, mode par mode", () => {
   }
 
   /**
+   * Mesure du 09/10/2026 : `--faint` sombre rendait 4,83:1 sur --paper mais
+   * 4,47:1 sur --surface, le fond du pied de page. Un jeton de texte se mesure
+   * contre CHAQUE fond qui le porte, pas seulement contre le papier.
+   */
+  for (const [mode, bloc] of [
+    ["clair", BLOC_CLAIR],
+    ["sombre", BLOC_SOMBRE],
+  ] as const) {
+    it(`--faint tient AA sur --surface en mode ${mode}`, () => {
+      const surface = jeton(bloc, "surface");
+      expect(contraste(jeton(bloc, "faint"), surface)).toBeGreaterThanOrEqual(AA);
+    });
+  }
+
+  /**
+   * LES BOUTONS. Texte >= 4,5:1 sur le fond du bouton, et limite du bouton
+   * >= 3:1 contre la page (WCAG 1.4.11). Le violet seul ne tient que 2,88:1 sur
+   * le papier clair : c'est `--bord-plein` qui fait la limite d'un bouton plein
+   * en clair. Le contour des boutons secondaires est `--faint`.
+   */
+  for (const [mode, bloc] of [
+    ["clair", BLOC_CLAIR],
+    ["sombre", BLOC_SOMBRE],
+  ] as const) {
+    const encre = jeton(BLOC_CLAIR, "accent-ink");
+    const violet = jeton(BLOC_CLAIR, "violet");
+    const papier = jeton(bloc, "paper");
+
+    it(`bouton plein, mode ${mode} : texte >= 4,5:1 et limite >= 3:1`, () => {
+      expect(contraste(encre, violet)).toBeGreaterThanOrEqual(AA);
+      const limite = contraste(violet, papier) >= 3 ? violet : jeton(bloc, "bord-plein");
+      expect(contraste(limite, papier)).toBeGreaterThanOrEqual(3);
+    });
+
+    it(`bouton contour, mode ${mode} : trait --faint >= 3:1 sur le papier`, () => {
+      expect(contraste(jeton(bloc, "faint"), papier)).toBeGreaterThanOrEqual(3);
+    });
+
+    it(`anneau de focus, mode ${mode} : --violet-encre >= 3:1 sur le papier`, () => {
+      expect(contraste(jeton(bloc, "violet-encre"), papier)).toBeGreaterThanOrEqual(3);
+    });
+  }
+
+  /**
    * La regle qui a produit le defaut : `.grad-text` habille le H1 de presque
    * toutes les pages. S'il repasse sur le violet de marque, le titre retombe
    * a 2,88:1 en clair sans que rien ne le signale.

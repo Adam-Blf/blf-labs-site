@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { CTA } from "@/content/cta";
 import { identifiantMesure } from "@/lib/consentement/consent";
 import { useConsentement } from "@/lib/consentement/useConsent";
 
@@ -10,7 +11,7 @@ import { useConsentement } from "@/lib/consentement/useConsent";
  * Appel a l'action persistant, sur telephone uniquement.
  *
  * Le probleme qu'il resout : sur un ecran de moins de 640 px, le bouton
- * "Demarrer un projet" de l'en-tete est masque (`hidden sm:block`), et
+ * "Recevoir mon estimation" de l'en-tete est masque (`hidden sm:block`), et
  * l'en-tete elle-meme se retire des qu'on defile vers le bas. Un visiteur au
  * milieu d'une page n'avait donc plus aucun moyen visible de passer commande :
  * il devait remonter, ouvrir le menu, puis trouver le lien. C'est exactement la
@@ -63,7 +64,8 @@ export function StickyCta() {
   if (bandeauEnAttente) return null;
 
   return (
-    <div
+    <aside
+      aria-label="Action rapide"
       // `pb-[env(safe-area-inset-bottom)]` : sans lui, la barre passe sous la
       // barre de gestes des iPhone recents et le bouton devient a moitie
       // inatteignable.
@@ -75,10 +77,10 @@ export function StickyCta() {
         href="/commander"
         // 56 px de haut : au-dessus du plancher de 44 px des cibles tactiles,
         // parce que c'est le bouton le plus important du site sur mobile.
-        className="btn-pill flex min-h-[56px] items-center justify-center bg-accent px-6 text-base font-semibold text-accent-ink shadow-lg"
+        className="btn-pill btn-plein flex min-h-[56px] items-center justify-center px-6 text-base font-semibold shadow-lg"
       >
-        Démarrer un projet
+        {CTA.estimationAvecDelaiCourt}
       </Link>
-    </div>
+    </aside>
   );
 }

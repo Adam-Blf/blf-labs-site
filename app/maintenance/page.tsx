@@ -128,15 +128,15 @@ export default function MaintenancePage() {
             <div className="mt-14 flex flex-wrap gap-4">
               <Link
                 href="/commander"
-                className="btn-pill bg-accent px-8 py-4 font-bold text-accent-ink"
+                className="btn-pill btn-plein px-8 py-4 font-bold"
               >
-                Parler d&rsquo;un suivi
+                Faire estimer le suivi de mon site
               </Link>
               <Link
                 href="/tarifs"
-                className="btn-pill border border-line-strong px-8 py-4 font-medium text-ink"
+                className="btn-pill btn-contour px-8 py-4 font-medium"
               >
-                Budgets et délais
+                Connaître les budgets et délais
               </Link>
             </div>
           </div>

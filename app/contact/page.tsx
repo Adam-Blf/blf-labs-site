@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { Breadcrumb } from "@/components/seo/Breadcrumb";
 import { SITE } from "@/lib/site";
+import { CTA } from "@/content/cta";
 
 /**
  * Page de contact.
@@ -33,13 +34,13 @@ const MOTIFS = [
     titre: "Vous avez un projet",
     texte:
       "Le formulaire de commande est plus rapide : il pose les questions dans le bon ordre et évite trois échanges d'emails pour cadrer le besoin.",
-    action: { libelle: "Décrire le projet", href: "/commander" },
+    action: { libelle: CTA.estimation, href: "/commander" },
   },
   {
     titre: "Vous avez une question",
     texte:
       "Prix, délais, propriété du code, maintenance : la plupart des réponses sont déjà écrites, et elles engagent quelque chose de vérifiable.",
-    action: { libelle: "Voir les questions fréquentes", href: "/questions" },
+    action: { libelle: "Trouver ma réponse dans les questions courantes", href: "/questions" },
   },
 ];
 
@@ -67,16 +68,34 @@ export default function ContactPage() {
 
             <a
               href={`mailto:${SITE.email}`}
-              className="btn-pill mt-10 inline-flex min-h-[56px] items-center bg-accent px-8 text-lg font-bold text-accent-ink"
+              className="btn-pill btn-plein mt-10 inline-flex min-h-[56px] items-center px-8 text-lg font-bold"
             >
-              {SITE.email}
+              Écrire au studio, réponse sous 48 h ouvrées
             </a>
             <a
               href={`tel:${SITE.phone.replace(/\s/g, "")}`}
-              className="btn-pill mt-4 ml-0 inline-flex min-h-[56px] items-center border border-line px-8 text-lg font-bold text-ink sm:ml-4"
+              className="btn-pill btn-contour mt-4 ml-0 inline-flex min-h-[56px] items-center px-8 text-lg font-bold sm:ml-4"
             >
-              {SITE.phone}
+              Obtenir ma réponse de vive voix
             </a>
+
+            <p className="mt-6 text-sm text-muted">
+              Courriel{" "}
+              <a
+                href={`mailto:${SITE.email}`}
+                className="inline-block py-1 font-medium text-ink underline underline-offset-4"
+              >
+                {SITE.email}
+              </a>
+              , téléphone{" "}
+              <a
+                href={`tel:${SITE.phone.replace(/\s/g, "")}`}
+                className="inline-block py-1 font-medium text-ink underline underline-offset-4"
+              >
+                {SITE.phone}
+              </a>
+              .
+            </p>
 
             <p className="mt-8 max-w-2xl leading-relaxed text-muted">
               Le studio travaille entièrement à distance : tous les rendez-vous

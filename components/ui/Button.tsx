@@ -21,9 +21,9 @@ const BASE =
 // passage de `.blk*` en @layer components (voir globals.css) : plus besoin de
 // forcer avec `!`.
 const VARIANTS: Record<Variant, string> = {
-  accent: "bg-accent text-accent-ink",
+  accent: "btn-plein",
   support: "bg-support text-support-ink",
-  ghost: "bg-surface text-ink",
+  ghost: "btn-contour bg-surface",
 };
 
 type Props = {

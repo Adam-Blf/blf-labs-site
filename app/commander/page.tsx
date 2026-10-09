@@ -5,7 +5,7 @@ import { OrderForm } from "@/components/order/OrderForm";
 import { SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Commander un projet",
+  title: "Recevoir mon estimation de projet",
   description:
     "Décrivez votre projet en quelques minutes. Vous recevez une réponse sous 48 heures ouvrées, avec une estimation de budget et de délai.",
   alternates: { canonical: "/commander" },
@@ -24,7 +24,7 @@ export default async function CommanderPage({ searchParams }: PageProps) {
       <main id="contenu" className="pt-24">
         <section>
           <div className="mx-auto max-w-3xl px-5 pt-8 pb-24">
-            <h1 className="title text-3xl md:text-4xl">Commander un projet</h1>
+            <h1 className="title text-3xl md:text-4xl">Recevoir mon estimation</h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted">
               Cinq étapes rapides, cinq minutes. Vous recevez une réponse avec une
               estimation de budget et de délai sous 48 heures ouvrées, ou une
