@@ -150,8 +150,8 @@ export function Footer() {
           {/*
             Seul point de captation d'adresse du site, et il est volontairement
             ici, en bas : quelqu'un qui a lu la page entiere sait ce qu'il
-            demande. Rien n'est echange contre cette adresse, les ressources et
-            le journal restent en acces libre.
+            demande. Rien n'est echange contre cette adresse : aucun contenu du
+            site n'est reserve aux inscrits.
           */}
           <div className="mt-8">
             <Carnet />

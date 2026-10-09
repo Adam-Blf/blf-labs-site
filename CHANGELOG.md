@@ -13,6 +13,13 @@ est dans les messages de commit et les pull requests.
   `BLFLABS_RESEND_API_KEY`, `BLFLABS_STRIPE_SECRET_KEY`...), and local dev loads
   the central `~/.secrets/projets.env` from `next.config.ts`.
 
+## [0.46.0] - 2026-10-09 - pages vides retirees
+
+- **Les pages Journal, Ressources et Secteurs sont retirees**, a la demande
+  d'Adam. Leurs listes etaient vides : elles rendaient une erreur 404 et ne
+  figuraient dans aucun menu ni dans le plan du site. Leurs modeles de contenu
+  partent avec elles ; elles reviendront avec leur premier contenu.
+
 ## [0.45.0] - 2026-10-09 - des boutons qui disent ce qu'on y gagne
 
 - **Chaque appel à l'action public dit ce que le visiteur obtient** : « Recevoir
