@@ -98,7 +98,7 @@ export function InvoicesPanel({ invoices }: { invoices: Invoice[] }) {
               disabled={pending}
               className="blk-sm shrink-0 bg-paper px-3 py-2 text-sm text-ink"
             >
-              {STATUSES.map((s) => (
+              {STATUSES.filter((s) => s !== "brouillon" || !inv.number).map((s) => (
                 <option key={s} value={s}>
                   {INVOICE_STATUS_LABELS[s]}
                 </option>

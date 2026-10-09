@@ -13,6 +13,26 @@ est dans les messages de commit et les pull requests.
   `BLFLABS_RESEND_API_KEY`, `BLFLABS_STRIPE_SECRET_KEY`...), and local dev loads
   the central `~/.secrets/projets.env` from `next.config.ts`.
 
+## [0.44.1] - 2026-10-09 - correctifs de l'audit de securite
+
+### Securite
+
+- **Le mot de passe provisoire n'est plus ecrit dans le depot public**, et le
+  changement de mot de passe exige le second facteur hors premier passage. Le
+  drapeau de premier passage vit desormais dans `app_metadata`, que seul le
+  serveur ecrit.
+- **Les journaux publics du workflow de prospection n'affichent plus que des
+  compteurs.** Le moteur ne met plus aucune adresse dans son journal : il cite
+  l'identifiant de l'inscription.
+
+### Corrige
+
+- **Le bouton "Retirer l'adresse" de la messagerie echouait a chaque fois** :
+  la fonction SQL etait revoquee pour la session admin. L'appel passe par la
+  cle de service apres lecture du fil sous RLS, et l'adresse vient de la base.
+- **Une facture emise ne peut plus redevenir un brouillon**, ni donc etre
+  supprimee : la regle est portee par la requete et par le selecteur.
+
 ## [0.44.0] - 2026-10-09 - retour a la direction "laboratoire"
 
 ### Modifie

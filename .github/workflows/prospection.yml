@@ -49,8 +49,10 @@ jobs:
             https://beloucif.com/api/cron/sequences)
 
           echo "Code HTTP : $code"
-          cat rapport.json || true
-          echo
+          # Le depot est public, donc ses journaux aussi : on n'affiche que les
+          # compteurs du rapport, jamais son journal detaille. Le rapport
+          # complet est conserve en base par le moteur.
+          jq -c 'with_entries(select(.value | type == "number"))' rapport.json 2>/dev/null || true
 
           # Un 401 signifie que le secret du depot et celui de Vercel ont
           # diverge. Echouer bruyamment : le mode silencieux ferait croire que
