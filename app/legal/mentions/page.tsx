@@ -68,7 +68,7 @@ export default function MentionsPage() {
         Les textes, le code source et les éléments graphiques de ce site sont la
         propriété de son éditeur, à l&rsquo;exception des marques et des
         réalisations citées, qui restent la propriété de leurs titulaires
-        respectifs. Les pictogrammes proviennent d&rsquo;Icons8. Les polices de
+        respectifs. Les pictogrammes proviennent de Reicon (licence MIT). Les polices de
         caractères Archivo, Bricolage Grotesque, Hanken Grotesk, Instrument Serif
         et Outfit sont distribuées sous licence SIL Open Font.
       </p>

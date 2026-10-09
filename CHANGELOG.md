@@ -13,6 +13,29 @@ est dans les messages de commit et les pull requests.
   `BLFLABS_RESEND_API_KEY`, `BLFLABS_STRIPE_SECRET_KEY`...), and local dev loads
   the central `~/.secrets/projets.env` from `next.config.ts`.
 
+## [0.44.0] - 2026-10-09 - retour a la direction "laboratoire"
+
+### Modifie
+
+- **Le site retrouve sa direction artistique "laboratoire"** (grille millimetree,
+  fiole 3D dans le hero, violet et citron, typographie Archivo), a la demande
+  d'Adam. La direction "ligne" de la 0.42.0 est retiree en entier : Ligne BLF,
+  bandes de stations, typographie Barlow.
+- **Les pictogrammes de l'ancienne direction passent a Reicon** (licence MIT)
+  au lieu des traces Icons8 : offres (globe, fenetre, mobile, base de donnees),
+  menu mobile, accordeon des questions, etapes du formulaire, bascule de theme.
+  La mention Icons8 des mentions legales devient une mention Reicon.
+
+### Conserve
+
+- Tout ce qui a ete livre apres la 0.42.0 hors design : correctifs de securite de
+  Next et sharp, noms de variables d'environnement prefixes `BLFLABS`, workflow
+  de release.
+
+### Retire
+
+- `scripts/fetch_icons.py` et le composant genere `OffreIcons`, devenus sans usage.
+
 ## [0.43.0] - 2026-10-08 - migration des icones vers Reicon
 
 - refactor(icons): `@phosphor-icons/react` remplace par `reicon-react` 1.2.6 sur les

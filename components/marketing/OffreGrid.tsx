@@ -1,124 +1,83 @@
 import Link from "next/link";
-import {
-  Window2,
-  ArrowRight,
-  Database,
-  Mobile,
-  Globe,
-} from "reicon-react";
+import { Database, Globe, Mobile, Window2 } from "reicon-react";
 import { Reveal } from "@/components/motion/Reveal";
 import { OFFRES, type OffreSlug } from "@/content/offres";
 
 /**
- * Services, en plan de reseau : une offre, une ligne.
+ * Services, en grille de quatre cartes de verre.
  *
- * Chaque famille garde sa couleur de ligne sur tout le site. Les outils
- * reellement utilises sont poses comme les stations de cette ligne, ce qui
- * remplace la rangee d'etiquettes et dit la meme chose : par ou passe le
- * projet.
- *
- * Plus de grille de cartes identiques : quatre rangees reglees, qu'on lit de
- * haut en bas comme un index de lignes. Les pictogrammes Icons8 dessines a la
- * main sont remplaces par Reicon, seul jeu d'icones du site.
- *
- * Les classes de couleur sont ecrites en entier ici : Tailwind ne genere que les
- * classes qu'il lit litteralement dans le source.
+ * Le pictogramme est pose dans un quart de disque flou, en angle de carte,
+ * conformement a la specification. Le halo est purement decoratif, donc masque
+ * aux lecteurs d'ecran.
  */
-const LIGNES: Record<
-  OffreSlug,
-  { Icone: typeof Globe; pastille: string; trait: string; station: string }
-> = {
-  "sites-web": {
-    Icone: Globe,
-    pastille: "bg-ligne-sites",
-    trait: "before:bg-ligne-sites",
-    station: "border-ligne-sites",
-  },
-  "apps-web": {
-    Icone: Window2,
-    pastille: "bg-ligne-web",
-    trait: "before:bg-ligne-web",
-    station: "border-ligne-web",
-  },
-  "apps-mobiles": {
-    Icone: Mobile,
-    pastille: "bg-ligne-mobile",
-    trait: "before:bg-ligne-mobile",
-    station: "border-ligne-mobile",
-  },
-  "data-ia": {
-    Icone: Database,
-    pastille: "bg-ligne-data",
-    trait: "before:bg-ligne-data",
-    station: "border-ligne-data",
-  },
+const ICONS: Record<OffreSlug, typeof Globe> = {
+  "sites-web": Globe,
+  "apps-web": Window2,
+  "apps-mobiles": Mobile,
+  "data-ia": Database,
 };
 
 export function OffreGrid() {
   return (
     <section id="offre" className="relative">
       <div className="section mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <h2 className="title max-w-3xl text-5xl sm:text-6xl lg:text-7xl">
+        <h2 className="title max-w-3xl text-4xl sm:text-5xl lg:text-6xl">
           Des services conçus pour{" "}
           <span className="grad-text">votre activité</span>
         </h2>
-        <p className="mt-6 max-w-2xl text-lg text-muted">
+        <p className="mt-6 max-w-2xl text-lg font-light text-muted">
           Quatre familles de projets. Si le votre tient dans plusieurs cases, ou
           dans aucune, c&rsquo;est une conversation, pas un problème.
         </p>
 
-        <Reveal className="mt-16 border-b border-line">
+        <Reveal className="mt-16 grid gap-6 md:grid-cols-2">
           {OFFRES.map((offre) => {
-            const ligne = LIGNES[offre.slug];
+            const Icon = ICONS[offre.slug];
 
             return (
               <Link
                 key={offre.slug}
                 href={`/offre/${offre.slug}`}
-                className="group grid gap-8 border-t border-line py-10 md:grid-cols-12 md:gap-10 md:py-12"
+                className="glass group relative overflow-hidden p-8 transition-transform duration-300 hover:scale-[1.02] sm:p-10"
               >
-                <div className="flex items-start gap-5 md:col-span-5">
-                  <span
-                    className={`grid h-14 w-14 shrink-0 place-items-center rounded-full text-ligne-ink ${ligne.pastille}`}
-                  >
-                    <ligne.Icone aria-hidden="true" strokeWidth={2} className="h-7 w-7" />
+                {/*
+                  Quart de disque colore, dans l'angle de la carte.
+                  Il etait ecrit `from-orange/25`, une couleur qui n'existe pas
+                  dans `@theme` : Tailwind n'emettait aucune regle, le decor
+                  etait invisible depuis toujours et rien ne le signalait.
+                  Repose sur la couleur d'accent, qui elle est declaree.
+                */}
+                <span
+                  aria-hidden="true"
+                  className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-gradient-to-br from-accent/25 to-transparent blur-2xl transition-opacity duration-500 group-hover:opacity-80"
+                />
+
+                <div className="relative z-10">
+                  <span className="glass-sm inline-flex h-14 w-14 items-center justify-center">
+                    <Icon aria-hidden="true" strokeWidth={2} className="h-7 w-7 text-ink" />
                   </span>
-                  <h3 className="title pt-1.5 text-3xl sm:text-4xl">
+
+                  <h3 className="title mt-8 text-2xl sm:text-3xl">
                     {offre.title}
                   </h3>
-                </div>
 
-                <div className="md:col-span-7">
-                  <p className="text-lg leading-relaxed text-muted">
+                  <p className="mt-4 font-light leading-relaxed text-muted">
                     {offre.pitch}
                   </p>
 
-                  <ul
-                    className={`relative mt-8 flex justify-between gap-2 before:absolute before:inset-x-2.5 before:top-[7px] before:h-[6px] before:rounded-full ${ligne.trait}`}
-                  >
-                    {offre.stack.map((outil) => (
+                  <ul className="mt-8 flex flex-wrap gap-2">
+                    {offre.stack.map((tool) => (
                       <li
-                        key={outil}
-                        className="relative flex min-w-0 flex-col items-center gap-2 text-center"
+                        key={tool}
+                        className="rounded-full border border-line px-3 py-1 text-xs font-medium text-muted"
                       >
-                        <span
-                          aria-hidden="true"
-                          className={`h-5 w-5 rounded-full border-[5px] bg-surface ${ligne.station}`}
-                        />
-                        <span className="text-xs font-semibold text-muted-strong sm:text-sm">
-                          {outil}
-                        </span>
+                        {tool}
                       </li>
                     ))}
                   </ul>
 
-                  <span className="mono mt-9 inline-flex items-center gap-2 text-base text-ink">
+                  <span className="mono mt-8 inline-block text-xs text-muted transition-colors group-hover:text-ink">
                     En savoir plus
-                    <ArrowRight
-                      aria-hidden="true"
-                      strokeWidth={2}
-                      className="h-4 w-4 transition-transform duration-200 ease-snap group-hover:translate-x-1"
-                    />
                   </span>
                 </div>
               </Link>

@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Menu, X } from "reicon-react";
 import { Wordmark } from "./Wordmark";
+import { GlassRefraction } from "./GlassRefraction";
 import { ThemeToggle } from "./ThemeToggle";
+import { Menu, X } from "reicon-react";
 
 /**
  * Le site est multi-pages : chaque entree pointe vers une adresse reelle, pas
@@ -21,10 +21,11 @@ const NAV = [
 ];
 
 /**
- * Barre de navigation flottante, un panneau plein.
+ * Barre de navigation flottante, a fond net.
  *
- * Seul son trait se renforce avec le defilement ; elle se retire quand on
- * descend et revient quand on remonte.
+ * Le fond se densifie avec le defilement : legerement translucide en haut de
+ * page, franchement opaque des que du contenu passe dessous, sinon le texte de
+ * la barre devient illisible par-dessus.
  *
  * L'ecouteur de defilement est passif et ne fait qu'ecrire un booleen : le
  * navigateur n'est pas sollicite a chaque pixel.
@@ -33,14 +34,6 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
-  const chemin = usePathname();
-
-  // Station courante : l'entree de la page ouverte (ou de sa section parente)
-  // passe en placard plein, sans demi-mesure. Elle est aussi annoncee aux
-  // lecteurs d'ecran par aria-current.
-  function courant(href: string) {
-    return chemin === href || Boolean(chemin?.startsWith(`${href}/`));
-  }
 
   useEffect(() => {
     let lastY = window.scrollY;
@@ -70,22 +63,29 @@ export function Header() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-4 z-50 px-4 transition-transform duration-300 ease-glide ${
+      className={`fixed inset-x-0 top-6 z-50 px-4 transition-transform duration-300 ${
         isHidden ? "-translate-y-[150%]" : "translate-y-0"
       }`}
     >
       {/*
-        Barre pleine, un panneau emaille comme le reste du site. Ni verre ni
-        translucidite : au-dessus d'un contenu qui glisse dessous, une barre
-        translucide rend le texte illisible, et le verre refractif de la
-        direction precedente est parti avec elle. Seul le trait se renforce une
-        fois la page defilee. Le lien de la page courante passe en placard
-        plein, comme la station ou l'on se trouve sur un plan de ligne.
+        Barre nette, sans verre depoli. Le flou d'arriere-plan etait pose sur un
+        blanc ecrit en dur (rgba(255,255,255,...)), donc en mode clair la barre
+        peignait du blanc sur du blanc et sa limite disparaissait. Elle lit
+        maintenant les jetons de theme, et son fond devient opaque des que la
+        page defile : au-dessus d'un contenu qui glisse dessous, une barre
+        translucide rend le texte illisible.
+
+        Coins droits plutot que pilule : le seul arrondi du site est celui du
+        bloc de logo, ce qui le garde distinctif.
       */}
+      <GlassRefraction />
+
       <nav
         aria-label="Navigation principale"
-        className={`mx-auto max-w-5xl rounded-[var(--radius)] border bg-surface transition-colors duration-300 ${
-          scrolled ? "border-line-strong" : "border-line"
+        className={`mx-auto max-w-5xl border transition-colors duration-300 ${
+          scrolled
+            ? "border-line-strong bg-surface shadow-sm"
+            : "verre border-line bg-surface/70"
         }`}
       >
         <div className="flex items-center justify-between gap-6 px-5 py-3">
@@ -93,25 +93,15 @@ export function Header() {
             <Wordmark />
           </Link>
 
-          <ul className="hidden items-center gap-6 md:flex">
+          <ul className="hidden items-center gap-8 md:flex">
             {NAV.map((item) => (
               <li key={item.href}>
-                {courant(item.href) ? (
-                  <Link
-                    href={item.href}
-                    aria-current="page"
-                    className="mono rounded-[var(--radius-sm)] bg-ink px-2.5 py-1 text-base text-paper"
-                  >
-                    {item.label}
-                  </Link>
-                ) : (
-                  <Link
-                    href={item.href}
-                    className="nav-link mono text-base text-muted-strong transition-colors hover:text-ink"
-                  >
-                    {item.label}
-                  </Link>
-                )}
+                <Link
+                  href={item.href}
+                  className="nav-link text-sm font-medium text-muted-strong transition-colors hover:text-ink"
+                >
+                  {item.label}
+                </Link>
               </li>
             ))}
           </ul>
@@ -127,7 +117,7 @@ export function Header() {
 
             <Link
               href="/commander"
-              className="btn-pill title hidden bg-accent px-5 py-2.5 text-lg text-accent-ink sm:block"
+              className="btn-pill hidden bg-accent px-5 py-2.5 text-sm font-semibold text-accent-ink sm:block"
             >
               Démarrer un projet
             </Link>
@@ -138,7 +128,7 @@ export function Header() {
               aria-expanded={open}
               aria-controls="menu-mobile"
               onClick={() => setOpen((value) => !value)}
-              className="flex h-11 w-11 items-center justify-center rounded-[var(--radius)] text-ink transition-transform duration-150 ease-snap active:scale-[0.94] md:hidden"
+              className="flex h-11 w-11 items-center justify-center rounded-full text-ink md:hidden"
             >
               {open ? (
                 <X aria-hidden="true" strokeWidth={2} className="h-6 w-6" />
