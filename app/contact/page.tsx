@@ -58,7 +58,8 @@ export default function ContactPage() {
             </h1>
 
             <p className="mt-8 max-w-2xl text-lg leading-relaxed text-muted">
-              Une seule adresse, relevée tous les jours ouvrés. Vous recevez une
+              Une adresse relevée tous les jours ouvrés, et un numéro pour les
+              questions qui se règlent plus vite de vive voix. Vous recevez une
               réponse écrite{" "}
               <strong className="text-ink">sous 48 heures ouvrées</strong>,
               même quand c&rsquo;est pour dire non ou vous orienter ailleurs.
@@ -69,6 +70,12 @@ export default function ContactPage() {
               className="btn-pill mt-10 inline-flex min-h-[56px] items-center bg-accent px-8 text-lg font-bold text-accent-ink"
             >
               {SITE.email}
+            </a>
+            <a
+              href={`tel:${SITE.phone.replace(/\s/g, "")}`}
+              className="btn-pill mt-4 ml-0 inline-flex min-h-[56px] items-center border border-line px-8 text-lg font-bold text-ink sm:ml-4"
+            >
+              {SITE.phone}
             </a>
 
             <p className="mt-8 max-w-2xl leading-relaxed text-muted">

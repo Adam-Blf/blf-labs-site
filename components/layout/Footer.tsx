@@ -130,6 +130,12 @@ export function Footer() {
           >
             {SITE.email}
           </a>
+          <a
+            href={`tel:${SITE.phone.replace(/\s/g, "")}`}
+            className="mt-1 block text-sm font-semibold text-ink underline-offset-4 hover:underline"
+          >
+            {SITE.phone}
+          </a>
           <p className="mt-1 text-sm text-muted">Île-de-France</p>
 
           <ul className="mt-6 space-y-2">

@@ -13,6 +13,12 @@ est dans les messages de commit et les pull requests.
   `BLFLABS_RESEND_API_KEY`, `BLFLABS_STRIPE_SECRET_KEY`...), and local dev loads
   the central `~/.secrets/projets.env` from `next.config.ts`.
 
+## [0.44.3] - 2026-10-09 - telephone visible
+
+- **Le numero de telephone est affiche dans le pied de page et sur la page
+  Contact**, a cote de l'adresse email, a la demande d'Adam. Il reste absent
+  des donnees structurees, pour ne pas etre moissonne par les annuaires.
+
 ## [0.44.2] - 2026-10-09 - captures des realisations
 
 - **Les captures de Bacchana et d'Ohypnozen sont refaites** apres le passage des
