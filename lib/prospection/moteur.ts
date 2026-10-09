@@ -344,7 +344,7 @@ async function traiteUne(
   if (autorise !== true) {
     await arrete(db, inscription.id, "envoi non autorise");
     rapport.ignores += 1;
-    rapport.journal.push(`refus de la garde pour ${contact.email}`);
+    rapport.journal.push(`refus de la garde pour l'inscription ${inscription.id}`);
     return;
   }
 
@@ -396,7 +396,7 @@ async function traiteUne(
     if (conflit?.code === "23505") {
       await avance(db, sequence, inscription);
       rapport.ignores += 1;
-      rapport.journal.push(`etape deja journalisee pour ${contact.email}`);
+      rapport.journal.push(`etape deja journalisee pour l'inscription ${inscription.id}`);
       return;
     }
     await libere(db, inscription.id);

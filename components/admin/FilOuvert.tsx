@@ -158,7 +158,7 @@ export function FilOuvert({
             <button
               type="button"
               disabled={enCours}
-              onClick={() => void tente(() => retireLAdresse(id, email))}
+              onClick={() => void tente(() => retireLAdresse(id))}
               className="btn-pill border border-line px-4 py-2 text-sm text-muted"
               title="Inscrit l'adresse sur la liste de suppression, définitivement"
             >

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { Resend } from "resend";
 import { db } from "@/lib/admin/db";
+import { serviceClient } from "@/lib/supabase/clients";
 import { SITE } from "@/lib/site";
 
 /**
@@ -126,11 +127,25 @@ export async function repond(filId: string, texte: string) {
  * aucun chemin vers la base : `desinscrire()` exige un jeton signe, donc le
  * clic de la personne elle-meme. Quelqu'un qui le demande PAR ECRIT devait
  * etre retire a la main, en SQL, ce qui veut dire en pratique : pas retire.
+ *
+ * La fonction SQL est revoquee pour `authenticated` (migration 0026) : l'appel
+ * passe donc par la cle de service, APRES que la session admin a lu le fil.
+ * Cette lecture passe par RLS (`is_blf_admin`, aal2) : c'est elle qui fait
+ * office de controle d'acces. L'adresse vient du fil en base, jamais du client.
  */
-export async function retireLAdresse(filId: string, email: string) {
+export async function retireLAdresse(filId: string) {
   const supabase = await db();
-  const { error } = await supabase.rpc("retire_a_la_demande", {
-    p_email: email,
+  const { data: fil, error: lecture } = await supabase
+    .from("fils")
+    .select("email")
+    .eq("id", filId)
+    .single();
+  if (lecture || !fil) throw new Error("Fil introuvable.");
+
+  const service = serviceClient();
+  if (!service) throw new Error("Base de données indisponible.");
+  const { error } = await service.rpc("retire_a_la_demande", {
+    p_email: fil.email,
     p_motif: "demande de retrait, lue dans un message",
   });
   if (error) throw new Error(error.message);

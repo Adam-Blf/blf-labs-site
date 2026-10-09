@@ -319,16 +319,25 @@ export async function setInvoicePaidAt(
  * pointage couterait plus qu'elle ne rapporte. Elle se corrige ensuite sur la
  * fiche, via `setInvoicePaidAt`, des que le pointage ne tombe pas le jour du
  * reglement.
+ *
+ * Une piece numerotee ne revient JAMAIS en brouillon : redevenue brouillon, elle
+ * devenait modifiable puis supprimable, ce qui ouvrait un trou dans la
+ * numerotation (CGI art. 242 nonies A). Le garde `.is("number", null)` porte
+ * la regle dans la requete elle-meme, pas dans l'interface.
  */
 export async function updateInvoiceStatus(id: string, status: InvoiceStatus) {
   const supabase = await db();
   const patch: { status: InvoiceStatus; paid_at?: string | null } = { status };
   if (status === "paye") patch.paid_at = new Date().toISOString().slice(0, 10);
-  const { error } = await supabase.from("invoices").update(patch).eq("id", id);
+  let requete = supabase.from("invoices").update(patch).eq("id", id);
+  if (status === "brouillon") requete = requete.is("number", null);
+  const { data, error } = await requete.select("id");
   if (error) throw new Error(error.message);
+  if (!data?.length) {
+    throw new Error("Une pièce émise ne peut pas redevenir un brouillon ; annule-la.");
+  }
   revalidatePath("/admin/argent");
   revalidatePath(`/admin/facturation/${id}`);
-  revalidatePath("/admin/argent");
 }
 
 /**
@@ -345,6 +354,7 @@ export async function deleteInvoice(id: string) {
     .delete()
     .eq("id", id)
     .eq("status", "brouillon")
+    .is("number", null)
     .select("id");
   if (error) throw new Error(error.message);
   if (!data?.length) {

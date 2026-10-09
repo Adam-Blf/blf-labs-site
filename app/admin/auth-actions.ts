@@ -1,14 +1,11 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { adminEmails } from "@/lib/supabase/clients";
+import { adminEmails, serviceClient } from "@/lib/supabase/clients";
 import { supabaseServer } from "@/lib/supabase/server";
 
 export type LoginState = { error?: string };
 export type PasswordState = { error?: string };
-
-/** Mot de passe provisoire livre a la creation du compte. Interdit de le garder. */
-const PROVISIONAL_PASSWORD = "123456789";
 
 /**
  * Facteur 1 : email + mot de passe. Facteur 2 (TOTP) sur l'ecran suivant.
@@ -43,9 +40,12 @@ export async function signInAdmin(
 }
 
 /**
- * Changement du mot de passe provisoire, force a la premiere connexion. Le flag
- * `must_change_password` (metadonnee utilisateur) est baisse ici : tant qu'il est
- * vrai, le proxy renvoie sur cet ecran avant tout acces au back-office.
+ * Changement du mot de passe provisoire, force a la premiere connexion.
+ *
+ * Le flag `must_change_password` vit dans `app_metadata`, que seul le serveur
+ * (cle de service) peut ecrire : dans `user_metadata`, n'importe quelle session
+ * pouvait le baisser elle-meme. Hors premier passage, l'action exige une session
+ * aal2 : un mot de passe vole (aal1) ne suffit plus a verrouiller le compte.
  */
 export async function changeAdminPassword(
   _prev: PasswordState,
@@ -57,21 +57,36 @@ export async function changeAdminPassword(
   if (password.length < 10) {
     return { error: "Le mot de passe doit faire au moins 10 caractères." };
   }
-  if (password === PROVISIONAL_PASSWORD) {
-    return { error: "Choisis un mot de passe différent du provisoire." };
-  }
   if (password !== confirm) {
     return { error: "Les deux mots de passe ne correspondent pas." };
   }
 
   const supabase = await supabaseServer();
-  if (!supabase) return { error: "Base de données indisponible." };
+  const service = serviceClient();
+  if (!supabase || !service) return { error: "Base de données indisponible." };
 
-  const { error } = await supabase.auth.updateUser({
-    password,
-    data: { must_change_password: false },
-  });
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Session expirée. Reconnecte-toi." };
+
+  const premierPassage = user.app_metadata?.must_change_password === true;
+  if (!premierPassage) {
+    const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (aal?.currentLevel !== "aal2") {
+      return { error: "Valide d'abord ton second facteur." };
+    }
+  }
+
+  const { error } = await supabase.auth.updateUser({ password });
   if (error) return { error: "Changement impossible. Réessaie dans un instant." };
+
+  if (premierPassage) {
+    const { error: flagError } = await service.auth.admin.updateUserById(user.id, {
+      app_metadata: { must_change_password: false },
+    });
+    if (flagError) return { error: "Changement impossible. Réessaie dans un instant." };
+  }
 
   // Mot de passe defini : on enchaine sur l'activation du second facteur.
   redirect("/admin/2fa/enroll");

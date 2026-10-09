@@ -73,7 +73,7 @@ export async function updateAdminSession(request: NextRequest): Promise<NextResp
 
   // Mot de passe provisoire : tant qu'il n'est pas change, on n'avance pas, meme
   // pas vers l'enrolement TOTP. Priorite sur toute autre etape.
-  const mustChangePassword = user.user_metadata?.must_change_password === true;
+  const mustChangePassword = user.app_metadata?.must_change_password === true;
   if (mustChangePassword) {
     return pathname.startsWith("/admin/change-password")
       ? response
