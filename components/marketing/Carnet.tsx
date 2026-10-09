@@ -12,8 +12,8 @@ import { TEXTES_CONSENTEMENT, type SourceConsentement } from "@/content/consente
  *
  *   - AUCUNE CASE PRE-COCHEE. Une case cochee par defaut n'est pas un
  *     consentement, c'est un piege, et elle est nulle en droit ;
- *   - AUCUN MUR D'EMAIL. Rien sur ce site n'est echange contre une adresse. Les
- *     ressources restent en telechargement libre, c'est une regle du depot ;
+ *   - AUCUN MUR D'EMAIL. Rien sur ce site n'est echange contre une adresse,
+ *     c'est une regle du depot ;
  *   - AUCUNE FENETRE SURGISSANTE, aucun compte a rebours, aucune promesse
  *     invente. Le rythme annonce est celui qui sera tenu.
  *
