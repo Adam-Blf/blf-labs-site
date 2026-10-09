@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 
 /**
  * Primitives de formulaire.
@@ -178,6 +179,7 @@ export function RadioCards<T extends string>({
   columns?: 1 | 2;
 }) {
   const errorId = `${name}-error`;
+  const reduit = useReducedMotion();
 
   return (
     <fieldset>
@@ -189,15 +191,16 @@ export function RadioCards<T extends string>({
         {options.map((option) => {
           const selected = value === option.value;
           return (
-            // Retour d'appui en CSS et non plus en framer-motion. Les valeurs
-            // Motion dependaient de `useReducedMotion()`, que le serveur ne
-            // connait pas : chez un visiteur en mouvement reduit, React levait
-            // une erreur d'hydratation sur le formulaire de commande. Le
-            // grossissement de l'option choisie est retire avec : il decalait
-            // les options voisines, et l'aplat violet dit deja la selection.
-            <label
+            <motion.label
               key={option.value}
-              className={`blk-flat flex min-h-[44px] cursor-pointer items-start gap-3 p-4 transition-[background-color,color,transform] duration-150 ease-snap active:scale-[0.98] ${
+              whileTap={reduit ? undefined : { scale: 0.98 }}
+              // Motion pose `tabindex="0"` sur tout element portant `whileTap`.
+              // Un <label> n'a pas de role : l'arret annoncait le texte sans dire
+              // que c'est un bouton radio, avant que le radio le reannonce.
+              tabIndex={-1}
+              animate={reduit ? undefined : { scale: selected ? 1.015 : 1 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              className={`blk-flat flex min-h-[44px] cursor-pointer items-start gap-3 p-4 transition-colors ${
                 selected ? "bg-accent text-accent-ink" : "bg-surface text-ink"
               }`}
             >
@@ -220,7 +223,7 @@ export function RadioCards<T extends string>({
                   </span>
                 )}
               </span>
-            </label>
+            </motion.label>
           );
         })}
       </div>
@@ -248,6 +251,8 @@ export function CheckboxCards<T extends string>({
   values: string[];
   onToggle: (value: T, checked: boolean) => void;
 }) {
+  const reduit = useReducedMotion();
+
   return (
     <fieldset>
       <legend className="mono text-xs text-muted">{legend}</legend>
@@ -256,9 +261,14 @@ export function CheckboxCards<T extends string>({
         {options.map((option) => {
           const checked = values.includes(option.value);
           return (
-            <label
+            <motion.label
               key={option.value}
-              className={`blk-flat flex min-h-[44px] cursor-pointer items-start gap-4 p-4 transition-[border-color,transform] duration-150 ease-snap active:scale-[0.99] ${
+              whileTap={reduit ? undefined : { scale: 0.99 }}
+              // Motion pose `tabindex="0"` sur tout element portant `whileTap`.
+              // Un <label> n'a pas de role : l'arret annoncait le texte sans dire
+              // que c'est un bouton radio, avant que le radio le reannonce.
+              tabIndex={-1}
+              className={`blk-flat flex min-h-[44px] cursor-pointer items-start gap-4 p-4 transition-colors ${
                 checked ? "border-accent" : ""
               }`}
             >
@@ -276,7 +286,7 @@ export function CheckboxCards<T extends string>({
                   </span>
                 )}
               </span>
-            </label>
+            </motion.label>
           );
         })}
       </div>

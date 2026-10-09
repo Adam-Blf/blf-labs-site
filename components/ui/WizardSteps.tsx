@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import type { KeyboardEvent, ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Check } from "reicon-react";
 import { useWizard, type WizardDirection } from "@/lib/ui/useWizard";
 
 /**
@@ -97,15 +98,12 @@ export function WizardSteps({
     goTo(Math.min(Math.max(target, 0), furthest));
   }
 
-  // Les memes proprietes dans les deux cas, seule l'amplitude change. Des objets
-  // de forme differente selon `reduced` (inconnu du serveur) rendaient un style
-  // initial different cote serveur et cote client, d'ou une erreur
-  // d'hydratation sur /commander chez tout visiteur en mouvement reduit.
-  const shift = reduced ? 0 : 24;
   const variants = {
-    enter: (d: WizardDirection) => ({ opacity: 0, x: d * shift }),
-    center: { opacity: 1, x: 0 },
-    exit: (d: WizardDirection) => ({ opacity: 0, x: d * -shift }),
+    enter: (d: WizardDirection) =>
+      reduced ? { opacity: 0 } : { opacity: 0, x: d * 24 },
+    center: reduced ? { opacity: 1 } : { opacity: 1, x: 0 },
+    exit: (d: WizardDirection) =>
+      reduced ? { opacity: 0 } : { opacity: 0, x: d * -24 },
   };
 
   return (
@@ -133,13 +131,11 @@ export function WizardSteps({
               className={`tabular grid size-9 place-items-center rounded-full text-sm font-bold ${
                 done || here
                   ? "bg-accent text-accent-ink"
-                  : "border-[3px] border-ink bg-surface text-ink"
+                  : "bg-surface text-muted blk-flat"
               }`}
             >
               {done ? (
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 6 9 17l-5-5" />
-                </svg>
+                <Check aria-hidden="true" strokeWidth={3} className="h-4 w-4" />
               ) : (
                 i + 1
               )}
@@ -170,7 +166,7 @@ export function WizardSteps({
               {i < total - 1 && (
                 <span
                   aria-hidden="true"
-                  className="relative h-[6px] flex-1 overflow-hidden rounded-full bg-line"
+                  className="relative h-[3px] flex-1 overflow-hidden rounded-full bg-line"
                 >
                   <motion.span
                     className="absolute inset-0 origin-left rounded-full bg-accent"

@@ -56,19 +56,18 @@ export function Faq({
                     onClick={() => setOpenIndex(open ? null : index)}
                     className="flex min-h-[44px] w-full items-center justify-between gap-4 px-6 py-5 text-left"
                   >
-                    {/* Texte courant et non placard : une question entiere en
-                        capitales condensees se lit mal. */}
-                    <span className="text-lg font-semibold">{item.question}</span>
+                    <span className="title text-lg">{item.question}</span>
 
                     {/* Croix qui pivote : un seul trace pour les deux etats,
                         plutot que deux icones qui se remplacent. */}
-                    <Plus
+                    <motion.span
                       aria-hidden="true"
-                      strokeWidth={2}
-                      className={`h-5 w-5 shrink-0 text-accent transition-transform duration-200 ease-snap ${
-                        open ? "rotate-45" : "rotate-0"
-                      }`}
-                    />
+                      animate={{ rotate: open ? 45 : 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="shrink-0 text-accent"
+                    >
+                      <Plus strokeWidth={2.5} className="h-5 w-5" />
+                    </motion.span>
                   </button>
                 </h3>
 
