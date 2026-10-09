@@ -127,15 +127,15 @@ export default function AProposPage() {
             <div className="mt-12 flex flex-wrap gap-4">
               <Link
                 href="/references"
-                className="btn-pill bg-accent px-8 py-4 font-bold text-accent-ink"
+                className="btn-pill btn-plein px-8 py-4 font-bold"
               >
-                Voir les réalisations
+                Juger sur des projets livrés
               </Link>
               <Link
                 href="/methode"
-                className="btn-pill border border-line-strong px-8 py-4 font-medium text-ink"
+                className="btn-pill btn-contour px-8 py-4 font-medium"
               >
-                Comment se déroule un projet
+                Comprendre le déroulé d&rsquo;un projet
               </Link>
             </div>
           </div>

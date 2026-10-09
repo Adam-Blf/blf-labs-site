@@ -36,11 +36,11 @@
     Clair  : #111016 sur #f7f7fa = 17,2:1 | gris #56525e = 6,8:1
              --faint #736d80 sur #f7f7fa = 4,6:1 (AA texte)
              --violet-encre #a83fc6 sur #f7f7fa = 4,7:1 (AA texte)
-             #111016 sur violet  =  8,1:1 | #111016 sur citron = 15,4:1
+             #111016 sur violet  =  6,15:1 | #111016 sur citron = 15,4:1
     Sombre : #edeef1 sur #111016 = 16,3:1 | gris #9a94a6 = 7,4:1
-             --faint #837e91 sur #111016 = 4,8:1 (AA texte)
+             --faint #8c879a sur #111016 = 5,45:1 et sur #1a1822 = 5,05:1 (AA texte)
              --violet-encre #cb6ce6 sur #111016 = 6,2:1 (AA texte)
-             #111016 sur violet  =  8,1:1 | #111016 sur citron = 15,4:1 (identiques,
+             #111016 sur violet  =  6,15:1 | #111016 sur citron = 15,4:1 (identiques,
              puisque les aplats et leur encre ne bougent pas)
 */
 
@@ -53,7 +53,7 @@
   --violet-clair: #e292ff;
   /*
     Le violet, assombri pour l'usage en TEXTE seulement. #cb6ce6 est une
-    teinte claire : en aplat avec encre noire il rend 8,1:1, mais pose en
+    teinte claire : en aplat avec encre noire il rend 6,15:1, mais pose en
     texte sur --paper il tombe a 2,88:1, sous les 3:1 exiges d'un grand
     titre. Il portait le H1 de presque toutes les pages.
   */
@@ -78,6 +78,10 @@
   --accent-ink: #111016;
   --support: var(--citron);
   --support-ink: #111016;
+  /* Contour du bouton plein. Le violet seul ne tient que 2,88:1 sur --paper en
+     clair (seuil de 3:1 pour un composant d'interface) : l'encre fait le trait.
+     En sombre le violet tient 6,15:1 sans aide, le contour reprend sa teinte. */
+  --bord-plein: #111016;
 
   --surface: #ffffff;
   --surface-strong: #eceaf1;
@@ -111,9 +115,12 @@
   --muted: #9a94a6;
   --muted-strong: #d5d1de;
   /* #4b4657 donnait 2,1:1 sur --paper sombre : du texte noir sur fond noir sur
-     les titres du footer et le fil d'Ariane. Remonte a #837e91 = 4,83:1 (WCAG AA
-     texte normal), tout en restant plus discret que --muted (#9a94a6, 6,45:1). */
-  --faint: #837e91;
+     les titres du footer et le fil d'Ariane. Remonte a #837e91, puis a #8c879a
+     (audit du 09/10/2026) : #837e91 ne rendait que 4,47:1 sur --surface
+     (#1a1822), le fond du pied de page. #8c879a mesure 5,45:1 sur --paper et
+     5,05:1 sur --surface, et reste plus discret que --muted (#9a94a6, 6,45:1).
+     Il sert aussi de contour aux boutons secondaires (3:1 exige). */
+  --faint: #8c879a;
 
   /* Le violet de marque, EN TEXTE, est lisible sur fond sombre : #cb6ce6 y rend
      6,15:1. C'est en clair qu'il echoue, a 2,88:1. Le jeton d'encre bascule
@@ -121,6 +128,7 @@
      du mode clair aurait fait retomber le H1 de chaque page a 3,78:1, une
      REGRESSION par rapport a l'etat qu'on venait corriger. */
   --violet-encre: #cb6ce6;
+  --bord-plein: #cb6ce6;
 
   /* Les quatre couleurs restent identiques : c'est ce qui tient l'identite
      d'un mode a l'autre. Seuls les fonds et l'encre s'inversent. */

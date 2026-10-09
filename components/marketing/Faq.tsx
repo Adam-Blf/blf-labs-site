@@ -46,7 +46,7 @@ export function Faq({
             const buttonId = `faq-button-${index}`;
 
             return (
-              <li key={item.question} className="blk-sm overflow-hidden bg-surface">
+              <li key={item.question} className="blk-sm overflow-hidden border-faint bg-surface">
                 <h3>
                   <button
                     type="button"

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SITE, SIRET_PRETTY } from "@/lib/site";
 import { OFFRES } from "@/content/offres";
+import { CTA } from "@/content/cta";
 import { Graduation } from "@/components/ui/Graduation";
 import { Carnet } from "@/components/marketing/Carnet";
 import { Wordmark } from "./Wordmark";
@@ -47,9 +48,9 @@ const STUDIO = [
 ];
 
 const ACTIONS = [
-  { href: "/commander", label: "Démarrer un projet" },
-  { href: "/rendez-vous", label: "Prendre rendez-vous" },
-  { href: "/contact", label: "Contact" },
+  { href: "/commander", label: CTA.estimation },
+  { href: "/rendez-vous", label: CTA.vingtMinutes },
+  { href: "/contact", label: CTA.reponse },
 ];
 
 const LEGAL = [
@@ -69,7 +70,7 @@ function Colonne({
   return (
     <div>
       <h2 className="mono text-[0.7rem] text-faint">{titre}</h2>
-      <ul className="mt-4 space-y-2">{children}</ul>
+      <ul className="mt-4 space-y-0.5">{children}</ul>
     </div>
   );
 }
@@ -79,7 +80,7 @@ function Lien({ href, children }: { href: string; children: React.ReactNode }) {
     <li>
       <Link
         href={href}
-        className="text-sm text-muted underline-offset-4 transition-colors hover:text-ink hover:underline"
+        className="inline-block py-1 text-sm text-muted underline-offset-4 transition-colors hover:text-ink hover:underline"
       >
         {children}
       </Link>
@@ -126,19 +127,19 @@ export function Footer() {
           <h2 className="mono text-[0.7rem] text-faint">Contact</h2>
           <a
             href={`mailto:${SITE.email}`}
-            className="mt-4 inline-block text-sm font-semibold text-ink underline-offset-4 hover:underline"
+            className="mt-4 inline-block py-0.5 text-sm font-semibold text-ink underline-offset-4 hover:underline"
           >
             {SITE.email}
           </a>
           <a
             href={`tel:${SITE.phone.replace(/\s/g, "")}`}
-            className="mt-1 block text-sm font-semibold text-ink underline-offset-4 hover:underline"
+            className="mt-1 block py-0.5 text-sm font-semibold text-ink underline-offset-4 hover:underline"
           >
             {SITE.phone}
           </a>
           <p className="mt-1 text-sm text-muted">Île-de-France</p>
 
-          <ul className="mt-6 space-y-2">
+          <ul className="mt-6 space-y-0.5">
             {ACTIONS.map((item) => (
               <Lien key={item.href} href={item.href}>
                 {item.label}
@@ -176,7 +177,7 @@ export function Footer() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="underline-offset-4 transition-colors hover:text-ink hover:underline"
+                className="inline-block py-1 underline-offset-4 transition-colors hover:text-ink hover:underline"
               >
                 {item.label}
               </Link>

@@ -154,15 +154,15 @@ export default function TarifsPage() {
             <div className="mt-12 flex flex-wrap gap-4">
               <Link
                 href="/commander"
-                className="btn-pill bg-accent px-8 py-4 font-bold text-accent-ink"
+                className="btn-pill btn-plein px-8 py-4 font-bold"
               >
-                Demander un devis
+                Estimer mon budget en cinq minutes
               </Link>
               <Link
                 href="/questions"
-                className="btn-pill border border-line-strong px-8 py-4 font-medium text-ink"
+                className="btn-pill btn-contour px-8 py-4 font-medium"
               >
-                Questions fréquentes
+                Lire les réponses aux questions courantes
               </Link>
             </div>
           </div>

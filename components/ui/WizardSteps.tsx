@@ -33,7 +33,7 @@ export function WizardSteps({
   onBeforeNext,
   backLabel = "Retour",
   nextLabel = "Continuer",
-  finishLabel = "Envoyer la demande",
+  finishLabel = "Terminer",
   submitting = false,
 }: {
   steps: WizardStep[];
@@ -212,7 +212,7 @@ export function WizardSteps({
           <button
             type="button"
             onClick={back}
-            className="blk-sm title min-h-[44px] bg-surface px-5 py-3 text-ink"
+            className="blk-sm title min-h-[44px] border-faint bg-surface px-5 py-3 text-ink"
           >
             {backLabel}
           </button>
@@ -225,7 +225,7 @@ export function WizardSteps({
             next();
           }}
           disabled={submitting}
-          className="blk-sm title ml-auto inline-flex min-h-[44px] items-center gap-2 bg-accent px-6 py-3 text-accent-ink disabled:opacity-60"
+          className="blk-sm btn-plein title ml-auto inline-flex min-h-[44px] items-center gap-2 px-6 py-3 disabled:opacity-60"
         >
           {submitting ? (
             <>

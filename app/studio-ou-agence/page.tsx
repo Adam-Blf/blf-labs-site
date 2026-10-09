@@ -174,15 +174,15 @@ export default function StudioOuAgencePage() {
             <div className="mt-14 flex flex-wrap gap-4">
               <Link
                 href="/a-propos"
-                className="btn-pill bg-accent px-8 py-4 font-bold text-accent-ink"
+                className="btn-pill btn-plein px-8 py-4 font-bold"
               >
-                Comment ce studio travaille
+                Comprendre comment le studio travaille
               </Link>
               <Link
                 href="/tarifs"
-                className="btn-pill border border-line-strong px-8 py-4 font-medium text-ink"
+                className="btn-pill btn-contour px-8 py-4 font-medium"
               >
-                Budgets et délais
+                Connaître les budgets et délais
               </Link>
             </div>
           </div>

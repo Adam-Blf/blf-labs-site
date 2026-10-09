@@ -112,7 +112,7 @@ export default function ZonePage() {
                     href={`/offre/${offre.slug}`}
                     className="nav-link mt-auto inline-block font-medium text-muted-strong transition-colors hover:text-ink"
                   >
-                    Voir le détail
+                    Découvrir ce qui est livré
                   </Link>
                 </li>
               ))}

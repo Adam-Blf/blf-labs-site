@@ -143,7 +143,7 @@ const CARNET: Sequence = {
         p(
           "Le studio n'affiche pas de tarif fixe, et ce n'est pas une pudeur commerciale : le périmètre s'ajuste au budget disponible plutôt que l'inverse. Dites ce que vous pouvez y mettre, je dis ce que cela permet de faire, et ce qu'il faut remettre à plus tard.",
         ) +
-        bouton(`${v.url}/tarifs`, "Ce qui fait monter un prix") +
+        bouton(`${v.url}/tarifs`, "Comprendre ce qui fait monter un prix") +
         signature(),
     },
     {
@@ -158,7 +158,7 @@ const CARNET: Sequence = {
         p(
           "Le point de départ, le problème concret à résoudre, ce qui a été choisi et pourquoi, et surtout ce que n'importe qui peut vérifier aujourd'hui en ouvrant le site. Aucun chiffre de performance n'y figure tant que la mesure n'a pas été faite, c'est une règle du studio.",
         ) +
-        bouton(`${v.url}/references`, "Lire l'étude de cas") +
+        bouton(`${v.url}/references/ohypnozen`, "Lire l'étude de cas du cabinet") +
         signature(),
     },
     {
@@ -173,7 +173,7 @@ const CARNET: Sequence = {
         p(
           "C'est gratuit et sans suite obligatoire. Si le projet ne correspond pas à ce que fait le studio, je vous le dis, et je vous oriente vers quelqu'un de plus adapté.",
         ) +
-        bouton(`${v.url}/rendez-vous`, "Caler vingt minutes") +
+        bouton(`${v.url}/rendez-vous`, "Caler mes vingt minutes") +
         p(
           "Sinon, rien à faire : vous continuerez à recevoir une note par mois, et rien d'autre.",
         ) +

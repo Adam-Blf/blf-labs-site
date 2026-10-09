@@ -137,7 +137,7 @@ export function FilOuvert({
                   setReponse("");
                 })
               }
-              className="btn-pill bg-accent px-4 py-2 text-sm font-bold text-accent-ink disabled:opacity-50"
+              className="btn-pill btn-plein px-4 py-2 text-sm font-bold disabled:opacity-50"
             >
               {enCours ? "…" : "Envoyer"}
             </button>
@@ -145,7 +145,7 @@ export function FilOuvert({
               type="button"
               disabled={enCours}
               onClick={() => void tente(() => archiveFil(id))}
-              className="btn-pill border border-line px-4 py-2 text-sm"
+              className="btn-pill btn-contour px-4 py-2 text-sm"
             >
               Archiver
             </button>
@@ -159,7 +159,7 @@ export function FilOuvert({
               type="button"
               disabled={enCours}
               onClick={() => void tente(() => retireLAdresse(id))}
-              className="btn-pill border border-line px-4 py-2 text-sm text-muted"
+              className="btn-pill btn-contour px-4 py-2 text-sm"
               title="Inscrit l'adresse sur la liste de suppression, définitivement"
             >
               Cette personne demande à être retirée

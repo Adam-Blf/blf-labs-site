@@ -77,7 +77,7 @@ export function OffreGrid() {
                   </ul>
 
                   <span className="mono mt-8 inline-block text-xs text-muted transition-colors group-hover:text-ink">
-                    En savoir plus
+                    Découvrir ce qui est livré
                   </span>
                 </div>
               </Link>

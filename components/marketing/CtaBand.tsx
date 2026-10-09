@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SITE } from "@/lib/site";
+import { CTA } from "@/content/cta";
 
 /**
  * Appel a l'action de fin de page : titre monumental sur grille millimetree.
@@ -22,17 +23,27 @@ export function CtaBand() {
         <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/commander"
-            className="btn-pill bg-accent px-8 py-4 font-semibold text-accent-ink"
+            className="btn-pill btn-plein px-8 py-4 font-semibold"
           >
-            Démarrer un projet
+            {CTA.estimationAvecDelai}
           </Link>
+          <Link
+            href="/rendez-vous"
+            className="btn-pill btn-contour px-8 py-4 font-medium"
+          >
+            {CTA.vingtMinutes}
+          </Link>
+        </div>
+
+        <p className="mt-8 text-sm text-muted">
+          Vous préférez écrire ?{" "}
           <a
             href={`mailto:${SITE.email}`}
-            className="btn-pill glass-sm px-8 py-4 font-medium"
+            className="inline-block py-1 font-medium text-ink underline underline-offset-4"
           >
             {SITE.email}
           </a>
-        </div>
+        </p>
       </div>
     </section>
   );

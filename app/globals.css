@@ -37,6 +37,10 @@
 
 html {
   scroll-behavior: smooth;
+  /* Ni l'en-tete fixe ni la barre d'action mobile ne doivent couvrir l'element
+     qui prend le focus (WCAG 2.4.11). */
+  scroll-padding-top: 6rem;
+  scroll-padding-bottom: 5rem;
 }
 
 body {
@@ -226,6 +230,29 @@ body {
 }
 
 /*
+  Les deux habillages de bouton, mesures le 09/10/2026 (WCAG 2.2, 1.4.11 et
+  1.4.3).
+
+  Plein : fond d'accent, encre invariante (6,15:1), contour --bord-plein. Sans
+  ce contour, le violet ne tient que 2,88:1 sur le papier clair et le bouton
+  perd sa limite. Contour : trait --faint (4,6:1 en clair, 5,45:1 en sombre),
+  au lieu de --line-strong qui rendait 2,1:1 et 2,7:1.
+
+  Hors du layer components, comme .btn-pill : ils l'emportent sur la bordure de
+  .blk-sm sans avoir a forcer.
+*/
+.btn-plein {
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  border: 1px solid var(--bord-plein);
+}
+
+.btn-contour {
+  color: var(--ink);
+  border: 1px solid var(--faint);
+}
+
+/*
   Lien de navigation : le trait se deploie de la gauche vers la droite.
   Anime sur `transform` et non sur `width`, pour rester fluide.
 */
@@ -251,8 +278,13 @@ body {
   transform: scaleX(1);
 }
 
+/*
+  Le violet de marque (#cb6ce6) ne tient que 2,88:1 sur le papier clair : un
+  anneau de focus sous les 3:1 est invisible a qui en depend. --violet-encre
+  garde la teinte et bascule par mode (4,69:1 en clair, 6,15:1 en sombre).
+*/
 :where(a, button, input, textarea, select, [tabindex]):focus-visible {
-  outline: 2px solid var(--violet);
+  outline: 2px solid var(--violet-encre);
   outline-offset: 3px;
 }
 

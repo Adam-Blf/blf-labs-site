@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Checkbox, CheckboxCards, RadioCards, TextArea, TextField } from "./fields";
 import { OPTIONS, OPTION_GROUPS } from "@/content/options";
 import { TEXTES_CONSENTEMENT } from "@/content/consentement";
+import { CTA } from "@/content/cta";
 import { WizardSteps, type WizardStep } from "@/components/ui/WizardSteps";
 import {
   BUDGET_LABELS,
@@ -467,6 +468,7 @@ export function OrderForm({ defaultOffre = "" }: { defaultOffre?: string }) {
       <WizardSteps
         steps={steps}
         submitting={submitting}
+        finishLabel={CTA.estimationAvecDelai}
         onBeforeNext={validateStep}
         onComplete={submit}
       />

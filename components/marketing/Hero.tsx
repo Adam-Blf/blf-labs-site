@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CTA } from "@/content/cta";
 import { HeroSceneMount } from "@/components/three/HeroSceneMount";
 import { Graduation } from "@/components/ui/Graduation";
 
@@ -50,16 +51,16 @@ export function Hero() {
         <div className="mt-9 flex flex-wrap items-center gap-4">
           {/* Seul aplat colore de la page : l'action principale. */}
           <Link
-            href="/commander"
-            className="btn-pill bg-accent px-8 py-4 font-bold text-accent-ink"
+            href="/tarifs"
+            className="btn-pill btn-plein px-8 py-4 font-bold"
           >
-            Démarrer un projet
+            {CTA.prixDeDepart}
           </Link>
           <Link
             href="/services"
-            className="btn-pill border border-line-strong px-8 py-4 font-medium text-ink"
+            className="btn-pill btn-contour px-8 py-4 font-medium"
           >
-            Voir les services
+            {CTA.typeDeProjet}
           </Link>
         </div>
 

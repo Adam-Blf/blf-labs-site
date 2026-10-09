@@ -167,15 +167,16 @@ export default async function EtudePage({
                 href={reference.url}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="btn-pill bg-accent px-8 py-4 font-bold text-accent-ink"
+                className="btn-pill btn-plein px-8 py-4 font-bold"
               >
-                Voir le site en ligne
+                Visiter le site livré
+                <span className="sr-only"> (nouvel onglet)</span>
               </a>
               <Link
                 href="/references"
-                className="btn-pill border border-line-strong px-8 py-4 font-medium text-ink"
+                className="btn-pill btn-contour px-8 py-4 font-medium"
               >
-                Les autres réalisations
+                Découvrir les autres projets livrés
               </Link>
             </div>
           </div>

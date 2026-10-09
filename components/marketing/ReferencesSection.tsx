@@ -77,7 +77,7 @@ export function ReferencesSection({
                       {reference.title}
                     </h3>
                     <span className="text-sm text-muted-strong transition-transform duration-300 group-hover:translate-x-1">
-                      Voir le site &rarr;
+                      Visiter le site livré &rarr;
                     </span>
                   </div>
 

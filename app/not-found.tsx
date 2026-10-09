@@ -51,15 +51,15 @@ export default function NotFound() {
           <div className="mt-12 flex flex-wrap items-center gap-4">
             <Link
               href="/"
-              className="btn-pill bg-accent px-8 py-4 font-bold text-accent-ink"
+              className="btn-pill btn-plein px-8 py-4 font-bold"
             >
-              Retour à l&rsquo;accueil
+              Repartir de l&rsquo;accueil
             </Link>
             <Link
               href="/commander"
-              className="btn-pill border border-line-strong px-8 py-4 font-medium text-ink"
+              className="btn-pill btn-contour px-8 py-4 font-medium"
             >
-              Décrire un projet
+              Recevoir mon estimation
             </Link>
           </div>
 

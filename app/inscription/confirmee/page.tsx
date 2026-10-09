@@ -73,7 +73,7 @@ export default async function InscriptionConfirmeePage({
               </p>
               <p className="mt-10">
                 <Link className="underline" href="/references">
-                  Voir les réalisations du studio
+                  Découvrir en attendant les projets livrés
                 </Link>
               </p>
             </>
