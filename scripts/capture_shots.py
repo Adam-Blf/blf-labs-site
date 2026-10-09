@@ -18,11 +18,13 @@ Prerequis : python -m pip install playwright Pillow && python -m playwright
 install chromium
 
 Usage : python scripts/capture_shots.py [slug ...]
+        CAPTURE_CHANNEL=chrome pour utiliser le Chrome installe.
         sans argument, toutes les realisations sont recapturees.
 """
 
 from __future__ import annotations
 
+import os
 import socket
 import sys
 from dataclasses import dataclass, field
@@ -78,10 +80,11 @@ SHOTS = [
     Shot(
         slug="bacchana",
         url="https://bacchana.beloucif.com",
-        # "Passer" saute le carrousel d'introduction, "Tout refuser" ecarte le
-        # bandeau cookies. Sans ces deux clics, la capture ne montre que le
-        # guide de bienvenue et le consentement, jamais le produit.
-        dismiss=["Passer", "Tout refuser"],
+        # La verification d'age passe en premier depuis octobre 2026, puis
+        # "Passer" saute le carrousel d'introduction et "Tout refuser" ecarte le
+        # bandeau cookies. Sans ces clics, la capture ne montre que l'ecran
+        # d'age, le guide de bienvenue et le consentement, jamais le produit.
+        dismiss=["Oui, j'ai 18 ans ou plus", "Passer", "Tout refuser"],
     ),
     Shot(
         slug="ohypnozen",
@@ -176,7 +179,10 @@ def main(argv: list[str]) -> int:
     rules = ipv4_resolver_rules(todo)
 
     with sync_playwright() as playwright:
+        # CAPTURE_CHANNEL=chrome reutilise le Chrome du poste plutot que de
+        # telecharger le Chromium de Playwright.
         browser = playwright.chromium.launch(
+            channel=os.environ.get("CAPTURE_CHANNEL") or None,
             args=[f"--host-resolver-rules={','.join(rules)}"] if rules else [],
         )
         for shot in todo:

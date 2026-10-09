@@ -13,6 +13,14 @@ est dans les messages de commit et les pull requests.
   `BLFLABS_RESEND_API_KEY`, `BLFLABS_STRIPE_SECRET_KEY`...), and local dev loads
   the central `~/.secrets/projets.env` from `next.config.ts`.
 
+## [0.44.2] - 2026-10-09 - captures des realisations
+
+- **Les captures de Bacchana et d'Ohypnozen sont refaites** apres le passage des
+  deux sites aux icones Reicon. Celle de Bacchana montrait l'ecran de
+  verification d'age : le script le franchit desormais avant de capturer.
+- `scripts/capture_shots.py` accepte `CAPTURE_CHANNEL=chrome` pour reutiliser le
+  Chrome du poste au lieu de telecharger le Chromium de Playwright.
+
 ## [0.44.1] - 2026-10-09 - correctifs de l'audit de securite
 
 ### Securite
